@@ -9,7 +9,7 @@
         Spock,
     }
 
-    public class Game(int winThreshold = 3, bool enableDeuece = false)
+    public class Game(int requiredWins = 3, bool enableDeuce = false)
     {
         private static readonly RPS[] rpsOptions = Enum.GetValues<RPS>();
 
@@ -58,15 +58,14 @@
                 },
             };
 
-        private readonly int winThreshold = winThreshold;
-        private readonly bool enableDeuece = enableDeuece;
+        private readonly int requiredWins = requiredWins;
+        private readonly bool enableDeuce = enableDeuce;
 
         public (int Player, int Computer) Scores = (Player: 0, Computer: 0);
 
         private int HighestScore => Math.Max(Scores.Computer, Scores.Player);
         private int DiffScore => Math.Abs(Scores.Computer - Scores.Player);
-        private bool IsGameOver =>
-            HighestScore >= winThreshold && (!enableDeuece || DiffScore >= 2);
+        private bool IsGameOver => HighestScore >= requiredWins && (!enableDeuce || requiredWins == 1 || DiffScore >= 2);
 
         public async Task Init()
         {
@@ -74,40 +73,50 @@
 
             while (!IsGameOver)
             {
-                await Task.Delay(200);
+                await Task.Delay(500);
 
-                var roundNotice = $"\n--- [ROUND {roundCount}] ---";
+                Console.WriteLine();
 
-                Console.WriteLine(roundNotice);
+                HighlightConsoleLine(str: $"--- [ROUND {roundCount}] ---", colour: ConsoleColor.Cyan);
 
-                if (winThreshold > 1 && HighestScore > 0)
+                if (enableDeuce)
                 {
-                    if (HighestScore == winThreshold - 1)
+                    if (DiffScore == 0 && HighestScore == requiredWins - 1)
                     {
-                        Console.WriteLine("[STATUS]: Match Point!");
-                    }
+                        HighlightConsoleLine(str: "[STATUS]: Deuce!", colour: ConsoleColor.Yellow);
 
-                    if (enableDeuece)
+                        Console.WriteLine();
+                    }
+                    else if (DiffScore == 1 && HighestScore >= requiredWins)
                     {
-                        if (Scores.Player == Scores.Computer)
-                        {
-                            Console.WriteLine("[MODE]: Deuce!");
-                        }
-                        else if (HighestScore >= winThreshold && DiffScore == 1)
-                        {
-                            Console.WriteLine("[MODE]: Advantage!");
-                        }
+                        HighlightConsoleLine(str: "[STATUS]: Advantage! Match Point!", colour: ConsoleColor.Yellow);
+
+                        Console.WriteLine();
                     }
                 }
+                else if (requiredWins > 1 && HighestScore == requiredWins - 1)
+                {
+                    HighlightConsoleLine(str: "[STATUS]: Match Point!", colour: ConsoleColor.Yellow);
 
-                Console.WriteLine("[TURN]: Pick your option from the list:\n");
+                    Console.WriteLine();
+                }
+
+                HighlightConsoleLine(str: "[TURN]: Pick your option from the list:", colour: ConsoleColor.Magenta);
+
+                Console.WriteLine();
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
 
                 foreach (var rps in rpsOptions)
                 {
                     Console.WriteLine($"{(int) rps} - {rps}");
                 }
 
-                Console.Write("\nYour Choice\n> ");
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                HighlightConsoleLine(str: "Your Choice", colour: ConsoleColor.Magenta);
 
                 var input = Console.ReadLine();
 
@@ -115,12 +124,15 @@
 
                 if (!int.TryParse(input, out int choice) || !Enum.IsDefined(typeof(RPS), choice))
                 {
-                    Console.WriteLine(
-                        "[ERROR]: Please enter a number corresponding to one of the options."
+                    HighlightConsoleLine(
+                        str: "[ERROR]: Invalid choice. Please enter a number corresponding to an option.",
+                        colour: ConsoleColor.Red
                     );
 
                     continue;
                 }
+
+                roundCount++;
 
                 var playerChoice = (RPS) choice;
 
@@ -132,7 +144,7 @@
 
                 if (playerChoice == computerChoice)
                 {
-                    Console.WriteLine("It's a tie!");
+                    HighlightConsoleLine(str: "It's a tie!", colour: ConsoleColor.Yellow);
 
                     continue;
                 }
@@ -147,8 +159,9 @@
                     var (defeats, reason) = outcomes[playerChoice]
                         .Find(o => o.defeats == computerChoice);
 
-                    Console.WriteLine(
-                        $"You win this round! {playerChoice} {reason} {computerChoice}"
+                    HighlightConsoleLine(
+                       str: $"You win this round! {playerChoice} {reason} {computerChoice}",
+                       colour: ConsoleColor.Green
                     );
                 }
                 else
@@ -158,52 +171,91 @@
                     var (defeats, reason) = outcomes[computerChoice]
                         .Find(o => o.defeats == playerChoice);
 
-                    Console.WriteLine(
-                        $"Computer wins this round! {computerChoice} {reason} {playerChoice}"
+                    HighlightConsoleLine(
+                       str: $"Computer wins this round! {computerChoice} {reason} {playerChoice}",
+                       colour: ConsoleColor.Red
                     );
                 }
 
-                Console.WriteLine($"\n[SCORE]: {Scores.Computer} - {Scores.Player}");
+                Console.WriteLine();
+                Console.WriteLine($"Your Score: {Scores.Player}");
+                Console.WriteLine($"Computer Score: {Scores.Computer}");
             }
 
             await Task.Delay(200);
 
-            var hasPlayerWon = Scores.Player >= winThreshold && Scores.Player > Scores.Computer;
+            Console.WriteLine();
 
-            var endMessage = hasPlayerWon
-                ? "Congrats! You have won!"
-                : "You lost! Better luck next time.";
+            var hasPlayerWon = Scores.Player >= requiredWins && Scores.Player > Scores.Computer;
 
-            Console.WriteLine($"\n {endMessage}");
+            if (hasPlayerWon)
+            {
+                HighlightConsoleLine(str: "Congrats! You have won!", colour: ConsoleColor.Green);
+            }
+            else
+            {
+                HighlightConsoleLine(str: "You lost! Better luck next time", colour: ConsoleColor.Red);
+            }
         }
 
         public static async Task Main()
         {
-            Console.WriteLine("----- [RPS GAME] -----");
+            HighlightConsoleLine(str: "----- [RPS GAME] -----", colour: ConsoleColor.Cyan);
 
             while (true)
             {
-                Console.Write("[CONFIG]: How many wins are required to end the game?\n> ");
+                HighlightConsoleLine(str: "[CONFIG]: How many wins are required to end the game?", colour: ConsoleColor.Magenta);
 
                 var input = Console.ReadLine();
 
                 if (int.TryParse(input, out int requiredWins) && requiredWins > 0)
                 {
-                    Console.Write("[CONFIG]: Enable deuce mode? (y/n)\n> ");
+                    Console.WriteLine();
+
+                    HighlightConsoleLine(str: "[CONFIG]: Enable deuce mode? (y/n)", colour: ConsoleColor.Magenta);
 
                     var deuceInput = Console.ReadLine();
 
-                    var isDeuce = deuceInput?.Trim().ToLower() == "y";
+                    var enableDeuce = deuceInput?.Trim().ToLower() == "y";
 
-                    var game = new Game(requiredWins, isDeuce);
+                    var game = new Game(requiredWins, enableDeuce);
 
                     await game.Init();
 
-                    break;
+                    Console.WriteLine();
+
+                    HighlightConsoleLine("Would you like to play again? (y/n)", ConsoleColor.Magenta);
+
+                    var playAgain = Console.ReadLine()?.Trim().ToLower();
+
+                    if (playAgain != "y")
+                    {
+                        Console.WriteLine();
+
+                        HighlightConsoleLine("Thank you for playing! Goodbye!", ConsoleColor.Cyan);
+
+                        break;
+                    }
+
+                    Console.WriteLine();
+
+                    continue;
                 }
 
-                Console.WriteLine("[ERROR]: Please enter a positive integer.");
+                HighlightConsoleLine(str: "[ERROR]: Please enter a positive integer.", colour: ConsoleColor.Red);
             }
+
+        }
+
+        private static void HighlightConsoleLine(string str, ConsoleColor colour)
+        {
+            var originalColour = Console.ForegroundColor;
+
+            Console.ForegroundColor = colour;
+
+            Console.WriteLine(str);
+
+            Console.ForegroundColor = originalColour;
         }
     }
 }
