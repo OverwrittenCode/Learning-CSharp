@@ -65,7 +65,8 @@
 
         private int HighestScore => Math.Max(Scores.Computer, Scores.Player);
         private int DiffScore => Math.Abs(Scores.Computer - Scores.Player);
-        private bool IsGameOver => HighestScore >= requiredWins && (!enableDeuce || requiredWins == 1 || DiffScore >= 2);
+        private bool IsGameOver =>
+            HighestScore >= requiredWins && (!enableDeuce || requiredWins == 1 || DiffScore >= 2);
 
         public async Task Init()
         {
@@ -77,7 +78,10 @@
 
                 Console.WriteLine();
 
-                HighlightConsoleLine(str: $"--- [ROUND {roundCount}] ---", colour: ConsoleColor.Cyan);
+                HighlightConsoleLine(
+                    str: $"--- [ROUND {roundCount}] ---",
+                    colour: ConsoleColor.Cyan
+                );
 
                 if (enableDeuce)
                 {
@@ -89,19 +93,28 @@
                     }
                     else if (DiffScore == 1 && HighestScore >= requiredWins)
                     {
-                        HighlightConsoleLine(str: "[STATUS]: Advantage! Match Point!", colour: ConsoleColor.Yellow);
+                        HighlightConsoleLine(
+                            str: "[STATUS]: Advantage! Match Point!",
+                            colour: ConsoleColor.Yellow
+                        );
 
                         Console.WriteLine();
                     }
                 }
                 else if (requiredWins > 1 && HighestScore == requiredWins - 1)
                 {
-                    HighlightConsoleLine(str: "[STATUS]: Match Point!", colour: ConsoleColor.Yellow);
+                    HighlightConsoleLine(
+                        str: "[STATUS]: Match Point!",
+                        colour: ConsoleColor.Yellow
+                    );
 
                     Console.WriteLine();
                 }
 
-                HighlightConsoleLine(str: "[TURN]: Pick your option from the list:", colour: ConsoleColor.Magenta);
+                HighlightConsoleLine(
+                    str: "[TURN]: Pick your option from the list:",
+                    colour: ConsoleColor.Magenta
+                );
 
                 Console.WriteLine();
 
@@ -109,7 +122,7 @@
 
                 foreach (var rps in rpsOptions)
                 {
-                    Console.WriteLine($"{(int) rps} - {rps}");
+                    Console.WriteLine($"{(int)rps} - {rps}");
                 }
 
                 Console.ResetColor();
@@ -134,13 +147,13 @@
 
                 roundCount++;
 
-                var playerChoice = (RPS) choice;
+                var playerChoice = (RPS)choice;
 
                 var random = new Random();
 
                 var randomIndex = random.Next(rpsOptions.Length);
 
-                var computerChoice = (RPS) rpsOptions.GetValue(randomIndex)!;
+                var computerChoice = (RPS)rpsOptions.GetValue(randomIndex)!;
 
                 if (playerChoice == computerChoice)
                 {
@@ -160,8 +173,8 @@
                         .Find(o => o.defeats == computerChoice);
 
                     HighlightConsoleLine(
-                       str: $"You win this round! {playerChoice} {reason} {computerChoice}",
-                       colour: ConsoleColor.Green
+                        str: $"You win this round! {playerChoice} {reason} {computerChoice}",
+                        colour: ConsoleColor.Green
                     );
                 }
                 else
@@ -172,8 +185,8 @@
                         .Find(o => o.defeats == playerChoice);
 
                     HighlightConsoleLine(
-                       str: $"Computer wins this round! {computerChoice} {reason} {playerChoice}",
-                       colour: ConsoleColor.Red
+                        str: $"Computer wins this round! {computerChoice} {reason} {playerChoice}",
+                        colour: ConsoleColor.Red
                     );
                 }
 
@@ -194,7 +207,10 @@
             }
             else
             {
-                HighlightConsoleLine(str: "You lost! Better luck next time", colour: ConsoleColor.Red);
+                HighlightConsoleLine(
+                    str: "You lost! Better luck next time",
+                    colour: ConsoleColor.Red
+                );
             }
         }
 
@@ -204,7 +220,10 @@
 
             while (true)
             {
-                HighlightConsoleLine(str: "[CONFIG]: How many wins are required to end the game?", colour: ConsoleColor.Magenta);
+                HighlightConsoleLine(
+                    str: "[CONFIG]: How many wins are required to end the game?",
+                    colour: ConsoleColor.Magenta
+                );
 
                 var input = Console.ReadLine();
 
@@ -212,7 +231,10 @@
                 {
                     Console.WriteLine();
 
-                    HighlightConsoleLine(str: "[CONFIG]: Enable deuce mode? (y/n)", colour: ConsoleColor.Magenta);
+                    HighlightConsoleLine(
+                        str: "[CONFIG]: Enable deuce mode? (y/n)",
+                        colour: ConsoleColor.Magenta
+                    );
 
                     var deuceInput = Console.ReadLine();
 
@@ -224,7 +246,10 @@
 
                     Console.WriteLine();
 
-                    HighlightConsoleLine("Would you like to play again? (y/n)", ConsoleColor.Magenta);
+                    HighlightConsoleLine(
+                        "Would you like to play again? (y/n)",
+                        ConsoleColor.Magenta
+                    );
 
                     var playAgain = Console.ReadLine()?.Trim().ToLower();
 
@@ -242,9 +267,11 @@
                     continue;
                 }
 
-                HighlightConsoleLine(str: "[ERROR]: Please enter a positive integer.", colour: ConsoleColor.Red);
+                HighlightConsoleLine(
+                    str: "[ERROR]: Please enter a positive integer.",
+                    colour: ConsoleColor.Red
+                );
             }
-
         }
 
         private static void HighlightConsoleLine(string str, ConsoleColor colour)
