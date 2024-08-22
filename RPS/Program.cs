@@ -1,4 +1,4 @@
-﻿using Learning;
+﻿using RPS;
 
 ConsoleUtils.HighlightConsoleLine("----- [RPS GAME] -----", ConsoleColor.Cyan);
 

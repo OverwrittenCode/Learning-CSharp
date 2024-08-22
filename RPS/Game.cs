@@ -1,4 +1,4 @@
-﻿namespace Learning;
+﻿namespace RPS;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
 {
