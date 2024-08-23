@@ -46,8 +46,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
     private readonly int matchPointThreshold = requiredWins - 1;
     private readonly bool enableDeuce = enableDeuce;
 
-    public int PlayerScore = 0;
-    public int ComputerScore = 0;
+    private int PlayerScore = 0;
+    private int ComputerScore = 0;
 
     private int HighestScore => Math.Max(PlayerScore, ComputerScore);
     private int DiffScore => Math.Abs(PlayerScore - ComputerScore);
