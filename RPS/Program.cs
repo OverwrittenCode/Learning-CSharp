@@ -1,17 +1,26 @@
 ﻿using RPS;
 
+const int MinRequiredWins = 0;
+const int MaxRequiredWins = 8;
+
+var AllowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
+
 ConsoleUtils.HighlightConsoleLine("----- [RPS GAME] -----", ConsoleColor.Cyan);
 
 while (true)
 {
     ConsoleUtils.HighlightConsoleLine(
-        "[CONFIG]: How many wins are required to end the game?",
+        $"[CONFIG]: How many wins are required to end the game {AllowedRangeNotice}?",
         ConsoleColor.Magenta
     );
 
     var input = Console.ReadLine();
 
-    if (int.TryParse(input, out int requiredWins) && requiredWins > 0)
+    if (
+        int.TryParse(input, out int requiredWins)
+        && requiredWins > MinRequiredWins
+        && requiredWins < MaxRequiredWins
+    )
     {
         var enableDeuce = false;
 
@@ -57,7 +66,7 @@ while (true)
     }
 
     ConsoleUtils.HighlightConsoleLine(
-        "[ERROR]: Please enter a positive integer.",
+        $"[ERROR]: Please enter a valid integer {AllowedRangeNotice}.",
         ConsoleColor.Red
     );
 }
