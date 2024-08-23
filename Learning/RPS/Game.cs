@@ -1,4 +1,4 @@
-﻿namespace RPS;
+﻿namespace Learning.RPS;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
 {

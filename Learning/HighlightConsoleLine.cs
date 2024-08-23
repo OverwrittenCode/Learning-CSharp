@@ -1,4 +1,4 @@
-﻿namespace RPS;
+﻿namespace Learning;
 
 internal static class ConsoleUtils
 {

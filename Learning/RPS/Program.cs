@@ -1,4 +1,5 @@
-﻿using RPS;
+﻿using Learning;
+using Learning.RPS;
 
 const int MinRequiredWins = 0;
 const int MaxRequiredWins = 8;
