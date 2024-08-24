@@ -8,8 +8,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
     private const int GridSizeIndex = GridSize - 1;
     private const int MaxMoveIndex = MaxMoves - 1;
 
-    private static readonly int[] winningCombinations =
-    {
+    private static readonly int[] WinningCombinations =
+    [
         0b000000111,
         0b000111000,
         0b111000000,
@@ -18,13 +18,13 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         0b100100100,
         0b100010001,
         0b001010100,
-    };
+    ];
 
-    private int playerBoard = 0b0;
-    private int computerBoard = 0b0;
-    private int moveCounter = 0;
+    private int _playerBoard = 0b0;
+    private int _computerBoard = 0b0;
+    private int _moveCounter = 0;
 
-    private int TakenMoves => playerBoard | computerBoard;
+    private int TakenMoves => _playerBoard | _computerBoard;
 
     protected override void StartRound(int roundCounter)
     {
@@ -35,7 +35,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
     protected override void PlayRound()
     {
-        int moveModulus = (moveCounter + 1) % 2;
+        int moveModulus = (_moveCounter + 1) % 2;
         var team = (Team)moveModulus;
         bool isPlayerTurn = team == Team.Crosses;
 
@@ -60,7 +60,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
                 if (isValidInput && isInRange && isPositionFree)
                 {
-                    playerBoard |= bitmask;
+                    _playerBoard |= bitmask;
 
                     break;
                 }
@@ -83,22 +83,22 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
                 if (isPositionFree)
                 {
-                    computerBoard |= bitmask;
+                    _computerBoard |= bitmask;
 
                     break;
                 }
             }
         }
 
-        moveCounter++;
+        _moveCounter++;
 
-        var isPossibleToWin = moveCounter >= GridSize;
+        var isPossibleToWin = _moveCounter >= GridSize;
 
         if (isPossibleToWin)
         {
-            foreach (int combination in winningCombinations)
+            foreach (int combination in WinningCombinations)
             {
-                var hasPlayerWon = (playerBoard & combination) == combination;
+                var hasPlayerWon = (_playerBoard & combination) == combination;
 
                 if (hasPlayerWon)
                 {
@@ -111,7 +111,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                     return;
                 }
 
-                var hasComputerWon = (computerBoard & combination) == combination;
+                var hasComputerWon = (_computerBoard & combination) == combination;
 
                 if (hasComputerWon)
                 {
@@ -129,7 +129,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
             }
         }
 
-        if (moveCounter == MaxMoves)
+        if (_moveCounter == MaxMoves)
         {
             ResetRoundData();
 
@@ -149,8 +149,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 var bitmask = 1 << position;
 
                 var symbol =
-                    (playerBoard & bitmask) != 0 ? 'X'
-                    : (computerBoard & bitmask) != 0 ? 'O'
+                    (_playerBoard & bitmask) != 0 ? 'X'
+                    : (_computerBoard & bitmask) != 0 ? 'O'
                     : ' ';
 
                 Console.Write($" {symbol} ");
@@ -174,8 +174,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
     private void ResetRoundData()
     {
-        moveCounter = 0;
-        playerBoard = 0b0;
-        computerBoard = 0b0;
+        _moveCounter = 0;
+        _playerBoard = 0b0;
+        _computerBoard = 0b0;
     }
 }

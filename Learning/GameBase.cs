@@ -2,16 +2,16 @@
 
 internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
 {
-    protected readonly int requiredWins = requiredWins;
-    protected readonly int matchPointThreshold = requiredWins - 1;
-    protected readonly bool enableDeuce = enableDeuce;
+    public readonly int RequiredWins = requiredWins;
+    public readonly int MatchPointThreshold = requiredWins - 1;
+    public readonly bool EnableDeuce = enableDeuce;
 
-    protected int PlayerScore = 0;
-    protected int ComputerScore = 0;
+    public int PlayerScore { get; protected set; } = 0;
+    public int ComputerScore { get; protected set; } = 0;
 
-    protected int HighestScore => Math.Max(PlayerScore, ComputerScore);
-    protected int DiffScore => Math.Abs(PlayerScore - ComputerScore);
-    protected bool IsGameOver => HighestScore >= requiredWins && (!enableDeuce || DiffScore >= 2);
+    public int HighestScore => Math.Max(PlayerScore, ComputerScore);
+    public int DiffScore => Math.Abs(PlayerScore - ComputerScore);
+    public bool IsGameOver => HighestScore >= RequiredWins && (!EnableDeuce || DiffScore >= 2);
 
     public void Init()
     {
@@ -25,17 +25,17 @@ internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
             StartRound(roundCounter++);
 
             if (
-                requiredWins > 1
-                && enableDeuce
-                && PlayerScore >= matchPointThreshold
-                && ComputerScore >= matchPointThreshold
+                RequiredWins > 1
+                && EnableDeuce
+                && PlayerScore >= MatchPointThreshold
+                && ComputerScore >= MatchPointThreshold
             )
             {
                 var status = DiffScore == 0 ? "Deuce" : "Advantage";
                 ConsoleUtils.HighlightConsoleLine($"[STATUS]: {status}!", ConsoleColor.Yellow);
                 Console.WriteLine();
             }
-            else if (HighestScore == matchPointThreshold)
+            else if (HighestScore == MatchPointThreshold)
             {
                 ConsoleUtils.HighlightConsoleLine("[STATUS]: Match Point!", ConsoleColor.Yellow);
                 Console.WriteLine();
@@ -47,7 +47,8 @@ internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
 
         Thread.Sleep(200);
         Console.WriteLine();
-        var hasPlayerWon = PlayerScore >= requiredWins && PlayerScore > ComputerScore;
+
+        var hasPlayerWon = PlayerScore >= RequiredWins && PlayerScore > ComputerScore;
 
         if (hasPlayerWon)
         {
