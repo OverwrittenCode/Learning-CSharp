@@ -73,8 +73,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
             for (int i = 0; i < MaxMoves; i++)
             {
-                int bitmask = 1 << i;
-
+                var bitmask = 1 << i;
                 var isPositionFree = (TakenMoves & bitmask) == 0;
 
                 if (isPositionFree)
