@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
+using Learning.Utils;
 
-namespace Learning;
+namespace Learning.Games;
 
-internal abstract class GameBase(int requiredWins, bool enableDeuce)
+internal abstract class BaseGame(int requiredWins, bool enableDeuce)
 {
     public readonly int RequiredWins = requiredWins;
     public readonly int MatchPointThreshold = requiredWins - 1;
@@ -48,7 +49,7 @@ internal abstract class GameBase(int requiredWins, bool enableDeuce)
 
     protected virtual void PrepareNextRound() { }
 
-    protected void EndRound(Result result, string? reason = "")
+    protected void EndRound(GameResult result, string? reason = "")
     {
         PrepareNextRound();
 
@@ -59,19 +60,19 @@ internal abstract class GameBase(int requiredWins, bool enableDeuce)
 
         switch (result)
         {
-            case Result.Tie:
+            case GameResult.Tie:
                 resultMessage = "It's a tie!";
                 colour = ConsoleColor.Yellow;
 
                 break;
-            case Result.Win:
+            case GameResult.Win:
                 PlayerScore++;
 
                 resultMessage = "You win this round!";
                 colour = ConsoleColor.Green;
 
                 break;
-            case Result.Lose:
+            case GameResult.Lose:
                 ComputerScore++;
 
                 resultMessage = "Computer wins this round!";

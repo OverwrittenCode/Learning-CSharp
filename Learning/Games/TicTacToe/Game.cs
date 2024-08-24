@@ -1,7 +1,9 @@
-﻿namespace Learning.TicTacToe;
+﻿using Learning.Utils;
+
+namespace Learning.Games.TicTacToe;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
-    : GameBase(requiredWins, enableDeuce)
+    : BaseGame(requiredWins, enableDeuce)
 {
     private const int GridSize = 3;
     private const int MaxMoves = GridSize * GridSize;
@@ -97,7 +99,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 if (hasPlayerWon)
                 {
                     ShowBoard();
-                    EndRound(Result.Win);
+                    EndRound(GameResult.Win);
 
                     return;
                 }
@@ -107,7 +109,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 if (hasComputerWon)
                 {
                     ShowBoard();
-                    EndRound(Result.Lose);
+                    EndRound(GameResult.Lose);
 
                     return;
                 }
@@ -116,7 +118,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
         if (_moveCounter == MaxMoves)
         {
-            EndRound(Result.Tie);
+            EndRound(GameResult.Tie);
         }
 
         ShowBoard();
