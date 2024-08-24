@@ -90,10 +90,10 @@ while (true)
                 new Learning.RPS.Game(requiredWins, enableDeuce).Init();
 
                 break;
-            //case GameType.TicTacToe:
-            //    new Learning.TicTacToe.Game(requiredWins, enableDeuce).Init();
+            case GameType.TicTacToe:
+                new Learning.TicTacToe.Game(requiredWins, enableDeuce).Init();
 
-            //    break;
+                break;
             default:
                 throw new InvalidEnumArgumentException($"Unexpected switch argument: {userChoice}");
         }
