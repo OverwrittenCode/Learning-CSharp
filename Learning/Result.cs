@@ -1,4 +1,4 @@
-﻿namespace Learning.RPS;
+﻿namespace Learning;
 
 internal enum Result
 {
