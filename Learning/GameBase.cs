@@ -1,13 +1,18 @@
-﻿namespace Learning;
+﻿using System.ComponentModel;
 
-internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
+namespace Learning;
+
+internal abstract class GameBase(int requiredWins, bool enableDeuce)
 {
+    private int _previousRoundCounter = 1;
+
     public readonly int RequiredWins = requiredWins;
     public readonly int MatchPointThreshold = requiredWins - 1;
     public readonly bool EnableDeuce = enableDeuce;
 
-    public int PlayerScore { get; protected set; } = 0;
-    public int ComputerScore { get; protected set; } = 0;
+    public int RoundCounter { get; private set; } = 1;
+    public int PlayerScore { get; private set; } = 0;
+    public int ComputerScore { get; private set; } = 0;
 
     public int HighestScore => Math.Max(PlayerScore, ComputerScore);
     public int DiffScore => Math.Abs(PlayerScore - ComputerScore);
@@ -15,38 +20,19 @@ internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
 
     public void Init()
     {
-        int roundCounter = 1;
+        DisplayCurrentRound();
 
         while (!IsGameOver)
         {
-            Thread.Sleep(500);
-            Console.WriteLine();
-
-            StartRound(roundCounter++);
-
-            if (
-                RequiredWins > 1
-                && EnableDeuce
-                && PlayerScore >= MatchPointThreshold
-                && ComputerScore >= MatchPointThreshold
-            )
-            {
-                var status = DiffScore == 0 ? "Deuce" : "Advantage";
-                ConsoleUtils.HighlightConsoleLine($"[STATUS]: {status}!", ConsoleColor.Yellow);
-                Console.WriteLine();
-            }
-            else if (HighestScore == MatchPointThreshold)
-            {
-                ConsoleUtils.HighlightConsoleLine("[STATUS]: Match Point!", ConsoleColor.Yellow);
-                Console.WriteLine();
-            }
-
-            PlayRound();
-            DisplayScores();
+            PlayTurn();
         }
 
         Thread.Sleep(200);
         Console.WriteLine();
+
+        ConsoleUtils.HighlightConsoleLine("[FINAL SCORE]:", ConsoleColor.Yellow);
+
+        DisplayCurrentScore();
 
         var hasPlayerWon = PlayerScore >= RequiredWins && PlayerScore > ComputerScore;
 
@@ -60,16 +46,93 @@ internal abstract class GameBase(int requiredWins = 3, bool enableDeuce = false)
         }
     }
 
-    protected virtual void StartRound(int roundCounter)
+    protected abstract void PlayTurn();
+
+    protected virtual void PrepareNextRound() { }
+
+    protected void EndRound(Result result, string? reason = "")
     {
-        ConsoleUtils.HighlightConsoleLine($"--- [ROUND {roundCounter}] ---", ConsoleColor.Cyan);
+        PrepareNextRound();
+
+        RoundCounter++;
+
+        string resultMessage;
+        ConsoleColor colour;
+
+        switch (result)
+        {
+            case Result.Tie:
+                resultMessage = "It's a tie!";
+                colour = ConsoleColor.Yellow;
+
+                break;
+            case Result.Win:
+                PlayerScore++;
+
+                resultMessage = "You win this round!";
+                colour = ConsoleColor.Green;
+
+                break;
+            case Result.Lose:
+                ComputerScore++;
+
+                resultMessage = "Computer wins this round!";
+                colour = ConsoleColor.Red;
+
+                break;
+            default:
+                throw new InvalidEnumArgumentException($"Unexpected switch argument: {result}");
+        }
+
+        if (!string.IsNullOrEmpty(reason))
+        {
+            resultMessage += $" {reason}";
+        }
+
+        Console.WriteLine();
+        ConsoleUtils.HighlightConsoleLine(resultMessage, colour);
+
+        Thread.Sleep(500);
+
+        if (IsGameOver)
+        {
+            return;
+        }
+
+        DisplayCurrentRound();
+        DisplayCurrentScore();
+
+        if (
+            RequiredWins > 1
+            && EnableDeuce
+            && PlayerScore >= MatchPointThreshold
+            && ComputerScore >= MatchPointThreshold
+        )
+        {
+            var status = DiffScore == 0 ? "Deuce" : "Advantage";
+
+            ConsoleUtils.HighlightConsoleLine($"[STATUS]: {status}!", ConsoleColor.Yellow);
+
+            Console.WriteLine();
+        }
+        else if (HighestScore == MatchPointThreshold)
+        {
+            ConsoleUtils.HighlightConsoleLine("[STATUS]: Match Point!", ConsoleColor.Yellow);
+
+            Console.WriteLine();
+        }
     }
 
-    protected abstract void PlayRound();
+    private void DisplayCurrentRound()
+    {
+        ConsoleUtils.HighlightConsoleLine($"--- [ROUND {RoundCounter}] ---", ConsoleColor.Cyan);
+    }
 
-    protected void DisplayScores()
+    private void DisplayCurrentScore()
     {
         Console.WriteLine($"Your Score: {PlayerScore}");
         Console.WriteLine($"Computer Score: {ComputerScore}");
+
+        Console.WriteLine();
     }
 }

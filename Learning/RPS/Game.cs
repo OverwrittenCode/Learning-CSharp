@@ -5,9 +5,9 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 {
     private static readonly RPS[] RPSValues = Enum.GetValues<RPS>();
 
-    private static readonly (Result result, string reason)[,] Outcomes = new (
+    private static readonly (Result result, string action)[,] Outcomes = new (
         Result result,
-        string reason
+        string action
     )[5, 5];
 
     static Game()
@@ -43,77 +43,22 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         Outcomes[(int)RPS.Spock, (int)RPS.Lizard] = (Result.Lose, "poisons");
     }
 
-    protected override void PlayRound()
+    protected override void PlayTurn()
     {
-        ConsoleUtils.HighlightConsoleLine(
-            "[TURN]: Pick your option from the list:",
-            ConsoleColor.Magenta
-        );
+        var playerChoice = ConsoleUtils.GetEnumChoice(RPSValues);
 
-        Console.WriteLine();
-
-        Console.ForegroundColor = ConsoleColor.DarkYellow;
-
-        for (int i = 0; i < RPSValues.Length; i++)
-        {
-            Console.WriteLine($"{i} - {RPSValues[i]}");
-        }
-
-        Console.ResetColor();
-        Console.WriteLine();
-
-        int playerChoiceInput;
-
-        while (true)
-        {
-            if (
-                int.TryParse(Console.ReadLine(), out playerChoiceInput)
-                && Enum.IsDefined(typeof(RPS), playerChoiceInput)
-            )
-            {
-                break;
-            }
-
-            ConsoleUtils.HighlightConsoleLine(
-                "[ERROR]: Invalid choice. Please enter a number corresponding to an option.",
-                ConsoleColor.Red
-            );
-        }
-
-        var playerChoice = (RPS)playerChoiceInput;
         var random = new Random();
         var computerChoice = RPSValues[random.Next(RPSValues.Length)];
 
-        var (result, reason) = Outcomes[(int)playerChoice, (int)computerChoice];
+        var (result, action) = Outcomes[(int)playerChoice, (int)computerChoice];
 
-        switch (result)
+        var reason = result switch
         {
-            case Result.Tie:
-                ConsoleUtils.HighlightConsoleLine("It's a tie!", ConsoleColor.Yellow);
+            Result.Win => $"{playerChoice} {action} {computerChoice}",
+            Result.Lose => $"{computerChoice} {action} {playerChoice}",
+            _ => null,
+        };
 
-                break;
-            case Result.Win:
-                PlayerScore++;
-
-                ConsoleUtils.HighlightConsoleLine(
-                    $"You win this round! {playerChoice} {reason} {computerChoice}",
-                    ConsoleColor.Green
-                );
-
-                break;
-            case Result.Lose:
-                ComputerScore++;
-
-                ConsoleUtils.HighlightConsoleLine(
-                    $"Computer wins this round! {computerChoice} {reason} {playerChoice}",
-                    ConsoleColor.Red
-                );
-
-                break;
-        }
-
-        Console.WriteLine();
-
-        DisplayScores();
+        EndRound(result, reason);
     }
 }

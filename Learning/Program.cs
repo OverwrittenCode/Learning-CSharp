@@ -6,38 +6,7 @@ const int MaxRequiredWins = 8;
 
 var AllowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
 
-GameType[] games = Enum.GetValues<GameType>();
-
-ConsoleUtils.HighlightConsoleLine("[TURN]: Pick your option from the list:", ConsoleColor.Magenta);
-
-Console.WriteLine();
-
-Console.ForegroundColor = ConsoleColor.DarkYellow;
-
-foreach (GameType game in games)
-{
-    Console.WriteLine($"{(int)game} - {game}");
-}
-
-Console.ResetColor();
-
-Console.WriteLine();
-
-ConsoleUtils.HighlightConsoleLine("Your Choice", ConsoleColor.Magenta);
-
-int choice;
-
-Console.WriteLine();
-
-while (!int.TryParse(Console.ReadLine(), out choice) || !Enum.IsDefined(typeof(GameType), choice))
-{
-    ConsoleUtils.HighlightConsoleLine(
-        "[ERROR]: Invalid choice. Please enter a number corresponding to an option.",
-        ConsoleColor.Red
-    );
-}
-
-var userChoice = (GameType)choice;
+var userChoice = ConsoleUtils.GetEnumChoice<GameType>();
 
 ConsoleUtils.HighlightConsoleLine(
     $"----- [{userChoice.ToString().ToUpper()} GAME] -----",
@@ -51,9 +20,9 @@ while (true)
         ConsoleColor.Magenta
     );
 
-    int requiredWins;
-
     Console.WriteLine();
+
+    int requiredWins;
 
     while (
         !int.TryParse(Console.ReadLine(), out requiredWins)
@@ -62,7 +31,7 @@ while (true)
     )
     {
         ConsoleUtils.HighlightConsoleLine(
-            $"[ERROR]: Please enter a valid integer {AllowedRangeNotice}.",
+            $"[ERROR]: Please enter a valid integer {AllowedRangeNotice}",
             ConsoleColor.Red
         );
     }
@@ -79,9 +48,7 @@ while (true)
                 ConsoleColor.Magenta
             );
 
-            var deuceInput = Console.ReadLine();
-
-            enableDeuce = deuceInput?.Trim().ToLower() == "y";
+            enableDeuce = Console.ReadLine()?.Trim().ToLower() == "y";
         }
 
         switch (userChoice)
@@ -105,19 +72,17 @@ while (true)
             ConsoleColor.Magenta
         );
 
-        var playAgain = Console.ReadLine()?.Trim().ToLower();
-
-        if (playAgain != "y")
-        {
-            Console.WriteLine();
-
-            ConsoleUtils.HighlightConsoleLine("Thank you for playing! Goodbye!", ConsoleColor.Cyan);
-
-            break;
-        }
+        var isContinuePlaying = Console.ReadLine()?.Trim().ToLower() == "y";
 
         Console.WriteLine();
 
-        continue;
+        if (isContinuePlaying)
+        {
+            continue;
+        }
+
+        ConsoleUtils.HighlightConsoleLine("Thank you for playing! Goodbye!", ConsoleColor.Cyan);
+
+        break;
     }
 }

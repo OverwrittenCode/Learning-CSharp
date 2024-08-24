@@ -26,18 +26,12 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
     private int TakenMoves => _playerBoard | _computerBoard;
 
-    protected override void StartRound(int roundCounter)
+    protected override void PlayTurn()
     {
-        ResetRoundData();
-
-        ConsoleUtils.HighlightConsoleLine($"--- [ROUND {roundCounter}] ---", ConsoleColor.Cyan);
-    }
-
-    protected override void PlayRound()
-    {
-        int moveModulus = (_moveCounter + 1) % 2;
+        var moveModulus = (_moveCounter + 1) % 2;
         var team = (Team)moveModulus;
-        bool isPlayerTurn = team == Team.Crosses;
+
+        var isPlayerTurn = team == Team.Crosses;
 
         if (isPlayerTurn)
         {
@@ -102,11 +96,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
                 if (hasPlayerWon)
                 {
-                    PlayerScore++;
-
-                    ConsoleUtils.HighlightConsoleLine("You win this round!", ConsoleColor.Green);
-
-                    ResetRoundData();
+                    ShowBoard();
+                    EndRound(Result.Win);
 
                     return;
                 }
@@ -115,14 +106,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
                 if (hasComputerWon)
                 {
-                    ComputerScore++;
-
-                    ConsoleUtils.HighlightConsoleLine(
-                        "Computer wins this round!",
-                        ConsoleColor.Red
-                    );
-
-                    ResetRoundData();
+                    ShowBoard();
+                    EndRound(Result.Lose);
 
                     return;
                 }
@@ -131,16 +116,23 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
         if (_moveCounter == MaxMoves)
         {
-            ResetRoundData();
-
-            ConsoleUtils.HighlightConsoleLine("This round is a tie!", ConsoleColor.Yellow);
+            EndRound(Result.Tie);
         }
 
         ShowBoard();
     }
 
+    protected override void PrepareNextRound()
+    {
+        _moveCounter = 0;
+        _playerBoard = 0b0;
+        _computerBoard = 0b0;
+    }
+
     private void ShowBoard()
     {
+        Console.WriteLine();
+
         for (int row = 0; row < GridSize; row++)
         {
             for (int column = 0; column < GridSize; column++)
@@ -170,12 +162,5 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         }
 
         Console.WriteLine();
-    }
-
-    private void ResetRoundData()
-    {
-        _moveCounter = 0;
-        _playerBoard = 0b0;
-        _computerBoard = 0b0;
     }
 }
