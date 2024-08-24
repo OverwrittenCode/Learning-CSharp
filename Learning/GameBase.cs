@@ -4,8 +4,6 @@ namespace Learning;
 
 internal abstract class GameBase(int requiredWins, bool enableDeuce)
 {
-    private int _previousRoundCounter = 1;
-
     public readonly int RequiredWins = requiredWins;
     public readonly int MatchPointThreshold = requiredWins - 1;
     public readonly bool EnableDeuce = enableDeuce;
