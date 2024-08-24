@@ -57,8 +57,8 @@ while (true)
 
     while (
         !int.TryParse(Console.ReadLine(), out requiredWins)
-        || requiredWins < MinRequiredWins
-        || requiredWins > MaxRequiredWins
+        || requiredWins <= MinRequiredWins
+        || requiredWins >= MaxRequiredWins
     )
     {
         ConsoleUtils.HighlightConsoleLine(
