@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="RPS\" />
+    <Folder Include="Utils\" />
   </ItemGroup>
 
 </Project>
