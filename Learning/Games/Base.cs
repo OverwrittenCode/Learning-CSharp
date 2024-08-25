@@ -1,4 +1,4 @@
-﻿using System.ComponentModel;
+using System.ComponentModel;
 using Learning.Utils;
 
 namespace Learning.Games;

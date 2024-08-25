@@ -1,4 +1,4 @@
-﻿using Learning.Utils;
+using Learning.Utils;
 
 namespace Learning.Games.RPS;
 

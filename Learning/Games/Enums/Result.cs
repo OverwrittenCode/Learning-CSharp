@@ -1,4 +1,4 @@
-﻿namespace Learning.Games;
+namespace Learning.Games;
 
 internal enum GameResult
 {

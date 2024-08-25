@@ -1,4 +1,4 @@
-﻿namespace Learning.Utils;
+namespace Learning.Utils;
 
 internal static class ConsoleUtils
 {
