@@ -49,7 +49,7 @@ internal abstract class BaseGame(int requiredWins, bool enableDeuce)
 
     protected virtual void PrepareNextRound() { }
 
-    protected void EndRound(GameResult result, string? reason = "")
+    protected void EndRound(RoundOutcome result, string? reason = "")
     {
         PrepareNextRound();
 
@@ -60,19 +60,19 @@ internal abstract class BaseGame(int requiredWins, bool enableDeuce)
 
         switch (result)
         {
-            case GameResult.Tie:
+            case RoundOutcome.Tie:
                 resultMessage = "It's a tie!";
                 colour = ConsoleColor.Yellow;
 
                 break;
-            case GameResult.Win:
+            case RoundOutcome.Win:
                 PlayerScore++;
 
                 resultMessage = "You win this round!";
                 colour = ConsoleColor.Green;
 
                 break;
-            case GameResult.Lose:
+            case RoundOutcome.Lose:
                 ComputerScore++;
 
                 resultMessage = "Computer wins this round!";

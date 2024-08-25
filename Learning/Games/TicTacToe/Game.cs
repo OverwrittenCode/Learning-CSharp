@@ -100,7 +100,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 if (hasPlayerWon)
                 {
                     ShowBoard();
-                    EndRound(GameResult.Win);
+                    EndRound(RoundOutcome.Win);
 
                     return;
                 }
@@ -110,7 +110,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 if (hasComputerWon)
                 {
                     ShowBoard();
-                    EndRound(GameResult.Lose);
+                    EndRound(RoundOutcome.Lose);
 
                     return;
                 }
@@ -119,7 +119,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
         if (_moveCounter == MaxMoves)
         {
-            EndRound(GameResult.Tie);
+            EndRound(RoundOutcome.Tie);
         }
 
         ShowBoard();

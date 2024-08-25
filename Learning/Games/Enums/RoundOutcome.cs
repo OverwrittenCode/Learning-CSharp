@@ -1,6 +1,6 @@
 namespace Learning.Games;
 
-internal enum GameResult
+internal enum RoundOutcome
 {
     Tie,
     Win,
