@@ -37,53 +37,48 @@ while (true)
         );
     }
 
+    var enableDeuce = false;
+
+    if (requiredWins > 2)
     {
-        var enableDeuce = false;
-
-        if (requiredWins > 2)
-        {
-            Console.WriteLine();
-
-            ConsoleUtils.HighlightConsoleLine(
-                "[CONFIG]: Enable deuce mode? (y/n)",
-                ConsoleColor.Magenta
-            );
-
-            enableDeuce = Console.ReadLine()?.Trim().ToLower() == "y";
-        }
-
-        switch (userChoice)
-        {
-            case GameType.Rps:
-                new Learning.Games.RPS.Game(requiredWins, enableDeuce).Init();
-
-                break;
-            case GameType.TicTacToe:
-                new Learning.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
-
-                break;
-            default:
-                throw new InvalidEnumArgumentException($"Unexpected switch argument: {userChoice}");
-        }
-
         Console.WriteLine();
 
         ConsoleUtils.HighlightConsoleLine(
-            "Would you like to play again? (y/n)",
+            "[CONFIG]: Enable deuce mode? (y/n)",
             ConsoleColor.Magenta
         );
 
-        var isContinuePlaying = Console.ReadLine()?.Trim().ToLower() == "y";
-
-        Console.WriteLine();
-
-        if (isContinuePlaying)
-        {
-            continue;
-        }
-
-        ConsoleUtils.HighlightConsoleLine("Thank you for playing! Goodbye!", ConsoleColor.Cyan);
-
-        break;
+        enableDeuce = Console.ReadLine()?.Trim().ToLower() == "y";
     }
+
+    switch (userChoice)
+    {
+        case GameType.Rps:
+            new Learning.Games.RPS.Game(requiredWins, enableDeuce).Init();
+
+            break;
+        case GameType.TicTacToe:
+            new Learning.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
+
+            break;
+        default:
+            throw new InvalidEnumArgumentException($"Unexpected switch argument: {userChoice}");
+    }
+
+    Console.WriteLine();
+
+    ConsoleUtils.HighlightConsoleLine("Would you like to play again? (y/n)", ConsoleColor.Magenta);
+
+    var isContinuePlaying = Console.ReadLine()?.Trim().ToLower() == "y";
+
+    Console.WriteLine();
+
+    if (isContinuePlaying)
+    {
+        continue;
+    }
+
+    ConsoleUtils.HighlightConsoleLine("Thank you for playing! Goodbye!", ConsoleColor.Cyan);
+
+    break;
 }
