@@ -37,7 +37,9 @@ internal static class ConsoleUtils
 
         int choice;
 
-        while (!int.TryParse(Console.ReadLine(), out choice) || !Enum.IsDefined(typeof(T), choice))
+        while (
+            !Int32.TryParse(Console.ReadLine(), out choice) || !Enum.IsDefined(typeof(T), choice)
+        )
         {
             HighlightConsoleLine(
                 "[ERROR]: Invalid choice. Please enter a number corresponding to an option.",

@@ -26,7 +26,7 @@ while (true)
     int requiredWins;
 
     while (
-        !int.TryParse(Console.ReadLine(), out requiredWins)
+        !Int32.TryParse(Console.ReadLine(), out requiredWins)
         || requiredWins <= MinRequiredWins
         || requiredWins >= MaxRequiredWins
     )

@@ -83,7 +83,7 @@ internal abstract class BaseGame(int requiredWins, bool enableDeuce)
                 throw new InvalidEnumArgumentException($"Unexpected switch argument: {result}");
         }
 
-        if (!string.IsNullOrEmpty(reason))
+        if (!String.IsNullOrEmpty(reason))
         {
             resultMessage += $" {reason}";
         }

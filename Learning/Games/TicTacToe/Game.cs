@@ -48,7 +48,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
             while (true)
             {
-                var isValidInput = int.TryParse(Console.ReadLine(), out int moveIndex);
+                var isValidInput = Int32.TryParse(Console.ReadLine(), out int moveIndex);
                 var isInRange = moveIndex >= 0 && moveIndex <= MaxMoveIndex;
 
                 var bitmask = 1 << moveIndex;
