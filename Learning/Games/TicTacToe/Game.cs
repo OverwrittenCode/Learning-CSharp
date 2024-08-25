@@ -71,6 +71,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         {
             ConsoleUtils.HighlightConsoleLine("[TURN]: Computer", ConsoleColor.Magenta);
 
+            var bitmasks = new List<int>();
+
             for (int i = 0; i < MaxMoves; i++)
             {
                 var bitmask = 1 << i;
@@ -78,11 +80,11 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
                 if (isPositionFree)
                 {
-                    _computerBoard |= bitmask;
-
-                    break;
+                    bitmasks.Add(bitmask);
                 }
             }
+
+            _computerBoard |= ObjectUtils.GetRandomElement(bitmasks);
         }
 
         _moveCounter++;
