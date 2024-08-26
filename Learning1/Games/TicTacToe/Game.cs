@@ -72,7 +72,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         {
             ConsoleUtils.HighlightConsoleLine("[TURN]: Computer", ConsoleColor.Magenta);
 
-            var bitmasks = new List<int>();
+            List<int> bitmasks = [];
 
             for (int i = 0; i < MaxMoves; i++)
             {
