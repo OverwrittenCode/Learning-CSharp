@@ -1,3 +1,4 @@
+using Learning1.Extensions;
 using Learning1.Utils;
 
 namespace Learning1.Games.HeadsOrTail;
@@ -10,7 +11,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
     protected override void PlayTurn()
     {
         CoinFlip playerChoice = ConsoleUtils.GetEnumChoice(CoinFlips);
-        CoinFlip coinFlip = ObjectUtils.GetRandomElement(CoinFlips);
+        CoinFlip coinFlip = CoinFlips.GetRandomElement();
 
         if (playerChoice == coinFlip)
         {

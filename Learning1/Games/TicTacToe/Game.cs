@@ -1,3 +1,4 @@
+using Learning1.Extensions;
 using Learning1.Utils;
 
 namespace Learning1.Games.TicTacToe;
@@ -84,7 +85,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
                 }
             }
 
-            _computerBoard |= ObjectUtils.GetRandomElement(bitmasks);
+            _computerBoard |= bitmasks.GetRandomElement();
         }
 
         _moveCounter++;

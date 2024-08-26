@@ -61,6 +61,10 @@ while (true)
             new Learning1.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
 
             break;
+        case GameType.HeadsOrTails:
+            new Learning1.Games.HeadsOrTail.Game(requiredWins, enableDeuce).Init();
+
+            break;
         default:
             throw new InvalidEnumArgumentException($"Unexpected switch argument: {userChoice}");
     }
