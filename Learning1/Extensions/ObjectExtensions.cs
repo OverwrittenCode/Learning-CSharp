@@ -4,15 +4,11 @@ internal static class ObjectExtensions
 {
     public static T GetRandomElement<T>(this List<T> array)
     {
-        var random = new Random();
-
-        return array[random.Next(array.Count)];
+        return array[new Random().Next(array.Count)];
     }
 
     public static T GetRandomElement<T>(this T[] array)
     {
-        var random = new Random();
-
-        return array[random.Next(array.Length)];
+        return array[new Random().Next(array.Length)];
     }
 }
