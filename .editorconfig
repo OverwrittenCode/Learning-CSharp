@@ -203,6 +203,10 @@ dotnet_naming_rule.constant_should_be_pascal_case.severity = error
 dotnet_naming_rule.constant_should_be_pascal_case.symbols = constant
 dotnet_naming_rule.constant_should_be_pascal_case.style = pascal_case
 
+dotnet_naming_rule.locals_and_parameters_should_be_camelcase.severity = error
+dotnet_naming_rule.locals_and_parameters_should_be_camelcase.symbols = locals_and_parameters
+dotnet_naming_rule.locals_and_parameters_should_be_camelcase.style = camel_case
+
 dotnet_naming_rule.non_field_members_should_be_pascal_case.severity = error
 dotnet_naming_rule.non_field_members_should_be_pascal_case.symbols = non_field_members
 dotnet_naming_rule.non_field_members_should_be_pascal_case.style = pascal_case
@@ -241,12 +245,21 @@ dotnet_naming_symbols.constant.applicable_kinds = *
 dotnet_naming_symbols.constant.applicable_accessibilities = *
 dotnet_naming_symbols.constant.required_modifiers = const
 
+dotnet_naming_symbols.locals_and_parameters.applicable_kinds = parameter, local
+dotnet_naming_symbols.locals_and_parameters.applicable_accessibilities = *
+dotnet_naming_symbols.locals_and_parameters.required_modifiers = 
+
 # Naming styles
 
 dotnet_naming_style.pascal_case.required_prefix = 
 dotnet_naming_style.pascal_case.required_suffix = 
 dotnet_naming_style.pascal_case.word_separator = 
 dotnet_naming_style.pascal_case.capitalization = pascal_case
+
+dotnet_naming_style.camel_case.required_prefix =
+dotnet_naming_style.camel_case.required_suffix = 
+dotnet_naming_style.camel_case.word_separator = 
+dotnet_naming_style.camel_case.capitalization = camel_case
 
 dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix = 

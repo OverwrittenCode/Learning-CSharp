@@ -5,7 +5,7 @@ using Games = Learning1.Games;
 const int MinRequiredWins = 0;
 const int MaxRequiredWins = 8;
 
-var AllowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
+var allowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
 
 var userChoice = ConsoleUtils.GetEnumChoice<Games.GameType>();
 
@@ -14,7 +14,7 @@ ConsoleUtils.HighlightConsoleLine($"----- [{userChoice}] -----", ConsoleColor.Cy
 while (true)
 {
     ConsoleUtils.HighlightConsoleLine(
-        $"[CONFIG]: How many wins are required to end the game {AllowedRangeNotice}?",
+        $"[CONFIG]: How many wins are required to end the game {allowedRangeNotice}?",
         ConsoleColor.Magenta
     );
 
@@ -29,7 +29,7 @@ while (true)
     )
     {
         ConsoleUtils.HighlightConsoleLine(
-            $"[ERROR]: Please enter a valid integer {AllowedRangeNotice}",
+            $"[ERROR]: Please enter a valid integer {allowedRangeNotice}",
             ConsoleColor.Red
         );
     }
