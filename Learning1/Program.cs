@@ -9,10 +9,7 @@ var AllowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
 
 var userChoice = ConsoleUtils.GetEnumChoice<GameType>();
 
-ConsoleUtils.HighlightConsoleLine(
-    $"----- [{userChoice.ToString().ToUpper()} GAME] -----",
-    ConsoleColor.Cyan
-);
+ConsoleUtils.HighlightConsoleLine($"----- [{userChoice}] -----", ConsoleColor.Cyan);
 
 while (true)
 {
