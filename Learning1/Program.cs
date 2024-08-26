@@ -1,13 +1,13 @@
 using System.ComponentModel;
-using Learning1.Games;
 using Learning1.Utils;
+using Games = Learning1.Games;
 
 const int MinRequiredWins = 0;
 const int MaxRequiredWins = 8;
 
 var AllowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
 
-var userChoice = ConsoleUtils.GetEnumChoice<GameType>();
+var userChoice = ConsoleUtils.GetEnumChoice<Games.GameType>();
 
 ConsoleUtils.HighlightConsoleLine($"----- [{userChoice}] -----", ConsoleColor.Cyan);
 
@@ -50,16 +50,16 @@ while (true)
 
     switch (userChoice)
     {
-        case GameType.Rps:
-            new Learning1.Games.RPS.Game(requiredWins, enableDeuce).Init();
+        case Games.GameType.Rps:
+            new Games.RPS.Game(requiredWins, enableDeuce).Init();
 
             break;
-        case GameType.TicTacToe:
-            new Learning1.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
+        case Games.GameType.TicTacToe:
+            new Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
 
             break;
-        case GameType.HeadsOrTails:
-            new Learning1.Games.HeadsOrTail.Game(requiredWins, enableDeuce).Init();
+        case Games.GameType.HeadsOrTails:
+            new Games.HeadsOrTail.Game(requiredWins, enableDeuce).Init();
 
             break;
         default:
