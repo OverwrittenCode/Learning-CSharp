@@ -47,8 +47,8 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
     protected override void PlayTurn()
     {
-        var playerChoice = ConsoleUtils.GetEnumChoice(RPSValues);
-        var computerChoice = ObjectUtils.GetRandomElement(RPSValues);
+        RPS playerChoice = ConsoleUtils.GetEnumChoice(RPSValues);
+        RPS computerChoice = ObjectUtils.GetRandomElement(RPSValues);
 
         var (result, action) = Outcomes[(int)playerChoice, (int)computerChoice];
 
