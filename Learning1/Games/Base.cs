@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using Learning.Utils;
+using Learning1.Utils;
 
-namespace Learning.Games;
+namespace Learning1.Games;
 
 internal abstract class BaseGame(int requiredWins, bool enableDeuce)
 {

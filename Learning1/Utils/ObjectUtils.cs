@@ -1,4 +1,4 @@
-namespace Learning.Utils;
+namespace Learning1.Utils;
 
 internal static class ObjectUtils
 {

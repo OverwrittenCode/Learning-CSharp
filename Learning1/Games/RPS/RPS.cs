@@ -1,4 +1,4 @@
-namespace Learning.Games.RPS;
+namespace Learning1.Games.RPS;
 
 internal enum RPS
 {

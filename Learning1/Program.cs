@@ -1,6 +1,6 @@
 using System.ComponentModel;
-using Learning.Games;
-using Learning.Utils;
+using Learning1.Games;
+using Learning1.Utils;
 
 const int MinRequiredWins = 0;
 const int MaxRequiredWins = 8;
@@ -54,11 +54,11 @@ while (true)
     switch (userChoice)
     {
         case GameType.Rps:
-            new Learning.Games.RPS.Game(requiredWins, enableDeuce).Init();
+            new Learning1.Games.RPS.Game(requiredWins, enableDeuce).Init();
 
             break;
         case GameType.TicTacToe:
-            new Learning.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
+            new Learning1.Games.TicTacToe.Game(requiredWins, enableDeuce).Init();
 
             break;
         default:

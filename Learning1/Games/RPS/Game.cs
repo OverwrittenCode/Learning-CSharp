@@ -1,6 +1,6 @@
-using Learning.Utils;
+using Learning1.Utils;
 
-namespace Learning.Games.RPS;
+namespace Learning1.Games.RPS;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
     : BaseGame(requiredWins, enableDeuce)

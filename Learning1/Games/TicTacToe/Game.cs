@@ -1,6 +1,6 @@
-using Learning.Utils;
+using Learning1.Utils;
 
-namespace Learning.Games.TicTacToe;
+namespace Learning1.Games.TicTacToe;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
     : BaseGame(requiredWins, enableDeuce)
