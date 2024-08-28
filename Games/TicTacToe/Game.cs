@@ -1,10 +1,10 @@
 using Common.Extensions;
 using Common.Utils;
 
-namespace Learning1.Games.TicTacToe;
+namespace Games.TicTacToe;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
-    : BaseGame(requiredWins, enableDeuce)
+    : Base(requiredWins, enableDeuce)
 {
     private const int GridSize = 3;
     private const int MaxMoves = GridSize * GridSize;

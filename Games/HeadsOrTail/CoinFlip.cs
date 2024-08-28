@@ -1,4 +1,4 @@
-namespace Learning1.Games.HeadsOrTail;
+namespace Games.HeadsOrTail;
 
 internal enum CoinFlip
 {

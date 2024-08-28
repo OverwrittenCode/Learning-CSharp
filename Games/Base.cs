@@ -1,9 +1,9 @@
 using System.ComponentModel;
 using Common.Utils;
 
-namespace Learning1.Games;
+namespace Games;
 
-internal abstract class BaseGame(int requiredWins, bool enableDeuce)
+internal abstract class Base(int requiredWins, bool enableDeuce)
 {
     private const string MessageCategory = "Turn";
 

@@ -1,4 +1,4 @@
-namespace Learning1.Games.TicTacToe;
+namespace Games.TicTacToe;
 
 internal enum Team
 {

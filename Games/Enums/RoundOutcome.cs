@@ -1,4 +1,4 @@
-namespace Learning1.Games;
+namespace Games;
 
 internal enum RoundOutcome
 {

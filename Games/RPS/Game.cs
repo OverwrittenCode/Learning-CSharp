@@ -1,9 +1,9 @@
 using Common.Extensions;
 
-namespace Learning1.Games.RPS;
+namespace Games.RPS;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
-    : BaseGame(requiredWins, enableDeuce)
+    : Base(requiredWins, enableDeuce)
 {
     private static readonly RPS[] RPSValues = Enum.GetValues<RPS>();
 

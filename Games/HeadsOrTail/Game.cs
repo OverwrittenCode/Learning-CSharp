@@ -1,9 +1,9 @@
 using Common.Extensions;
 
-namespace Learning1.Games.HeadsOrTail;
+namespace Games.HeadsOrTail;
 
 internal class Game(int requiredWins = 3, bool enableDeuce = false)
-    : BaseGame(requiredWins, enableDeuce)
+    : Base(requiredWins, enableDeuce)
 {
     private static readonly CoinFlip[] CoinFlips = Enum.GetValues<CoinFlip>();
 
