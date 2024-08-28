@@ -59,10 +59,6 @@ internal abstract class Base(int requiredWins, bool enableDeuce)
         }
     }
 
-    protected abstract void PlayTurn();
-
-    protected virtual void PrepareNextRound() { }
-
     protected void EndRound(RoundOutcome result, string? reason = "")
     {
         PrepareNextRound();
@@ -148,4 +144,8 @@ internal abstract class Base(int requiredWins, bool enableDeuce)
 
         Console.WriteLine();
     }
+
+    protected abstract void PlayTurn();
+
+    protected virtual void PrepareNextRound() { }
 }
