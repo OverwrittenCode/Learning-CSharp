@@ -1,6 +1,6 @@
-namespace Learning1.Utils;
+namespace Common.Utils;
 
-internal static class ConsoleUtils
+public static class ConsoleUtils
 {
     public static void HighlightConsoleLine(string value, ConsoleColor colour)
     {
@@ -13,10 +13,17 @@ internal static class ConsoleUtils
         Console.ForegroundColor = originalColour;
     }
 
-    public static T GetEnumChoice<T>(T[] values)
+    public static T GetEnumChoice<T>(T[] values, string messageCategory = "")
         where T : struct, Enum
     {
-        HighlightConsoleLine("[TURN]: Pick your option from the list:", ConsoleColor.Magenta);
+        if (!String.IsNullOrEmpty(messageCategory))
+        {
+            messageCategory = $"[{messageCategory.ToUpper()}]: ";
+        }
+
+        var message = $"{messageCategory}Pick your option from the list:";
+
+        HighlightConsoleLine(message, ConsoleColor.Magenta);
 
         Console.WriteLine();
 
@@ -50,11 +57,11 @@ internal static class ConsoleUtils
         return (T)(object)choice;
     }
 
-    public static T GetEnumChoice<T>()
+    public static T GetEnumChoice<T>(string messageCategory = "")
         where T : struct, Enum
     {
         var values = Enum.GetValues<T>();
 
-        return GetEnumChoice(values);
+        return GetEnumChoice(values, messageCategory);
     }
 }

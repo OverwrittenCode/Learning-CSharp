@@ -1,5 +1,4 @@
-using Learning1.Extensions;
-using Learning1.Utils;
+using Common.Extensions;
 
 namespace Learning1.Games.RPS;
 
@@ -48,7 +47,7 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
 
     protected override void PlayTurn()
     {
-        RPS playerChoice = ConsoleUtils.GetEnumChoice(RPSValues);
+        RPS playerChoice = GetPlayerChoice(RPSValues);
         RPS computerChoice = RPSValues.GetRandomElement();
 
         var (result, action) = Outcomes[(int)playerChoice, (int)computerChoice];

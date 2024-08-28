@@ -1,10 +1,24 @@
 using System.ComponentModel;
-using Learning1.Utils;
+using Common.Utils;
 
 namespace Learning1.Games;
 
 internal abstract class BaseGame(int requiredWins, bool enableDeuce)
 {
+    private const string MessageCategory = "Turn";
+
+    protected static T GetPlayerChoice<T>(T[] values)
+        where T : struct, Enum
+    {
+        return ConsoleUtils.GetEnumChoice(values, MessageCategory);
+    }
+
+    protected static T GetPlayerChoice<T>()
+        where T : struct, Enum
+    {
+        return ConsoleUtils.GetEnumChoice<T>(MessageCategory);
+    }
+
     public readonly int RequiredWins = requiredWins;
     public readonly int MatchPointThreshold = requiredWins - 1;
     public readonly bool EnableDeuce = enableDeuce;

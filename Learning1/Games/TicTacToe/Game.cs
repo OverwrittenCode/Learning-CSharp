@@ -1,5 +1,5 @@
-using Learning1.Extensions;
-using Learning1.Utils;
+using Common.Extensions;
+using Common.Utils;
 
 namespace Learning1.Games.TicTacToe;
 

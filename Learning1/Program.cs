@@ -1,5 +1,5 @@
 using System.ComponentModel;
-using Learning1.Utils;
+using Common.Utils;
 using Games = Learning1.Games;
 
 const int MinRequiredWins = 0;

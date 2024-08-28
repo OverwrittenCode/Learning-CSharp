@@ -1,6 +1,6 @@
-namespace Learning1.Extensions;
+namespace Common.Extensions;
 
-internal static class ObjectExtensions
+public static class ObjectExtensions
 {
     public static T GetRandomElement<T>(this List<T> array)
     {
