@@ -112,7 +112,7 @@ csharp_prefer_braces = true:warning
 csharp_prefer_simple_using_statement = true
 csharp_style_namespace_declarations = file_scoped:error
 csharp_style_prefer_method_group_conversion = true
-csharp_style_prefer_primary_constructors = true:warning
+csharp_style_prefer_primary_constructors = false:error
 csharp_style_prefer_top_level_statements = true:error
 
 # Expression-level preferences
@@ -270,3 +270,6 @@ dotnet_naming_style._camelcase.required_prefix = _
 dotnet_naming_style._camelcase.required_suffix = 
 dotnet_naming_style._camelcase.word_separator = 
 dotnet_naming_style._camelcase.capitalization = camel_case
+
+# Default severity for analyzer diagnostics with category 'Performance'
+dotnet_analyzer_diagnostic.category-Performance.severity = warning

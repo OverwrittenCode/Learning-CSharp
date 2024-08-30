@@ -6,7 +6,7 @@ const int MaxRequiredWins = 8;
 
 var allowedRangeNotice = $"({MinRequiredWins} - {MaxRequiredWins})";
 
-var userChoice = ConsoleUtils.GetEnumChoice<Games.GameType>();
+Games.GameType userChoice = ConsoleUtils.GetEnumChoice<Games.GameType>();
 
 ConsoleUtils.HighlightConsoleLine($"----- [{userChoice}] -----", ConsoleColor.Cyan);
 
@@ -16,8 +16,6 @@ while (true)
         $"[CONFIG]: How many wins are required to end the game {allowedRangeNotice}?",
         ConsoleColor.Magenta
     );
-
-    Console.WriteLine();
 
     int requiredWins;
 
@@ -39,12 +37,7 @@ while (true)
     {
         Console.WriteLine();
 
-        ConsoleUtils.HighlightConsoleLine(
-            "[CONFIG]: Enable deuce mode? (y/n)",
-            ConsoleColor.Magenta
-        );
-
-        enableDeuce = Console.ReadLine()?.Trim().ToLower() == "y";
+        enableDeuce = ConsoleUtils.GetBooleanChoice("Enable deuce mode");
     }
 
     switch (userChoice)
@@ -67,9 +60,7 @@ while (true)
 
     Console.WriteLine();
 
-    ConsoleUtils.HighlightConsoleLine("Would you like to play again? (y/n)", ConsoleColor.Magenta);
-
-    var isContinuePlaying = Console.ReadLine()?.Trim().ToLower() == "y";
+    var isContinuePlaying = ConsoleUtils.GetBooleanChoice("Would you like to play again");
 
     Console.WriteLine();
 

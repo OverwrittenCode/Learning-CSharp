@@ -3,7 +3,7 @@ using Common.Utils;
 
 namespace Games;
 
-internal abstract class Base(int requiredWins, bool enableDeuce)
+internal abstract class Base
 {
     private const string MessageCategory = "Turn";
 
@@ -19,17 +19,26 @@ internal abstract class Base(int requiredWins, bool enableDeuce)
         return ConsoleUtils.GetEnumChoice<T>(MessageCategory);
     }
 
-    public readonly int RequiredWins = requiredWins;
-    public readonly int MatchPointThreshold = requiredWins - 1;
-    public readonly bool EnableDeuce = enableDeuce;
+    public int RequiredWins { get; }
+    public int MatchPointThreshold { get; }
+    public bool EnableDeuce { get; }
 
-    public int RoundCounter { get; private set; } = 1;
-    public int PlayerScore { get; private set; } = 0;
-    public int ComputerScore { get; private set; } = 0;
+    public int RoundCounter { get; private set; }
+    public int PlayerScore { get; private set; }
+    public int ComputerScore { get; private set; }
 
     public int HighestScore => Math.Max(PlayerScore, ComputerScore);
     public int DiffScore => Math.Abs(PlayerScore - ComputerScore);
     public bool IsGameOver => HighestScore >= RequiredWins && (!EnableDeuce || DiffScore >= 2);
+
+    public Base(int requiredWins, bool enableDeuce)
+    {
+        RequiredWins = requiredWins;
+        MatchPointThreshold = requiredWins - 1;
+        EnableDeuce = enableDeuce;
+
+        RoundCounter = 1;
+    }
 
     public void Init()
     {

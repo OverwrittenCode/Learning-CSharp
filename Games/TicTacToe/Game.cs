@@ -23,9 +23,9 @@ internal class Game(int requiredWins = 3, bool enableDeuce = false)
         0b001010100,
     ];
 
-    private int _playerBoard = 0b0;
-    private int _computerBoard = 0b0;
-    private int _moveCounter = 0;
+    private int _playerBoard;
+    private int _computerBoard;
+    private int _moveCounter;
 
     private int TakenMoves => _playerBoard | _computerBoard;
 

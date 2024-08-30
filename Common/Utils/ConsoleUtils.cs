@@ -2,15 +2,24 @@ namespace Common.Utils;
 
 public static class ConsoleUtils
 {
-    public static void HighlightConsoleLine(string value, ConsoleColor colour)
+    public static void HighlightConsoleLine(string message, ConsoleColor colour)
     {
         var originalColour = Console.ForegroundColor;
 
         Console.ForegroundColor = colour;
 
-        Console.WriteLine(value);
+        Console.WriteLine(message);
 
         Console.ForegroundColor = originalColour;
+    }
+
+    public static bool GetBooleanChoice(string messageBody)
+    {
+        var message = $"{messageBody}? (y/n)";
+
+        HighlightConsoleLine(message, ConsoleColor.Magenta);
+
+        return Console.ReadLine()?.Trim().ToLower() == "y";
     }
 
     public static T GetEnumChoice<T>(T[] values, string messageCategory = "")
