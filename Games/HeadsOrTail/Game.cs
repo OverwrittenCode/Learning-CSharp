@@ -2,7 +2,7 @@ using Common.Extensions;
 
 namespace Games.HeadsOrTail;
 
-internal class Game(int requiredWins = 3, bool enableDeuce = false)
+internal sealed class Game(int requiredWins = 3, bool enableDeuce = false)
     : Base(requiredWins, enableDeuce)
 {
     private static readonly CoinFlip[] CoinFlips = Enum.GetValues<CoinFlip>();

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Common.Utils;
 
 const int MinRequiredWins = 0;
@@ -54,8 +53,6 @@ while (true)
             new Games.HeadsOrTail.Game(requiredWins, enableDeuce).Init();
 
             break;
-        default:
-            throw new InvalidEnumArgumentException($"Unexpected switch argument: {userChoice}");
     }
 
     Console.WriteLine();

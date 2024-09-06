@@ -1,0 +1,123 @@
+Declare CurrencyISO Type Enum = (USD, EUR, BRL, JPY, TRY)
+
+Declare Currency Type Record = (ExchangeRate Type real, ISO Type string)
+
+Declare Const StaffDiscountPercentage Type real = 5
+Declare Const StaffDiscountRate Type real = StaffDiscountPercentage / 100
+Declare Const MinGBPAmount Type real = 0
+Declare Const MaxGBPAmount Type real = 2500
+Declare Const PadMaxWidth Type integer = 40
+Declare Const PadRightWidth Type integer = 25
+Declare Const PadRLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
+
+Declare Currencies Type Currency[Length(CurrencyISO)]
+
+Begin
+    # Initialize Currencies
+    Currencies[Integer(CurrencyISO.USD)] = Currency(1.40, "en-US")
+    Currencies[Integer(CurrencyISO.EUR)] = Currency(1.14, "fr-FR")
+    Currencies[Integer(CurrencyISO.BRL)] = Currency(4.77, "pt-BR")
+    Currencies[Integer(CurrencyISO.JPY)] = Currency(151.05, "ja-JP")
+    Currencies[Integer(CurrencyISO.TRY)] = Currency(5.68, "tr-TR")
+
+    Display "Currency Conversion Service"
+    Display RepeatChar("=", PadMaxWidth)
+
+    Declare amount Type real = GetGBPAmount()
+    Declare transactionFee Type real = CalculateTransactionFee(amount)
+    Declare totalCostGBP Type real = amount + transactionFee
+
+    Declare isStaffMember Type boolean = IsStaffMember()
+    Declare discountAmount Type real = 0
+    If isStaffMember Then
+        discountAmount = Round(totalCostGBP * StaffDiscountRate, 2)
+        totalCostGBP = totalCostGBP - discountAmount
+    End If
+
+    Declare currencyISO Type CurrencyISO = GetCurrencyISOInput()
+    Declare chosenCurrency Type Currency = Currencies[Integer(currencyISO)]
+    Declare amountInChosenCurrency Type real = Round(amount * chosenCurrency.ExchangeRate, 2)
+
+    DisplayTransactionDetails(amount, amountInChosenCurrency, chosenCurrency, transactionFee, discountAmount, totalCostGBP)
+End
+
+Function GetGBPAmount() Return Type real
+    Declare amount Type real
+    Declare message Type string = "Enter the amount to exchange (greater than " + String(MinGBPAmount) + " and up to " + String(MaxGBPAmount) + ")"
+    Display message
+
+    Repeat Display "> "
+    Until Input amount Succeeds And amount > MinGBPAmount And amount <= MaxGBPAmount And Round(amount, 2) = amount
+
+    Display ""
+    Return amount
+End Function
+
+Function CalculateTransactionFee(amount Type real) Return Type real
+    If amount > 2000 Then
+        Return 0.015 * amount
+    Elif amount > 1000 Then
+        Return 0.02 * amount
+    Elif amount > 750 Then
+        Return 0.025 * amount
+    Elif amount > 300 Then
+        Return 0.03 * amount
+    Else
+        Return 0.035 * amount
+    End If
+End Function
+
+Function IsStaffMember() Return Type boolean
+    Display "Is the customer a staff member? (y/n)"
+    Display "> "
+
+    Declare input Type string
+    Input input
+    Return Lowercase(input) = "y"
+End Function
+
+Function GetCurrencyISOInput() Return Type CurrencyISO
+    Display ""
+    Display "Choose a currency to exchange to:"
+    Display String(CurrencyISO)
+
+    Declare currencyISO Type CurrencyISO
+    Repeat Display "> "
+    Until Input currencyISO Succeeds
+
+    Display ""
+    Return currencyISO
+End Function
+
+Procedure DisplayTransactionDetails(amount Type real, amountInChosenCurrency Type real, chosenCurrency Type Currency, transactionFee Type real, discountAmount Type real, totalCostGBP Type real)
+    Display "Customer requests to convert " + FormatCurrency(amount) + " to " + chosenCurrency.ISO
+
+    Display RepeatString("-", PadMaxWidth)
+    Display "Transaction Details"
+    Display RepeatString("-", PadMaxWidth)
+
+    PrintRow("Description", "Value")
+    PrintRow("Amount To Convert", FormatCurrency(amount))
+    PrintRow("Exchanged To", FormatCurrency(amountInChosenCurrency, chosenCurrency.ISO))
+    PrintRow("Transaction Fee", FormatCurrency(transactionFee))
+
+    If discountAmount > 0 Then
+        PrintRow("Staff Discount Applied", FormatCurrency(-discountAmount))
+    End If
+
+    PrintRow("Total Cost", FormatCurrency(totalCostGBP))
+
+    Display RepeatString("-", PadMaxWidth)
+    Display "Thank you for using our Currency Conversion Service!"
+    Display ""
+End Procedure
+
+Procedure PrintRow(description Type string, value Type string)
+    Display PadLeft(description, -PadRightWidth) + PadRight(value, PadLeftWidth)
+End Procedure
+
+Function FormatCurrency(amount Type real, currencyISO Type string Default "GBP") Return Type string
+    # This function would format the currency based on the ISO code
+    # For simplicity, we'll just return the amount with 2 decimal places
+    Return String(Round(amount, 2))
+End Function

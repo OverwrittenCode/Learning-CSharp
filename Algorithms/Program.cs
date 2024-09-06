@@ -1,10 +1,9 @@
-using System.ComponentModel;
 using Algorithms;
 using Algorithms.Search;
 using Algorithms.Sort;
 using Common.Utils;
 
-internal class Program
+internal sealed class Program
 {
     public static void Main()
     {
@@ -52,10 +51,6 @@ internal class Program
                             new TernarySearch().Init();
 
                             break;
-                        default:
-                            throw new InvalidEnumArgumentException(
-                                $"Unexpected switch argument: {searchAlgorithmChoice}"
-                            );
                     }
                 }
 
@@ -83,18 +78,10 @@ internal class Program
                             new MergeSort().Init();
 
                             break;
-                        default:
-                            throw new InvalidEnumArgumentException(
-                                $"Unexpected switch argument: {sortAlgorithmChoice}"
-                            );
                     }
                 }
 
                 break;
-            default:
-                throw new InvalidEnumArgumentException(
-                    $"Unexpected switch argument: {algorithmTypeChoice}"
-                );
         }
 
         var startOver = ConsoleUtils.GetBooleanChoice("Would you like to start over");

@@ -2,7 +2,7 @@ using Common.Extensions;
 
 namespace Games.RPS;
 
-internal class Game(int requiredWins = 3, bool enableDeuce = false)
+internal sealed class Game(int requiredWins = 3, bool enableDeuce = false)
     : Base(requiredWins, enableDeuce)
 {
     private static readonly RPS[] RPSValues = Enum.GetValues<RPS>();

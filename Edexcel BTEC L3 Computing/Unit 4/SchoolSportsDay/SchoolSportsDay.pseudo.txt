@@ -1,0 +1,61 @@
+Declare Group Type Enum = (Red, Green, White)
+
+Declare Const PupilCount Type integer = 10
+Declare Const BirthMonthRange Type range = (1 .. 12)
+Declare Const PadMaxWidth Type integer = 25
+Declare Const PadRightWidth Type integer = 10
+Declare Const PadRLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
+
+Begin
+    Display "School Sports Day Service"
+    Display RepeatChar("=", PadMaxWidth)
+
+    Declare groupedPupilCounters Type integer[]
+    Declare index Type integer = 0
+
+    For index < PupilCount
+        index += 1
+
+        Declare birthMonth Type integer
+        Display "[Pupil " + String(index) + "]: Enter their birth month " + String(BirthMonthRange)
+
+        Repeat Display "> "
+        Until Input birthMonth Succeeds And birthMonth In BirthMonthRange
+
+        Display ""
+
+        Declare group Type Group
+
+        If birthMonth <= 4 Then
+            group = Group.Red
+        Elif birthMonth <= 8 Then
+            group = Group.Green
+        Else
+            group = Group.White
+        End If
+
+        groupedPupilCounters[Integer(group)] += 1
+    End For
+
+    Declare groupIndex Type integer = 0
+
+    Display RepeatString("-", PadMaxWidth)
+    Display "Summary"
+    Display RepeatString("-", PadMaxWidth)
+
+    PrintRow("Description", "Value")
+
+    For groupIndex < Enum.Length(Group)
+        Declare pupilCount Type integer = groupedPupilCounters[groupIndex]
+        Declare groupName Type Group = Group.From(groupIndex)
+
+        PrintRow(groupName, String(pupilCount))
+     End For
+
+    Display "------------------------------"
+    Display ""
+End
+
+Procedure PrintRow(description Type string, value Type string)
+    Display PadLeft(description, -PadRightWidth) + PadRight(value, PadLeftWidth)
+End Procedure

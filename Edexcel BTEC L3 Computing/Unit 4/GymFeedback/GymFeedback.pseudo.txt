@@ -1,0 +1,129 @@
+Declare Gender Type Enum = (Male, Female)
+
+Declare Const IdealBMI Type integer = 22
+Declare Const MinWeight Type real = 30
+Declare Const MaxWeight Type real = 250
+Declare Const MinHeight Type real = 120
+Declare Const MaxHeight Type real = 210
+Declare Const MinAge Type integer = 14
+Declare Const MaxAge Type integer = 100
+Declare Const MinExerciseSessions Type integer = 0
+Declare Const MaxExerciseSessions Type integer = 10
+Declare Const PadMaxWidth Type integer = 65
+Declare Const PadRightWidth Type integer = 45
+Declare Const PadRLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
+
+Begin
+    Display "Gym Feedback Service"
+    Display RepeatChar("=", PadMaxWidth)
+
+    Declare weight Type real = GetRangeInput("Enter your weight in kilograms", MinWeight, MaxWeight)
+    Declare height Type real = GetRangeInput("Enter your height in centimeters", MinHeight, MaxHeight) / 100
+    Declare age Type integer = GetRangeInput("Enter your age in years", MinAge, MaxAge)
+    Declare dailyExerciseSessions Type integer = GetRangeInput("Enter the number of exercise sessions per day", MinExerciseSessions, MaxExerciseSessions)
+    Declare gender Type Gender = GetGenderInput()
+
+    Declare heightInSquaredMeters Type real = height * height
+
+    Declare bmi Type real = Round(weight / heightInSquaredMeters, 1)
+    Declare bmiCategory Type string = GetBmiCategory(bmi)
+
+    Declare weightDifference Type real = AbsoluteValue(Round(weight - (IdealBMI * heightInSquaredMeters), 2))
+
+    Declare bmr Type real = CalculateBMR(weight, height, age, gender)
+
+    Declare activityFactor Type real = GetActivityFactor(dailyExerciseSessions)
+    Declare dailyKcal Type integer = Round(bmr * activityFactor)
+
+    DisplayResults(weightDifference, bmi, bmiCategory, bmr, dailyKcal)
+End
+
+Function GetRangeInput(messageBody Type string, minValue Type real, maxValue Type real) Returns Type real
+    Display messageBody + " (" + String(minValue) + " - " + String(maxValue) + ")"
+
+    Declare value Type real
+    Repeat
+        Display "> "
+        Input value
+    Until value >= minValue And value <= maxValue
+
+    Display ""
+    Return value
+End Function
+
+Function GetGenderInput() Returns Type Gender
+    Display "Choose your gender below:"
+    For Each gender In Gender
+        Display String(gender) + " - " + String(gender)
+    End For
+
+    Declare choice Type Gender
+    Repeat
+        Display "> "
+        Input choice
+    Until choice In Gender
+
+    Display ""
+    Return choice
+End Function
+
+Function GetBmiCategory(bmi Type real) Returns Type string
+    If bmi < 18.5 Then
+        Return "Underweight"
+    Elif bmi < 25 Then
+        Return "Normal"
+    Elif bmi < 30 Then
+        Return "Overweight"
+    Else
+        Return "Obese"
+    End If
+End Function
+
+Function GetActivityFactor(dailyExerciseSessions Type integer) Returns Type real
+    If dailyExerciseSessions <= 1 Then
+        Return 1.2
+    Elif dailyExerciseSessions <= 3 Then
+        Return 1.375
+    Elif dailyExerciseSessions <= 5 Then
+        Return 1.55
+    Elif dailyExerciseSessions <= 7 Then
+        Return 1.725
+    Else
+        Return 1.9
+    End If
+End Function
+
+Function CalculateBMR(weight Type real, height Type real, age Type integer, gender Type Gender) Returns Type real
+    If gender = Gender.Male Then
+        Return Round(88.362 + (13.397 * weight) + (4.799 * height * 100) - (5.677 * age), 2)
+    Else
+        Return Round(447.593 + (9.247 * weight) + (3.098 * height * 100) - (4.330 * age), 2)
+    End If
+End Function
+
+Procedure DisplayResults(weightDifference Type real, bmi Type real, bmiCategory Type string, bmr Type real, dailyKcal Type integer)
+    If weightDifference = 0 Then
+        Display "You are at your ideal weight!"
+    Else
+        Declare action Type string = If weightDifference > 0 Then "lose" Else "gain"
+        Display "You need to " + action + " " + String(weightDifference) + " kg to reach your target BMI (" + String(IdealBMI) + ")"
+    End If
+
+    Display RepeatString("-", PadMaxWidth)
+    Display "Summary"
+    Display RepeatString("-", PadMaxWidth)
+
+    PrintRow("Description", "Value")
+
+    PrintRow("Body Mass Index (BMI)", String(bmi) + " (" + bmiCategory + ")")
+    PrintRow("Basal Metabolic Rate (BMR)", String(bmr) + " kcal/day")
+    PrintRow("Daily caloric requirement to maintain weight", String(dailyKcal) + " kcal/day")
+
+    Display RepeatString("-", PadMaxWidth)
+    Display "Thank you for using our Gym Feedback Service!"
+    Display ""
+End Procedure
+
+Procedure PrintRow(description Type string, value Type string)
+    Display PadLeft(description, -PadRightWidth) + PadRight(value, PadLeftWidth)
+End Procedure
