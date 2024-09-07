@@ -8,7 +8,7 @@ Declare Const PadRLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
 
 Begin
     Display "School Sports Day Service"
-    Display RepeatChar("=", PadMaxWidth)
+    Display RepeatString("=", PadMaxWidth)
 
     Declare groupedPupilCounters Type integer[]
     Declare index Type integer = 0

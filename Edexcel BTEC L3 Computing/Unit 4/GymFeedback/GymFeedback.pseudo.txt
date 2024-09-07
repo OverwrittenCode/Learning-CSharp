@@ -15,7 +15,7 @@ Declare Const PadRLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
 
 Begin
     Display "Gym Feedback Service"
-    Display RepeatChar("=", PadMaxWidth)
+    Display RepeatString("=", PadMaxWidth)
 
     Declare weight Type real = GetRangeInput("Enter your weight in kilograms", MinWeight, MaxWeight)
     Declare height Type real = GetRangeInput("Enter your height in centimeters", MinHeight, MaxHeight) / 100

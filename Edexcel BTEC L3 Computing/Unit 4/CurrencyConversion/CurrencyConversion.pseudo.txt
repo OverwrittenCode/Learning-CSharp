@@ -21,7 +21,7 @@ Begin
     Currencies[Integer(CurrencyISO.TRY)] = Currency(5.68, "tr-TR")
 
     Display "Currency Conversion Service"
-    Display RepeatChar("=", PadMaxWidth)
+    Display RepeatString("=", PadMaxWidth)
 
     Declare amount Type real = GetGBPAmount()
     Declare transactionFee Type real = CalculateTransactionFee(amount)
