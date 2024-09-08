@@ -24,7 +24,7 @@ internal readonly record struct Currency(decimal ExchangeRate, string ISO)
     public NumberFormatInfo NumberFormat => new CultureInfo(ISO).NumberFormat;
 }
 
-internal class CurrencyConversion
+internal sealed class CurrencyConversion
 {
     private const decimal StaffDiscountPercentage = 5M;
     private const decimal StaffDiscountRate = StaffDiscountPercentage / 100;
