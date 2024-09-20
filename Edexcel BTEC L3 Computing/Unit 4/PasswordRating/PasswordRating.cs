@@ -97,15 +97,15 @@ internal sealed partial class PasswordRating
 
         if (_lowerCaseCounter == Length)
         {
-            _reductionScore = _lowerCaseCounter * Length * 3;
+            _reductionScore = _lowerCaseCounter * 3;
         }
         else if (_upperCaseCounter == Length)
         {
-            _reductionScore = _upperCaseCounter * Length * 3;
+            _reductionScore = _upperCaseCounter * 3;
         }
         else if (_numericCounter == Length)
         {
-            _reductionScore = _numericCounter * Length * 5;
+            _reductionScore = _numericCounter * 5;
         }
 
         DisplaySummary();

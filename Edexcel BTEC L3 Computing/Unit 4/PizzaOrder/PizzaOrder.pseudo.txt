@@ -1,0 +1,150 @@
+ENUM Size
+	Small = 0, # member = casted to integer, e.g. Size.Small casted to integer is 0
+	Medium = 1,
+	Large = 2
+
+RECORD Pizza(Size: Size, ExtraToppingsAmount: integer)
+	CONSTANTS 
+		MinQuantity = 1
+		MaxQuantity = 6
+		MaxToppings = 15
+		SizeCosts = 
+			[
+				3.25, 
+				5.50, 
+				7.15
+			]
+		ExtraToppingsCosts = 
+			[
+				0.00, 
+				0.75, 
+				1.35, 
+				2.00, 
+				2.50
+			]
+
+	FIELDS
+		CostOfSize = SizeCosts[Size casted to integer]
+		CostOfExtraToppings = ExtraToppingsCosts[minimum of ExtraToppingsAmount, last index of ExtraToppingsCosts]
+		Cost = CostOfSize + CostOfExtraToppings
+
+CONSTANTS
+	MaxNameLength = 30
+	MaxAddressLength = 80
+	PhoneNumberRegex = "^0?((7\d{9})|(1\d{8,9})|(2\d{8,9})|(3\d{8,9})|(8\d{8,9}))$"
+	DiscountRate = 0.10
+	DiscountFrom = 20.00
+	DeliveryCharge = 2.50
+
+Name = ""
+Address = ""
+PhoneNumber = ""
+IsDelivery = False
+Pizzas: array of Pizza = []
+
+BEGIN
+	ProcessCustomerDetails()
+
+	WHILE length of Pizzas < Pizza.MaxQuantity
+		IF length of Pizzas >= Pizza.MinQuantity THEN
+			DISPLAY "Add another pizza? (y/n)"
+			IF INPUT "> " != "y" THEN
+				exit out of loop
+
+		ProcessPizza()
+
+	DisplaySummary()
+END
+
+PROCEDURE ProcessCustomerDetails()
+	DISPLAY "Please enter the name on the order (up to " + MaxNameLength + " characters)"
+	REPEAT
+		Name = INPUT "> "
+	UNTIL length of Name > 0 AND length of Name <= MaxNameLength
+
+	DISPLAY "Please enter an address to recieve the pizza (up to " + MaxAddressLength + " characters)"
+	REPEAT
+		Address = INPUT "> "
+	UNTIL length of Address > 0 AND length of Address <= MaxAddressLength
+
+	DISPLAY "Please enter a phone number for updates"
+	REPEAT
+		PhoneNumber = INPUT "> +44 "
+	UNTIL PhoneNumber matches PhoneNumberRegex
+
+	DISPLAY "Do you want this to be delivered? (y/n)"
+	IsDelivery = INPUT "> " == "y"
+
+PROCEDURE ProcessPizza()
+	DISPLAY "Pizza " + String(length of Pizzas + 1) + "/" + Pizza.MaxQuantity
+
+	DISPLAY 
+		each: option in Size
+		format: "<index> - <size from Size> (<GBP format from Pizza.SizeCosts>)"
+
+	DISPLAY "Pick a pizza size from the options above"
+	pizzaSizeIndex = 0
+	REPEAT
+		pizzaSizeIndex = INPUT "> "
+	UNTIL pizzaSizeIndex is integer AND pizzaSizeIndex is castable to Size
+
+	size = pizzaSizeIndex casted to Size
+	extraToppingsAmount = 0
+
+	DISPLAY "Do you want to add any extra toppings? (y/n)"
+	IF INPUT "> " == "y" THEN
+		DISPLAY 
+			each: option in Pizza.ExtraToppingsCost
+			format: "<index> - <amount from Pizza.ExtraToppingsCost> (<GBP format from Pizza.ExtraToppingsCost>)"
+
+		DISPLAY "Pick the amount of extra toppings for your order (up to " + Pizza.MaxToppings + ")"
+		REPEAT
+			extraToppingsAmount = INPUT "> "
+		UNTIL extraToppingsAmount is integer AND extraToppingsAmount is an index of Pizza.ExtraToppingsCost
+	
+	pizza = new Pizza(size, extraToppingsAmount)
+
+	add pizza to array Pizzas
+		
+PROCEDURE DisplaySummary()
+	subTotal = sum of pizza in Pizzas by pizza.Cost
+
+	personalisedTable = single row ascii table
+		data
+			"Name" from Name
+			"Address" from Address
+			"PhoneNumber" from "+44 " + PhoneNumber
+	
+	Display personalisedTable
+
+	pizzaBills = multi row ascii table 
+		source
+			FOREACH pizza in Pizzas
+		data
+			"Pizza Count" from String(index of pizza in Pizzas + 1)
+			"Size" from GBP format of pizza.CostOfSize + "(" + pizza.Size + ")"
+			"Extra Toppings" from GBP format of pizza.CostOfExtraToppings
+			"Total" from GBP format of pizza.Cost
+
+	Display pizzaBills
+
+	discount = 0
+	deliveryCharge = 0
+
+	IF subTotal >= DiscountFrom THEN
+		discount = subTotal * -DiscountRate rounded to 2 d.p.
+
+	IF IsDelivery THEN
+		deliveryCharge = DeliveryCharge
+		
+	grandTotal = subTotal + discount + deliveryCharge
+	
+	finalisedBill = single row ascii table
+		data
+			"Sub Total" from GBP format of subTotal
+			"Discount" from GBP format of discount
+			"Delivery Charge" from GBP format of deliveryCharge
+			"Grand Total" from GBP format grandTotal
+
+	Display finalisedBill
+

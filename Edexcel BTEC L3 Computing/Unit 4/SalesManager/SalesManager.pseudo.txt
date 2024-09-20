@@ -1,0 +1,90 @@
+RECORD Employee
+	Id: string
+	Name: string
+	PropertiesSold: integer
+END RECORD
+
+CLASS SalesManager
+	CONSTANTS 
+		CommisionRate: integer = 500
+		BonusRate: real = 0.15
+		MinEmployees: integer = 2
+		MaxEmployees: integer = 5
+	END CONSTANTS
+
+	PRIVATE FIELDS
+		_employees: Employee[] = []
+		_totalPropertiesSold: integer = 0
+	END PRIVATE FIELDS
+
+	METHOD Main()
+		WHILE length of _employees < MaxEmployees DO
+			IF length of _employees >= MinEmployees THEN
+				continue = INPUT "Continue? (y/n)"
+				IF continue != "y" THEN
+					BREAK out of WHILE loop
+				END IF
+			END IF
+
+			ProcessEmployee()
+		ENDWHILE
+
+		DisplaySummary()
+	END METHOD
+
+	METHOD ProcessEmployee()
+		name = INPUT "Enter employee's name"
+		id = INPUT "Enter employee's id"
+		
+		REPEAT propertiesSold = CONVERT (INPUT "Enter employee's number of properties sold (from 0 to 100)") TO number
+		UNTIL propertiesSold is integer FROM 0 TO 100
+
+		employee = new Employee(id, name, propertiesSold)
+
+		ADD employee TO array _employees
+
+		_totalPropertiesSold += propertiesSold
+	END METHOD
+
+	METHOD DisplaySummary()
+		SORT _employees BY PropertiesSold IN descending order
+
+		grandTotal = 0
+
+		DISPLAY VERTICALLY ALIGNED 
+			"Id", 
+			"Name", 
+			"Properties Sold", 
+			"Sub Total", 
+			"Bonus", 
+			"Total"
+		
+		FOREACH employee IN _employees
+			subTotal = ROUND employee.PropertiesSold * CommisionRate TO 2 d.p.
+			bonus = 0
+
+			IF employee == _employees[0] THEN
+				bonus = ROUND subTotal * BonusRate To 2 d.p.
+			END IF
+
+			total = subTotal + bonus
+			grandTotal += total
+
+			DISPLAY VERTICALLY ALIGNED
+				employee.Id,
+				employee.Name,
+				employee.PropertiesSold,
+				subTotal,
+				bonus,
+				total
+		END FOREACH
+
+		DISPLAY VERTICALLY ALIGNED
+			"Total Commission",
+			"Total Properties Sold"
+
+		DISPLAY VERTICALLY ALIGNED
+			grandTotal,
+			_totalPropertiesSold
+	END METHOD
+END CLASS
