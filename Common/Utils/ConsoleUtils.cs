@@ -2,13 +2,48 @@ namespace Common.Utils;
 
 public static class ConsoleUtils
 {
-    public static void HighlightConsoleLine(string message, ConsoleColor colour)
+    public static void GenerateText(string message)
+    {
+        for (int i = 0; i < message.Length; i++)
+        {
+            char letter = message[i];
+
+            if (i == message.Length - 1)
+            {
+                Console.WriteLine(letter);
+            }
+            else
+            {
+                Console.Write(letter);
+            }
+
+            Thread.Sleep(20);
+        }
+    }
+
+    public static void SendMessage(string message, Action<string>? provider = null)
+    {
+        if (provider is null)
+        {
+            Console.WriteLine(message);
+        }
+        else
+        {
+            provider(message);
+        }
+    }
+
+    public static void HighlightConsoleLine(
+        string message,
+        ConsoleColor colour,
+        Action<string>? provider = null
+    )
     {
         var originalColour = Console.ForegroundColor;
 
         Console.ForegroundColor = colour;
 
-        Console.WriteLine(message);
+        SendMessage(message, provider);
 
         Console.ForegroundColor = originalColour;
     }
