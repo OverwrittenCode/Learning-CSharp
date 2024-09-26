@@ -3,16 +3,14 @@ using Common.Utils;
 
 namespace AdventureGames.Entities.Humanoids;
 
-public sealed class Player : HumanoidBase
+internal sealed class Player : HumanoidBase
 {
     private const int MaxLives = 3;
     private const int MaxHealth = 100;
-    private const int IntelligenceFactor = 10;
 
     private decimal _money;
     private int _health;
     private int _lives;
-    private int _karma;
 
     public string DisplayName { get; }
 
@@ -111,35 +109,6 @@ public sealed class Player : HumanoidBase
     }
 
     /// <summary>
-    /// Gets or sets the Karma.
-    /// <para>When <b>set</b>: logs to the console.</para>
-    /// <para>
-    /// Good deeds should positively impact the player.<br/>
-    /// Bad deeds should negatively impact the player.
-    /// </para>
-    /// </summary>
-    public int Karma
-    {
-        get => _karma;
-        set
-        {
-            var diff = value - _karma;
-            _karma = value;
-
-            Inform($"{GetDiffSymbol(diff)}{Math.Abs(diff)} karma", $"{_karma} karma");
-        }
-    }
-
-    /// <summary>
-    /// Gets the player's intelligence level.
-    /// </summary>
-    /// <remarks>
-    /// Intelligence is calculated based on the player's karma, with a negative impact.
-    /// The lower the karma, the higher the intelligence, up to a maximum determined by the IntelligenceFactor.
-    /// </remarks>
-    public int Intelligence => Math.Min(Karma, 0) * IntelligenceFactor;
-
-    /// <summary>
     /// Determines the appropriate symbol to represent a numerical difference.
     /// </summary>
     /// <typeparam name="T">A struct type that implements IComparable.</typeparam>
@@ -201,14 +170,8 @@ public sealed class Player : HumanoidBase
     /// <param name="target">The player to attack.</param>
     /// <param name="damage">The amount of damage to inflict.</param>
     /// <param name="targetInformMessage">A message to inform the target. Defaults to informing them of the event.</param>
-    /// <param name="isJustified">Whether to deduct karma.</param>
     /// <returns>A boolean indicating if the operation was a success.</returns>
-    public bool Attack(
-        Player target,
-        int damage,
-        string? targetInformMessage,
-        bool isJustified = false
-    )
+    public bool Attack(Player target, int damage, string? targetInformMessage)
     {
         if (target == this)
         {
@@ -218,32 +181,6 @@ public sealed class Player : HumanoidBase
 
         target.Inform(targetInformMessage ?? $"{Name} attacked you");
         target.Health -= damage;
-
-        if (!isJustified)
-        {
-            Karma -= 2;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Heals another player.
-    /// </summary>
-    /// <param name="target">The player to heal.</param>
-    /// <param name="amount">The amount of health to restore.</param>
-    /// <inheritdoc cref="Attack" path="/returns"/>
-    public bool Heal(Player target, int amount)
-    {
-        if (target == this)
-        {
-            Inform("Cannot heal yourself");
-            return false;
-        }
-
-        target.Inform($"Healed by {Name}");
-        target.Health += amount;
-        Karma += 2;
 
         return true;
     }
@@ -270,74 +207,13 @@ public sealed class Player : HumanoidBase
 
         if (item is null)
         {
-            Inform("Item not found in your inventory");
+            Inform($"Item ({typeof(T).Name}) not found in their inventory");
             return false;
         }
 
-        target.Inform($"Recieved an item from {Name} ({item.Name})");
+        target.Inform($"Received an item from {Name} ({item.Name})");
         Inventory.Remove(item);
         target.Inventory.Add(item);
-
-        if (item.Worth != 0)
-        {
-            Karma += item.Worth;
-        }
-
-        return true;
-    }
-
-    /// <summary>
-    /// Steals an item from another player.
-    /// </summary>
-    /// <param name="target">The player to steal from.</param>
-    /// <inheritdoc cref="Attack" path="/returns"/>
-    public bool StealItem<T>(Player target)
-        where T : CollectableBase
-    {
-        if (target == this)
-        {
-            Inform("Cannot steal item from yourself");
-            return false;
-        }
-
-        var item = target.GetItem<T>();
-
-        if (item is null)
-        {
-            Inform("Item not found in their inventory");
-            return false;
-        }
-
-        target.Inform($"Item stolen by {Name} ({item.Name})");
-        target.Inventory.Remove(item);
-        Inventory.Add(item);
-
-        if (item.Worth != 0)
-        {
-            Karma -= item.Worth;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Drops an item from the player's inventory.
-    /// </summary>
-    /// <inheritdoc cref="Attack" path="/returns"/>
-    public bool DropItem<T>()
-        where T : CollectableBase
-    {
-        var item = GetItem<T>();
-
-        if (item is null)
-        {
-            Inform($"Item ({typeof(T).Name}) not found in your inventory");
-            return false;
-        }
-
-        Inventory.Remove(item);
-
-        Inform($"Dropped an item ({item.Name})");
 
         return true;
     }
@@ -366,39 +242,7 @@ public sealed class Player : HumanoidBase
             return false;
         }
 
-        if (Intelligence < item.RequiredIntelligence)
-        {
-            var message =
-                $"Insufficient intelligence to interact with item ({item.Name}). Current: {Intelligence} Required: {item.RequiredIntelligence} or more";
-
-            if (orThrow)
-            {
-                throw new InvalidOperationException(message);
-            }
-
-            Inform(message);
-            return false;
-        }
-
         item.Interact();
-
-        if (item.MaxUses == -1)
-        {
-            return true;
-        }
-
-        if (item.Uses >= item.MaxUses)
-        {
-            Inform($"Item ({item.Name}) has broken after its max uses ({item.MaxUses}).");
-            Inventory.Remove(item);
-        }
-        else
-        {
-            Inform(
-                $"Item ({item.Name}) has {Utils.PluralizeWithQuantity("use", "s", item.Uses)} remaining",
-                $"{item.Uses}/{item.MaxUses}"
-            );
-        }
 
         return true;
     }
@@ -419,10 +263,9 @@ public sealed class Player : HumanoidBase
 
         decimal givenAmount = Math.Max(amount, Money);
 
-        target.Inform($"Recieved {givenAmount:C} from {Name}");
+        target.Inform($"Received {givenAmount:C} from {Name}");
         Money -= givenAmount;
         target.Money += givenAmount;
-        Karma += 10;
 
         return true;
     }
@@ -431,10 +274,8 @@ public sealed class Player : HumanoidBase
     /// Steals all money from another player.
     /// </summary>
     /// <param name="target">The player to steal from.</param>
-    /// <inheritdoc cref="Attack" path="/param[@name='isJustified']"/>
     /// <inheritdoc cref="Attack" path="/returns"/>
-    public bool StealMoney(Player target, bool isJustified = false) =>
-        StealMoney(target, target.Money, isJustified);
+    public bool StealMoney(Player target) => StealMoney(target, target.Money);
 
     /// <summary>
     /// Steals a specific amount of money from another player.
@@ -442,7 +283,7 @@ public sealed class Player : HumanoidBase
     /// <inheritdoc cref="StealMoney(Player)"/>
     /// <param name="amount">The amount of money to steal.</param>
     /// <inheritdoc cref="Attack" path="/returns"/>
-    public bool StealMoney(Player target, decimal amount, bool isJustified = false)
+    public bool StealMoney(Player target, decimal amount)
     {
         if (target == this)
         {
@@ -455,11 +296,6 @@ public sealed class Player : HumanoidBase
         target.Inform($"{stolenAmount:C} stolen by {Name}");
         target.Money -= stolenAmount;
         Money += stolenAmount;
-
-        if (!isJustified)
-        {
-            Karma -= 10;
-        }
 
         return true;
     }

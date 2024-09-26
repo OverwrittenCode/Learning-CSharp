@@ -46,7 +46,7 @@ internal static class Utils
 
     /// <summary>
     /// <inheritdoc cref="TypewriterEffect(String)"/>
-    /// Displays a message centered on the console window.
+    /// Displays a message centred on the console window.
     /// </summary>
     /// <inheritdoc cref="TypewriterEffect(String)"/>
     public static void CentreMessage(string message)

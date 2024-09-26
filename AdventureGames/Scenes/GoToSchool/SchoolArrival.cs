@@ -1,22 +1,20 @@
-using AdventureGames.Scenes.GoToSchool.Explore;
 using AdventureGames.Scenes.GoToSchool.MathLesson;
+using AdventureGames.Scenes.StayAtHome;
 
 namespace AdventureGames.Scenes.GoToSchool;
 
-/// <inheritdoc/>
-public sealed class SchoolArrival : BaseScene
+internal sealed class SchoolArrival : BaseScene
 {
-    /// <summary>
-    /// You have arrived at school. Weird that school is still on despite the news?
-    /// </summary>
     public SchoolArrival()
     {
-        Choices.Add(new Choice("Go to math class", () => new MathClass()));
-        Choices.Add(new Choice("Skip class and explore the school", () => new SchoolExploration()));
+        Choices.Add(new("Go to math class", () => new MathClass()));
+        Choices.Add(new("Return home", () => new JustAssumptions()));
     }
 
     public override void Play()
     {
+        Utils.CentreMessage("Your story is changing.");
+
         new ConversationBuilder()
             .Say("You arrive at school, the atmosphere feels tense.")
             .Say("Students are whispering in hushed tones, some looking worried.")

@@ -1,11 +1,11 @@
 namespace AdventureGames.Scenes.GoToSchool.MathLesson;
 
-public sealed class ClassDiscussion : BaseScene
+internal sealed class ClassDiscussion : BaseScene
 {
     public ClassDiscussion()
     {
-        Choices.Add(new Choice("Participate actively", () => new ClassParticipation()));
-        Choices.Add(new Choice("Stay quiet and observe", () => new QuietObservation()));
+        Choices.Add(new("Participate actively", () => new ClassParticipation()));
+        Choices.Add(new("Stay quiet and observe", () => new QuietObservation()));
     }
 
     public override void Play()

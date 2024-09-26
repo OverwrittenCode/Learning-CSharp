@@ -3,17 +3,13 @@ using AdventureGames.Scenes.StayAtHome;
 
 namespace AdventureGames.Scenes;
 
-/// <inheritdoc/>
-public sealed class Intro : BaseScene
+internal sealed class Intro : BaseScene
 {
-    /// <summary>
-    /// The first scene of the game.
-    /// </summary>
     public Intro()
     {
-        Choices.Add(new Choice("Yes", () => new LetterRecieved()));
+        Choices.Add(new("Yes", () => new LetterRecieved()));
         Choices.Add(
-            new Choice(
+            new(
                 "No",
                 () =>
                 {
@@ -25,7 +21,7 @@ public sealed class Intro : BaseScene
                         .SudoFather(
                             "Kid thinks I was born yesterday, I better check what he's doing"
                         )
-                        .Say("He quitely goes upstairs to overhear your rant.")
+                        .Say("He quietly goes upstairs to overhear your rant.")
                         .Pause()
                         .SudoUser(
                             "He thinks I'm actually reading that? Pft.",
@@ -58,9 +54,9 @@ public sealed class Intro : BaseScene
                 Economy rates are falling, the world has gone into uproar.
 
                 You've been hearing stories of businesses closing down, and families struggling to make ends meet.  
-                Even your neighbors have stopped visiting as frequently.
+                Even your neighbours have stopped visiting as frequently.
 
-                You've just finished eating your favorite food — something simple, but comforting.
+                You've just finished eating your favourite food — something simple, but comforting.
                 Unfortunately, it feels like this may be the last decent meal you'll have for a while.
 
                 It would be a die for to have that same slice of pie you, your mother and father shared between the 3 of you last night.

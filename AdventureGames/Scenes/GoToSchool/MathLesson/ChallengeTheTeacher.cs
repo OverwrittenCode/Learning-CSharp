@@ -2,16 +2,12 @@ using AdventureGames.Scenes.GoToSchool.Consequences;
 
 namespace AdventureGames.Scenes.GoToSchool.MathLesson;
 
-/// <inheritdoc/>
-public sealed class ChallengeTheTeacher : BaseScene
+internal sealed class ChallengeTheTeacher : BaseScene
 {
-    /// <summary>
-    /// Authority? Nah, just a word thrown around to assert order.
-    /// </summary>
     public ChallengeTheTeacher()
     {
         Choices.Add(
-            new Choice(
+            new(
                 "Apologize and back down",
                 () =>
                 {
@@ -24,7 +20,7 @@ public sealed class ChallengeTheTeacher : BaseScene
                 }
             )
         );
-        Choices.Add(new Choice("Stand your ground", () => new PrincipalOffice()));
+        Choices.Add(new("Stand your ground", () => new PrincipalOffice()));
     }
 
     public override void Play()

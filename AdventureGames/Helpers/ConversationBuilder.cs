@@ -2,7 +2,7 @@ using AdventureGames.Entities.Humanoids;
 
 namespace AdventureGames;
 
-public class ConversationBuilder
+internal sealed class ConversationBuilder
 {
     private readonly List<Action> _actions = [];
 
@@ -47,8 +47,8 @@ public class ConversationBuilder
     public ConversationBuilder SudoJack(params string[] messages) => Sudo(Game.Jack, messages);
 
     /// <inheritdoc cref="HumanoidBase.Sudo(global::System.String[])"/>
-    public ConversationBuilder SudoUnknown(params string[] messages) =>
-        Sudo(Game.UnknownUser, messages);
+    public ConversationBuilder SudoPrinciple(params string[] messages) =>
+        Sudo(Game.Principle, messages);
 
     /// <summary>
     /// Iterates over the conversation sequence

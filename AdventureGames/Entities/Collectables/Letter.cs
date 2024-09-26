@@ -1,7 +1,7 @@
 namespace AdventureGames.Entities.Collectables;
 
 /// <inheritdoc/>
-public sealed class Letter : CollectableBase
+internal sealed class Letter : CollectableBase
 {
     private static readonly string Body = $"""
         [Address]: Sherlock Rd.
@@ -40,8 +40,8 @@ public sealed class Letter : CollectableBase
         SURFHHG FDXWLRXVOB.
 
         IRRATIONAL ORDER CONCEALS. 
-        SHIFT BACK BY THE POSITION OF THE FIRST.
-        FIND YOUR FRIEND'S REGRET.
+        SHIFT BACK EACH BY THE POSITION OF THE FIRST.
+        ADVENTURES ARE ALWAYS WAITING FOR THE SMART ONES.
         """;
 
     /// <summary>

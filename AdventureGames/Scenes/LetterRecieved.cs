@@ -4,16 +4,12 @@ using AdventureGames.Scenes.StayAtHome;
 
 namespace AdventureGames.Scenes;
 
-/// <inheritdoc/>
 internal sealed class LetterRecieved : BaseScene
 {
-    /// <summary>
-    /// You see the contents of the <see cref="Letter"/>. Now you must decide one of 2 pathways.
-    /// </summary>
     public LetterRecieved()
     {
         Choices.Add(
-            new Choice(
+            new(
                 "Go to School",
                 () =>
                 {
@@ -28,7 +24,7 @@ internal sealed class LetterRecieved : BaseScene
             )
         );
         Choices.Add(
-            new Choice(
+            new(
                 "Stay at Home",
                 () =>
                 {

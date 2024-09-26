@@ -3,14 +3,8 @@ using AdventureGames.Scenes.GoToSchool.Consequences;
 
 namespace AdventureGames.Scenes.GoToSchool.MathLesson;
 
-/// <inheritdoc/>
-public sealed class MathClass : BaseScene
+internal sealed class MathClass : BaseScene
 {
-    /// <summary>
-    /// You attend your math class, nothing out of the ordinary.
-    /// </summary>
-    public MathClass() { }
-
     public override void Play()
     {
         var conversation = new ConversationBuilder()
@@ -35,8 +29,8 @@ public sealed class MathClass : BaseScene
                 .SudoUser("Free time? That's only 5 minutes anyways...")
                 .SudoTeacher("Class, for today your free time will be extended to 30 minutes.");
 
-            Choices.Add(new Choice("Accept the punishment", () => new Detention()));
-            Choices.Add(new Choice("Argue with the teacher", () => new ChallengeTheTeacher()));
+            Choices.Add(new("Accept the punishment", () => new Detention()));
+            Choices.Add(new("Argue with the teacher", () => new ChallengeTheTeacher()));
         }
         else
         {
@@ -51,7 +45,7 @@ public sealed class MathClass : BaseScene
                 .SudoTeacher("Well done. I see someone has been paying attention.")
                 .Say("You feel a sense of relief and accomplishment.");
 
-            Choices.Add(new Choice("Continue with the class", () => new ClassDiscussion()));
+            Choices.Add(new("Continue with the class", () => new ClassDiscussion()));
         }
 
         conversation.Init();

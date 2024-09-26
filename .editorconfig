@@ -282,3 +282,9 @@ dotnet_diagnostic.CS8524.severity = none
 
 # CS8509: The switch expression does not handle all possible values of its input type (it is not exhaustive).
 dotnet_diagnostic.CS8509.severity = error
+
+# CA1852: Seal internal types
+dotnet_diagnostic.CA1852.severity = warning
+
+# IDE0005: Using directive is unnecessary.
+dotnet_diagnostic.IDE0005.severity = warning

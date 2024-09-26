@@ -8,7 +8,7 @@ namespace AdventureGames.Entities.Humanoids;
 /// Provides a base structure for all humanoid characters in the adventure game.
 /// </para>
 /// </summary>
-public abstract class HumanoidBase
+internal abstract class HumanoidBase
 {
     private const int MaxNameLength = 20;
 
@@ -40,19 +40,15 @@ public abstract class HumanoidBase
     /// <param name="messages">
     /// The messages of the speaker. Each message is placed on a new line with padding.
     /// </param>
-    public void Sudo(params string[] messages) => Sudo(1, messages);
-
-    /// <inheritdoc cref="Sudo(global::System.String[])"/>
-    /// <inheritdoc cref="Game.Say(String, Double)" path="/param[@name='speed']"/>
-    public void Sudo(double speed, params string[] messages)
+    public void Sudo(params string[] messages)
     {
         var prefix = $"[{Name}]: ";
-        var delimeter = $"\n{new string(' ', prefix.Length)}";
+        var delimiter = $"\n{new string(' ', prefix.Length)}";
 
         ConsoleUtils.HighlightConsoleLine(
-            prefix + String.Join(delimeter, messages),
+            prefix + String.Join(delimiter, messages),
             DialogueColour,
-            (string message) => Utils.TypewriterEffect(message, speed)
+            Utils.TypewriterEffect
         );
     }
 }

@@ -5,7 +5,7 @@ using Common.Utils;
 
 namespace AdventureGames;
 
-public class Game
+internal sealed class Game
 {
     private static BaseScene? CurrentScene;
 
@@ -20,29 +20,29 @@ public class Game
     public static readonly Player Mother;
 
     /// <summary>
-    /// Father of <see cref="User"/>
+    /// Father of <see cref="User"/>.
     /// </summary>
     public static readonly Player Father;
 
     /// <summary>
-    /// A homeless man on the streets
+    /// A homeless man on the streets.
     /// </summary>
     public static readonly Player John;
 
     /// <summary>
-    /// Math teacher of <see cref="User"/>
+    /// Math teacher of <see cref="User"/>.
     /// </summary>
     public static readonly Player Teacher;
 
     /// <summary>
-    /// Friend of <see cref="User"/>
+    /// Friend of <see cref="User"/>.
     /// </summary>
     public static readonly Player Jack;
 
     /// <summary>
-    /// ???
+    /// Head Teacher of the School.
     /// </summary>
-    public static readonly Player UnknownUser;
+    public static readonly Player Principle;
 
     static Game()
     {
@@ -70,7 +70,26 @@ public class Game
         John = new("John", "A homeless man on the street", 0.15M, ConsoleColor.DarkGray);
         Teacher = new("Teacher", "Your maths teacher", 5M, ConsoleColor.Blue);
         Jack = new("Jack", "Your friend", 1.70M, ConsoleColor.DarkMagenta);
-        UnknownUser = new("Unknown", "???", 0M, ConsoleColor.DarkYellow);
+        Principle = new("Principle", "Your head teacher", 4M, ConsoleColor.DarkYellow);
+
+        if (User.Name == "Kyle Thapar")
+        {
+            const string Message = "The creator cannot play.";
+
+            new ConversationBuilder()
+                .Say(Message)
+                .SudoMother(Message)
+                .SudoFather(Message)
+                .SudoJohn(Message)
+                .SudoTeacher(Message)
+                .SudoJack(Message)
+                .SudoPrinciple(Message)
+                .Say("[ALL]: /ban Kyle Thapar")
+                .Say("THE END - Creator Banned Ending")
+                .Init();
+
+            Environment.Exit(0);
+        }
 
         User.Inventory.Add(new Homework());
 
@@ -111,12 +130,11 @@ public class Game
         while (CurrentScene != null)
         {
             Console.WriteLine();
-
-            // modify
-            Utils.CentreMessage($"Scene: [{CurrentScene.GetType().Name}]");
-
             CurrentScene.Play();
             CurrentScene = CurrentScene.GetNextScene();
         }
+
+        Say("Thanks for playing. Press any key to close...");
+        Console.ReadLine();
     }
 }

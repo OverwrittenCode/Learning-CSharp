@@ -3,19 +3,17 @@ using AdventureGames.Scenes.StayAtHome;
 
 namespace AdventureGames.Scenes.GoToSchool;
 
-/// <inheritdoc/>
-public sealed class JourneyToSchool : BaseScene
+internal sealed class JourneyToSchool : BaseScene
 {
-    /// <summary>
-    /// You are on your way to school when you encounter <see cref="Game.John"/> - <inheritdoc cref="Game.John"/>.
-    /// </summary>
     public JourneyToSchool()
     {
         Choices.Add(
-            new Choice(
+            new(
                 "Give money to the homeless, continue to school",
                 () =>
                 {
+                    Utils.CentreMessage("Your story is changing.");
+
                     new ConversationBuilder()
                         .SudoUser(
                             "I'm so sorry, I only have a shilling to spare, it's all I have... really."
@@ -33,10 +31,9 @@ public sealed class JourneyToSchool : BaseScene
                 }
             )
         );
-        // -> later, gain something in return from homeless
 
         Choices.Add(
-            new Choice(
+            new(
                 "Steal their money, continue to school",
                 () =>
                 {
@@ -46,16 +43,12 @@ public sealed class JourneyToSchool : BaseScene
                         .Say("You steal all their money and make a run for it.")
                         .Perform(() => Game.User.StealMoney(Game.John))
                         .SudoJohn("HEY, COME BACK HERE!")
+                        .Say(
+                            $"{Game.John} trips you up, all of your money is scattered across the ground."
+                        )
                         .Perform(() =>
                         {
-                            Game.John.Attack(
-                                Game.User,
-                                10,
-                                $"{Game.John} tripped you up, all of your money is scattered across the ground.",
-                                true
-                            );
-
-                            Game.John.StealMoney(Game.User, true);
+                            Game.John.StealMoney(Game.User);
 
                             Homework? homework = Game.User.GetItem<Homework>();
 
@@ -74,10 +67,9 @@ public sealed class JourneyToSchool : BaseScene
                 }
             )
         );
-        // later -> forgot their maths book as karma
 
         Choices.Add(
-            new Choice(
+            new(
                 "Return Home",
                 () =>
                 {

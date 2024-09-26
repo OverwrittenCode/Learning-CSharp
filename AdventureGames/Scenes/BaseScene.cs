@@ -13,7 +13,7 @@ namespace AdventureGames.Scenes;
 /// A function that returns the next <see cref="BaseScene"/> to transition to when the player selects this choice.
 /// <para>This function defines the actions and consequences that follow the choice.</para>
 /// </param>
-public readonly record struct Choice(string Description, Func<BaseScene> NextSceneFactory) { }
+internal readonly record struct Choice(string Description, Func<BaseScene> NextSceneFactory) { }
 
 /// <summary>
 /// <para>
@@ -22,7 +22,7 @@ public readonly record struct Choice(string Description, Func<BaseScene> NextSce
 /// It provides a structure for presenting choices to the player and transitioning between scenes.
 /// </para>
 /// </summary>
-public abstract class BaseScene
+internal abstract class BaseScene
 {
     protected List<Choice> Choices { get; } = [];
 
