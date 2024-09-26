@@ -23,7 +23,7 @@ enum Cuboid
     SurfaceArea,
 }
 
-internal class A
+internal sealed class A
 {
     private const int MaxMeasurementInput = 100;
 
