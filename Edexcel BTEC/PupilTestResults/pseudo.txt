@@ -1,0 +1,79 @@
+RECORD Student(Name: string, Score: integer)
+	CONSTANTS
+		MinQuantity = 6
+		MaxQuantity = 60
+		MaxNameLength = 30
+		MaxScore = 100
+
+	FIELDS
+		IF Score < 40 THEN
+			Grade = "Fail"
+		ELIF Score <= 50 THEN
+			Grade = "Pass"
+		ELIF Score < 70 THEN
+			Grade = "Merit"
+		ELSE
+			Grade = "Distinction"
+
+CLASS Program
+	PRIVATE STATIC FIELDS
+		_studentCount: integer = 0
+		_students: array of Student = []
+
+	PUBLIC STATIC METHODS 
+		Main()
+			DISPLAY "Enter the number of students (from " + Student.MinQuantity + " to " + Student.MaxQuantity + ")"
+			REPEAT
+				_studentCount = INPUT "> "
+			UNTIL _studentCount >= Student.MinQuantity AND _studentCount <= Student.MaxQuantity
+
+			CollectData()
+			HandleData()
+
+	PRIVATE STATIC METHODS
+		CollectData()
+			FOR i FROM 0 TO studentCount
+				studentPosition = i + 1
+
+				DISPLAY "[STUDENT " + studentPosition + "/" + studentCount + "]"
+
+				DISPLAY "Enter name of student (up to " + Student.MaxNameLength + " characters)"
+				REPEAT
+					name = INPUT "> "
+				UNTIL length of name > 0 AND length of name <= Student.MaxNameLength
+
+				DISPLAY "Enter score of student (up to " + Student.MaxScore + ")"
+				REPEAT
+					score = INPUT "> "
+				UNTIL score is integer FROM 0 TO Student.MaxScore
+
+				student = new Student(name, score)
+
+				add student to array _students
+
+		HandleData()
+			SORT _students IN DESCENDING ORDER BY score
+
+			result = multi row ascii table
+				source
+					FOREACH student in _students
+				data
+					"Name" from student.Name
+					"Score" from student.Score
+					"Grade" from student.Grade
+
+			DISPLAY result
+
+			IF _students[0].Grade == "Distinction" THEN
+				DISPLAY "Distinction has been achieved."
+
+			relativePath = "results.txt"
+
+			IF NOT relativePath EXISTS THEN
+				CREATE file AT relativePath
+
+			OPEN file AT relativePath
+			WRITE result TO file
+			CLOSE file
+
+			DISPLAY "Results saved to " + absolute path of file

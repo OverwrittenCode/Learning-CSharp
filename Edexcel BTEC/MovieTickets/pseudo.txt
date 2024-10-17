@@ -1,0 +1,31 @@
+BEGIN
+	ticketCounter = 0
+	price = 0
+
+	isPremiumSeat = INPUT "Would you like premium seats? (+£2.00/ticket) (y/n)" == "y"
+
+	isOrderNextTicket = true
+
+	WHILE isOrderNextTicket
+		ticketCounter += 1
+		REPEAT
+			age = INPUT "Ticket: How old are you?"
+		UNTIL age is numerical AND age > 0
+
+		IF age < 18 THEN
+			price += 5.00
+		ELIF age < 65 THEN
+			price += 10.00
+		ELSE
+			price += 7.00
+
+		IF isPremiumSeat THEN
+			price += 2.00
+
+		isOrderNextTicket = INPUT "Would you like to purchase another ticket? (y/n)" == "y"
+
+	IF ticketCounter > 5 THEN
+		price *= 0.9
+
+	OUTPUT "Total cost: £" + price
+END

@@ -1,7 +1,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Edexcel_BTEC_L3_Computing.Unit_4.CurrencyConversion;
+namespace CurrencyConversion;
 
 internal enum CurrencyISO
 {
@@ -24,12 +24,8 @@ internal readonly record struct Currency(decimal ExchangeRate, string ISO)
     public NumberFormatInfo NumberFormat => new CultureInfo(ISO).NumberFormat;
 }
 
-internal sealed class CurrencyConversion
+internal sealed class Program
 {
-    private const decimal StaffDiscountPercentage = 5M;
-    private const decimal StaffDiscountRate = StaffDiscountPercentage / 100;
-    private const decimal MinGBPAmount = 0M;
-    private const decimal MaxGBPAmount = 2_500M;
     private const int PadMaxWidth = 40;
     private const int PadRightWidth = 25;
     private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
@@ -37,14 +33,14 @@ internal sealed class CurrencyConversion
     private static readonly CurrencyISO[] CurrencyISOs = Enum.GetValues<CurrencyISO>();
     private static readonly Currency[] Currencies = new Currency[CurrencyISOs.Length];
 
-    public decimal Amount { get; private set; }
-    public decimal AmountInChosenCurrency { get; private set; }
-    public decimal TransactionFee { get; private set; }
-    public decimal DiscountAmount { get; private set; }
-    public decimal TotalCostGBP { get; private set; }
-    public Currency ChosenCurrency { get; private set; }
+    public static decimal Amount { get; private set; }
+    public static decimal AmountInChosenCurrency { get; private set; }
+    public static decimal TransactionFee { get; private set; }
+    public static decimal DiscountAmount { get; private set; }
+    public static decimal TotalCostGBP { get; private set; }
+    public static Currency ChosenCurrency { get; private set; }
 
-    static CurrencyConversion()
+    static Program()
     {
         Console.OutputEncoding = Encoding.Unicode;
         CultureInfo.CurrentCulture = new CultureInfo("en-GB");
@@ -56,20 +52,20 @@ internal sealed class CurrencyConversion
         Currencies[(int)CurrencyISO.TRY] = new Currency(5.68M, "tr-TR");
     }
 
-    public static void Run()
+    private static void Main(string[] args)
     {
         Console.WriteLine("Currency Conversion Service");
         Console.WriteLine(new string('=', PadMaxWidth));
 
-        CurrencyConversion currencyConversion = new();
-        currencyConversion.ProcessConversion();
+        ProcessConversion();
     }
 
     private static decimal GetGBPAmount()
     {
-        Console.WriteLine(
-            $"Enter the amount to exchange (greater than {MinGBPAmount:C} and up to {MaxGBPAmount:C})"
-        );
+        const decimal Min = 0;
+        const decimal Max = 2_500M;
+
+        Console.WriteLine($"Enter the amount to exchange (greater than {Min:C} and up to {Max:C})");
 
         decimal amount;
         do
@@ -82,8 +78,8 @@ internal sealed class CurrencyConversion
                 CultureInfo.CurrentCulture,
                 out amount
             )
-            || amount <= MinGBPAmount
-            || amount > MaxGBPAmount
+            || amount <= Min
+            || amount > Max
             || Math.Round(amount, 2) != amount
         );
 
@@ -123,8 +119,11 @@ internal sealed class CurrencyConversion
         return CurrencyISOs[currencyIndex];
     }
 
-    private void ProcessConversion()
+    private static void ProcessConversion()
     {
+        const decimal StaffDiscountPercentage = 5M;
+        const decimal StaffDiscountRate = StaffDiscountPercentage / 100;
+
         Amount = GetGBPAmount();
 
         TransactionFee =
@@ -150,7 +149,7 @@ internal sealed class CurrencyConversion
         DisplayTransactionDetails();
     }
 
-    private void DisplayTransactionDetails()
+    private static void DisplayTransactionDetails()
     {
         Console.WriteLine($"Customer requests to convert {Amount:C} to {ChosenCurrency}");
 
@@ -176,5 +175,5 @@ internal sealed class CurrencyConversion
     }
 
     private static void PrintRow(string description, string value) =>
-        Console.WriteLine($"{description, -PadRightWidth} {value, PadLeftWidth}");
+        Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
 }

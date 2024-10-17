@@ -1,8 +1,8 @@
 using System.Text.RegularExpressions;
 
-namespace Edexcel_BTEC_L3_Computing.Unit_4.PasswordRating;
+namespace PasswordRating;
 
-internal sealed partial class PasswordRating
+internal sealed partial class Program
 {
     private const int MaxPasswordInput = 100;
     private const int MinPasswordLength = 8;
@@ -25,12 +25,12 @@ internal sealed partial class PasswordRating
 
     private int Length => _password.Length;
 
-    public static void Run()
+    private static void Main()
     {
         Console.WriteLine("Password Rating Service");
         Console.WriteLine(new string('=', PadMaxWidth));
 
-        PasswordRating passwordRating = new();
+        Program passwordRating = new();
         passwordRating.Process();
     }
 

@@ -1,4 +1,4 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.SchoolSportsDay;
+namespace SchoolSportsDay;
 
 public enum Group
 {
@@ -7,7 +7,7 @@ public enum Group
     White,
 }
 
-public sealed class SchoolSportsDay
+public sealed class Program
 {
     private const int PupilCount = 10;
     private const int BirthMonthMinValue = 1;
@@ -20,21 +20,21 @@ public sealed class SchoolSportsDay
 
     private readonly int[] _groupedPupilCounters = new int[GroupLength];
 
-    public static void Run()
+    private static void Main()
     {
         Console.WriteLine("School Sports Day Service");
         Console.WriteLine(new string('=', PadMaxWidth));
 
-        SchoolSportsDay schoolSportsDay = new();
+        Program schoolSportsDay = new();
         schoolSportsDay.CollectPupilData();
         schoolSportsDay.DisplayResults();
     }
 
     private void CollectPupilData()
     {
-        for (int i = 0; i < PupilCount; i++)
+        for (var i = 0; i < PupilCount; i++)
         {
-            int birthMonth = GetBirthMonthInput(i + 1);
+            var birthMonth = GetBirthMonthInput(i + 1);
             Group group = AssignGroup(birthMonth);
             _groupedPupilCounters[(int)group]++;
         }
@@ -78,7 +78,7 @@ public sealed class SchoolSportsDay
 
         foreach (Group group in Enum.GetValues<Group>())
         {
-            int pupilCount = _groupedPupilCounters[(int)group];
+            var pupilCount = _groupedPupilCounters[(int)group];
             PrintRow(group.ToString(), pupilCount.ToString());
         }
 

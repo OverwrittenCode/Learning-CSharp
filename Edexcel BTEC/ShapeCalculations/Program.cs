@@ -1,4 +1,4 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.ShapeCalculations;
+namespace ShapeCalculations;
 
 internal enum Panel
 {
@@ -38,11 +38,11 @@ internal enum Cuboid
     SurfaceArea,
 }
 
-internal sealed class ShapeCalculations
+internal sealed class Program
 {
     private const int MaxMeasurementInput = 100;
 
-    public static void Run()
+    private static void Main()
     {
         int calculationCounter = 1;
 

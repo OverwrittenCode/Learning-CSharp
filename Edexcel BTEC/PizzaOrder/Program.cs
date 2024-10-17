@@ -1,6 +1,6 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.PizzaOrder;
-
 using System.Text.RegularExpressions;
+
+namespace PizzaOrder;
 
 internal enum Size
 {
@@ -93,7 +93,7 @@ internal sealed class Table
     }
 }
 
-internal sealed partial class PizzaOrder
+internal sealed partial class Program
 {
     private const int MaxNameLength = 30;
     private const int MaxAddressLength = 80;
@@ -101,21 +101,16 @@ internal sealed partial class PizzaOrder
     private const decimal DiscountFrom = 20M;
     private const decimal DeliveryCost = 2.50M;
 
-    public string Name { get; private set; } = "";
-    public string Address { get; private set; } = "";
-    public string PhoneNumber { get; private set; } = "";
-    public bool IsDelivery { get; private set; }
-    public List<Pizza> Pizzas { get; private set; } = [];
+    public static string Name { get; private set; } = "";
+    public static string Address { get; private set; } = "";
+    public static string PhoneNumber { get; private set; } = "";
+    public static bool IsDelivery { get; private set; }
+    public static List<Pizza> Pizzas { get; private set; } = [];
 
     [GeneratedRegex(@"^0?((7\d{9})|(1\d{8,9})|(2\d{8,9})|(3\d{8,9})|(8\d{8,9}))$")]
     private static partial Regex PhoneNumberRegex();
 
-    public static void Run()
-    {
-        new PizzaOrder().Main();
-    }
-
-    private void Main()
+    private static void Main()
     {
         ProcessCustomerDetails();
 
@@ -142,7 +137,7 @@ internal sealed partial class PizzaOrder
         DisplaySummary();
     }
 
-    private void ProcessCustomerDetails()
+    private static void ProcessCustomerDetails()
     {
         Console.WriteLine($"Please enter the name on the order (up to {MaxNameLength} characters)");
 
@@ -155,7 +150,7 @@ internal sealed partial class PizzaOrder
         );
 
         Console.WriteLine(
-            $"Please enter an address to recieve the pizza (up to {MaxAddressLength} characters)"
+            $"Please enter an address to receive the pizza (up to {MaxAddressLength} characters)"
         );
 
         do
@@ -184,7 +179,7 @@ internal sealed partial class PizzaOrder
         Console.WriteLine();
     }
 
-    private void ProcessPizza()
+    private static void ProcessPizza()
     {
         Console.WriteLine($"Pizza {Pizzas.Count + 1}/{Pizza.MaxQuantity}");
         Console.WriteLine(new string('-', 20));
@@ -249,7 +244,7 @@ internal sealed partial class PizzaOrder
         Pizzas.Add(pizza);
     }
 
-    private void DisplaySummary()
+    private static void DisplaySummary()
     {
         decimal subTotal = 0;
 

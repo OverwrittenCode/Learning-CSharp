@@ -1,4 +1,4 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.EliteAthletics;
+namespace EliteAthletics;
 
 internal enum Gender
 {
@@ -68,23 +68,21 @@ internal sealed class Table
     }
 }
 
-internal sealed class EliteAthletics
+internal sealed class Program
 {
     private const int MinAthletes = 4;
     private const int MaxAthletes = 8;
-    private const double MinTime = 6;
-    private const double MaxTime = 30;
 
     private static readonly Gender[] Genders = Enum.GetValues<Gender>();
     private static readonly RecordBreaker[] RecordBreakers = Enum.GetValues<RecordBreaker>();
 
     private static readonly double[,] Records = new double[Genders.Length, RecordBreakers.Length];
 
-    private readonly List<double> _times = [];
+    private static readonly List<double> Times = [];
 
-    private Gender _genderGroup;
+    private static Gender GenderGroup;
 
-    static EliteAthletics()
+    static Program()
     {
         Records[(int)Gender.Male, (int)RecordBreaker.World] = 9.58;
         Records[(int)Gender.Male, (int)RecordBreaker.European] = 9.86;
@@ -95,31 +93,26 @@ internal sealed class EliteAthletics
         Records[(int)Gender.Female, (int)RecordBreaker.British] = 10.99;
     }
 
-    public static void Run()
-    {
-        new EliteAthletics().Main();
-    }
-
-    private void Main()
+    private static void Main()
     {
         foreach (Gender option in Genders)
         {
             Console.WriteLine($"{(int)option} - {option}");
         }
 
-        Console.WriteLine("Pick the gender for the group of althete");
+        Console.WriteLine("Pick the gender for the group of athletes");
 
         do
         {
             Console.Write("> ");
         } while (
-            !Enum.TryParse(Console.ReadLine(), true, out _genderGroup)
-            || !Enum.IsDefined(typeof(Gender), _genderGroup)
+            !Enum.TryParse(Console.ReadLine(), true, out GenderGroup)
+            || !Enum.IsDefined(typeof(Gender), GenderGroup)
         );
 
-        while (_times.Count < MaxAthletes)
+        while (Times.Count < MaxAthletes)
         {
-            if (_times.Count >= MinAthletes)
+            if (Times.Count >= MinAthletes)
             {
                 Console.WriteLine("Continue? (y/n)");
                 Console.Write("> ");
@@ -130,16 +123,19 @@ internal sealed class EliteAthletics
                 }
             }
 
-            ProcessAlthlete();
+            ProcessAthlete();
         }
 
         DisplaySummary();
     }
 
-    private void ProcessAlthlete()
+    private static void ProcessAthlete()
     {
+        const double MinTime = 6;
+        const double MaxTime = 30;
+
         Console.WriteLine();
-        Console.WriteLine($"Lane {_times.Count + 1}/{MaxAthletes}");
+        Console.WriteLine($"Lane {Times.Count + 1}/{MaxAthletes}");
         Console.WriteLine(
             $"Enter time taken for the athlete to finish their 100m race (from {MinTime} to {MaxTime} seconds)"
         );
@@ -151,12 +147,12 @@ internal sealed class EliteAthletics
             Console.Write("> ");
         } while (!Double.TryParse(Console.ReadLine(), out time) || time is < MinTime or > MaxTime);
 
-        _times.Add(Double.Round(time, 2));
+        Times.Add(Double.Round(time, 2));
     }
 
-    private void DisplaySummary()
+    private static void DisplaySummary()
     {
-        _times.Sort();
+        Times.Sort();
 
         List<(double Time, int Lane, RecordBreaker type)> recordBreakers = [];
 
@@ -164,14 +160,14 @@ internal sealed class EliteAthletics
 
         Table timeTable = new("Lane", "Time (s)");
 
-        for (int i = 0; i < _times.Count; i++)
+        for (int i = 0; i < Times.Count; i++)
         {
-            if (GetRecordBreaker(_times[i]) is RecordBreaker recordBreaker)
+            if (GetRecordBreaker(Times[i]) is RecordBreaker recordBreaker)
             {
-                recordBreakers.Add((_times[i], i + 1, recordBreaker));
+                recordBreakers.Add((Times[i], i + 1, recordBreaker));
             }
 
-            timeTable.AddRow(i + 1, _times[i]);
+            timeTable.AddRow(i + 1, Times[i]);
         }
 
         timeTable.Print();
@@ -184,18 +180,18 @@ internal sealed class EliteAthletics
             );
 
             Table recordTable = new("Old Record", "New Record");
-            recordTable.AddRow(Records[(int)_genderGroup, (int)type], time);
+            recordTable.AddRow(Records[(int)GenderGroup, (int)type], time);
             recordTable.Print();
         }
 
         Console.WriteLine();
     }
 
-    private RecordBreaker? GetRecordBreaker(double time)
+    private static RecordBreaker? GetRecordBreaker(double time)
     {
         for (int i = 0; i < Records.GetLength(1); i++)
         {
-            if (Records[(int)_genderGroup, i] > time)
+            if (Records[(int)GenderGroup, i] > time)
             {
                 return (RecordBreaker)i;
             }

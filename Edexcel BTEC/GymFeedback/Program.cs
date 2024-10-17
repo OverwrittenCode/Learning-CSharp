@@ -1,34 +1,25 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.GymFeedback;
-
 internal enum Gender
 {
     Male,
     Female,
 }
 
-internal sealed class GymFeedback
+internal sealed class Program
 {
     private const int IdealBMI = 22;
-    private const double MinWeight = 30;
-    private const double MaxWeight = 250;
-    private const double MinHeight = 120;
-    private const double MaxHeight = 210;
-    private const int MinAge = 14;
-    private const int MaxAge = 100;
-    private const int MinExerciseSessions = 0;
-    private const int MaxExerciseSessions = 10;
+
     private const int PadMaxWidth = 65;
     private const int PadRightWidth = 45;
     private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
 
-    public double Weight { get; private set; }
-    public double Height { get; private set; }
-    public int Age { get; private set; }
-    public int DailyExerciseSessions { get; private set; }
-    public Gender Gender { get; private set; }
+    public static double Weight { get; private set; }
+    public static double Height { get; private set; }
+    public static int Age { get; private set; }
+    public static int DailyExerciseSessions { get; private set; }
+    public static Gender Gender { get; private set; }
 
-    public double BMI => Math.Round(Weight / HeightInSquaredMeters, 1);
-    public string BMICategory =>
+    public static double BMI => Math.Round(Weight / HeightInSquaredMeters, 1);
+    public static string BMICategory =>
         BMI switch
         {
             < 18.5 => "Underweight",
@@ -36,16 +27,16 @@ internal sealed class GymFeedback
             < 30 => "Overweight",
             _ => "Obese",
         };
-    public double WeightDIfference =>
+    public static double WeightDifference =>
         Math.Abs(Math.Round(Weight - (IdealBMI * HeightInSquaredMeters), 2));
-    public double BMR =>
+    public static double BMR =>
         Math.Round(
             Gender == Gender.Male
                 ? 88.362 + (13.397 * Weight) + (4.799 * Height) - (5.677 * Age)
                 : 447.593 + (9.247 * Weight) + (3.098 * Height) - (4.330 * Age),
             2
         );
-    public double ActivityFactor =>
+    public static double ActivityFactor =>
         DailyExerciseSessions switch
         {
             <= 1 => 1.2,
@@ -54,17 +45,16 @@ internal sealed class GymFeedback
             <= 7 => 1.725,
             _ => 1.9,
         };
-    public int DailyKcal => (int)Math.Round(BMR * ActivityFactor);
+    public static int DailyKcal => (int)Math.Round(BMR * ActivityFactor);
 
-    public double HeightInSquaredMeters => Height * Height;
+    public static double HeightInSquaredMeters => Height * Height;
 
-    public static void Run()
+    private static void Main()
     {
         Console.WriteLine("Gym Feedback Service");
         Console.WriteLine(new string('=', PadMaxWidth));
 
-        GymFeedback gymFeedback = new();
-        gymFeedback.ProccessUser();
+        ProcessUser();
     }
 
     private static double GetRangeInput(string messageBody, double minValue, double maxValue)
@@ -104,14 +94,22 @@ internal sealed class GymFeedback
         return choice;
     }
 
-    private void ProccessUser()
+    private static void ProcessUser()
     {
+        const double MinWeight = 30;
+        const double MaxWeight = 250;
+        const double MinHeight = 120;
+        const double MaxHeight = 210;
+        const int MinAge = 14;
+        const int MaxAge = 100;
+        const int MaxExerciseSessions = 10;
+
         Weight = GetRangeInput("Enter your weight in kilograms", MinWeight, MaxWeight);
-        Height = GetRangeInput("Enter your height in centimeters", MinHeight, MaxHeight) / 100;
+        Height = GetRangeInput("Enter your height in centimetres", MinHeight, MaxHeight) / 100;
         Age = (int)GetRangeInput("Enter your age in years", MinAge, MaxAge);
         DailyExerciseSessions = (int)GetRangeInput(
             "Enter the number of exercise sessions per day",
-            MinExerciseSessions,
+            0,
             MaxExerciseSessions
         );
         Gender = GetGenderInput();
@@ -119,17 +117,17 @@ internal sealed class GymFeedback
         DisplayResults();
     }
 
-    private void DisplayResults()
+    private static void DisplayResults()
     {
-        if (WeightDIfference == 0)
+        if (WeightDifference == 0)
         {
             Console.WriteLine("You are at your ideal weight!");
         }
         else
         {
-            var action = WeightDIfference > 0 ? "lose" : "gain";
+            var action = WeightDifference > 0 ? "lose" : "gain";
             Console.WriteLine(
-                $"You need to {action} {WeightDIfference} kg to reach your target BMI ({IdealBMI})"
+                $"You need to {action} {WeightDifference} kg to reach your target BMI ({IdealBMI})"
             );
         }
 

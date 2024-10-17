@@ -1,10 +1,10 @@
-namespace Edexcel_BTEC_L3_Computing.Unit_4.SalesManager;
+namespace SalesManager;
 
 internal readonly record struct Employee(string Id, string Name, int PropertiesSold)
 {
-    private const int ComissionRate = 500;
+    private const int CommissionRate = 500;
 
-    public decimal Commission => Decimal.Round(PropertiesSold * ComissionRate, 2);
+    public decimal Commission => Decimal.Round(PropertiesSold * CommissionRate, 2);
 }
 
 internal sealed class Table
@@ -24,9 +24,9 @@ internal sealed class Table
 
     public void AddRow(params object[] rows)
     {
-        for (int i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Length; i++)
         {
-            int length =
+            var length =
                 rows[i].ToString()?.Length + 5
                 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
 
@@ -45,11 +45,11 @@ internal sealed class Table
 
         Console.WriteLine(divider);
 
-        foreach (object[] rows in Rows)
+        foreach (var rows in Rows)
         {
-            int padIndex = 0;
+            var padIndex = 0;
 
-            string value = rows.Aggregate(
+            var value = rows.Aggregate(
                 "",
                 (acc, current) =>
                     acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]),
@@ -62,7 +62,7 @@ internal sealed class Table
     }
 }
 
-internal sealed class SalesManager
+internal sealed class Program
 {
     private const decimal BonusRate = 0.15M;
     private const int MaxNameLength = 20;
@@ -71,13 +71,62 @@ internal sealed class SalesManager
     private const int MinEmployees = 2;
     private const int MaxEmployees = 5;
 
-    private List<Employee> _employees = [];
-    private int _totalPropertiesSold;
-    private decimal _grandTotal;
+    private static List<Employee> Employees = [];
+    private static int TotalPropertiesSold;
+    private static decimal GrandTotal;
 
-    public static void Run()
+    private static void Main()
     {
-        new SalesManager().Main();
+        while (Employees.Count < MaxEmployees)
+        {
+            if (Employees.Count >= MinEmployees)
+            {
+                Console.WriteLine("Continue? (y/n)");
+                Console.Write("> ");
+
+                if (Console.ReadLine()?.ToLower().Trim() != "y")
+                {
+                    break;
+                }
+
+                Console.WriteLine();
+            }
+
+            ProcessEmployee();
+        }
+
+        DisplaySummary();
+    }
+
+    private static void ProcessEmployee()
+    {
+        Console.WriteLine($"Employee {Employees.Count + 1}/{MaxEmployees}");
+        Console.WriteLine(new string('-', 15));
+
+        var name = GetEmployeeStringInput("name", MaxNameLength);
+        var id = GetEmployeeStringInput("id", MaxIDLength);
+
+        int propertiesSold;
+
+        Console.WriteLine(
+            $"Enter employee's number of properties sold (up to {MaxPropertiesSold})"
+        );
+
+        do
+        {
+            Console.Write("> ");
+        } while (
+            !Int32.TryParse(Console.ReadLine(), out propertiesSold)
+            || propertiesSold is <= 0 or > MaxPropertiesSold
+        );
+
+        Console.WriteLine();
+
+        Employee employee = new(id, name, propertiesSold);
+
+        Employees.Add(employee);
+
+        TotalPropertiesSold += propertiesSold;
     }
 
     private static string GetEmployeeStringInput(string field, int max)
@@ -98,79 +147,22 @@ internal sealed class SalesManager
         return value;
     }
 
-    private void Main()
+    private static void DisplaySummary()
     {
-        while (_employees.Count < MaxEmployees)
-        {
-            if (_employees.Count >= MinEmployees)
-            {
-                Console.WriteLine("Continue? (y/n)");
-                Console.Write("> ");
-
-                if (Console.ReadLine()?.ToLower().Trim() != "y")
-                {
-                    break;
-                }
-
-                Console.WriteLine();
-            }
-
-            ProcessEmployee();
-        }
-
-        DisplaySummary();
-    }
-
-    private void ProcessEmployee()
-    {
-        Console.WriteLine($"Employee {_employees.Count + 1}/{MaxEmployees}");
-        Console.WriteLine(new string('-', 15));
-
-        string name = GetEmployeeStringInput("name", MaxNameLength);
-        string id = GetEmployeeStringInput("id", MaxIDLength);
-
-        int propertiesSold;
-
-        Console.WriteLine(
-            $"Enter employee's number of properties sold (up to {MaxPropertiesSold})"
-        );
-
-        do
-        {
-            Console.Write("> ");
-        } while (
-            !Int32.TryParse(Console.ReadLine(), out propertiesSold)
-            || propertiesSold is <= 0 or > MaxPropertiesSold
-        );
-
-        Console.WriteLine();
-
-        Employee employee = new(id, name, propertiesSold);
-
-        _employees.Add(employee);
-
-        _totalPropertiesSold += propertiesSold;
-    }
-
-    private void DisplaySummary()
-    {
-        _employees = [.. _employees.OrderByDescending(employee => employee.PropertiesSold)];
+        Employees = [.. Employees.OrderByDescending(employee => employee.PropertiesSold)];
 
         Console.WriteLine();
         Console.WriteLine("Summary");
 
         Table employeeTable = new("Id", "Name", "Properties Sold", "Sub Total", "Bonus", "Total");
 
-        foreach (Employee employee in _employees)
+        foreach (Employee employee in Employees)
         {
-            decimal subTotal = employee.Commission;
-            decimal bonus = Decimal.Round(
-                subTotal * (employee == _employees[0] ? BonusRate : 0),
-                2
-            );
+            var subTotal = employee.Commission;
+            var bonus = Decimal.Round(subTotal * (employee == Employees[0] ? BonusRate : 0), 2);
 
-            decimal total = subTotal + bonus;
-            _grandTotal += total;
+            var total = subTotal + bonus;
+            GrandTotal += total;
 
             employeeTable.AddRow(
                 employee.Id,
@@ -185,7 +177,7 @@ internal sealed class SalesManager
         employeeTable.Print();
 
         Table totalTable = new("Total Properties Sold", "Total Sales Commission");
-        totalTable.AddRow($"{_totalPropertiesSold:C}", $"{_grandTotal:C}");
+        totalTable.AddRow($"{TotalPropertiesSold:C}", $"{GrandTotal:C}");
 
         totalTable.Print();
         Console.WriteLine();
