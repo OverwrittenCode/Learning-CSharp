@@ -3,25 +3,22 @@ using System.Text;
 
 namespace CurrencyConversion;
 
-internal enum CurrencyISO
+internal enum CurrencyIso
 {
-    USD,
-    EUR,
-    BRL,
-    JPY,
-    TRY,
+    Usd,
+    Eur,
+    Brl,
+    Jpy,
+    Try
 }
 
-internal readonly record struct Currency(decimal ExchangeRate, string ISO)
+internal readonly record struct Currency(decimal ExchangeRate, string Iso)
 {
-    private RegionInfo Region => new(ISO);
+    private RegionInfo Region => new(Iso);
 
-    public override string ToString()
-    {
-        return $"{Region.CurrencySymbol} {Region.ISOCurrencySymbol} ({Region.CurrencyNativeName})";
-    }
+    public NumberFormatInfo NumberFormat => new CultureInfo(Iso).NumberFormat;
 
-    public NumberFormatInfo NumberFormat => new CultureInfo(ISO).NumberFormat;
+    public override string ToString() => $"{Region.CurrencySymbol} {Region.ISOCurrencySymbol} ({Region.CurrencyNativeName})";
 }
 
 internal sealed class Program
@@ -30,27 +27,15 @@ internal sealed class Program
     private const int PadRightWidth = 25;
     private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
 
-    private static readonly CurrencyISO[] CurrencyISOs = Enum.GetValues<CurrencyISO>();
-    private static readonly Currency[] Currencies = new Currency[CurrencyISOs.Length];
+    private static readonly CurrencyIso[] CurrencyIsOs = Enum.GetValues<CurrencyIso>();
+    private static readonly Currency[] Currencies = new Currency[CurrencyIsOs.Length];
 
     public static decimal Amount { get; private set; }
     public static decimal AmountInChosenCurrency { get; private set; }
     public static decimal TransactionFee { get; private set; }
     public static decimal DiscountAmount { get; private set; }
-    public static decimal TotalCostGBP { get; private set; }
+    public static decimal TotalCostGbp { get; private set; }
     public static Currency ChosenCurrency { get; private set; }
-
-    static Program()
-    {
-        Console.OutputEncoding = Encoding.Unicode;
-        CultureInfo.CurrentCulture = new CultureInfo("en-GB");
-
-        Currencies[(int)CurrencyISO.USD] = new Currency(1.40M, "en-US");
-        Currencies[(int)CurrencyISO.EUR] = new Currency(1.14M, "fr-FR");
-        Currencies[(int)CurrencyISO.BRL] = new Currency(4.77M, "pt-BR");
-        Currencies[(int)CurrencyISO.JPY] = new Currency(151.05M, "ja-JP");
-        Currencies[(int)CurrencyISO.TRY] = new Currency(5.68M, "tr-TR");
-    }
 
     private static void Main(string[] args)
     {
@@ -60,7 +45,7 @@ internal sealed class Program
         ProcessConversion();
     }
 
-    private static decimal GetGBPAmount()
+    private static decimal GetGbpAmount()
     {
         const decimal Min = 0;
         const decimal Max = 2_500M;
@@ -71,17 +56,10 @@ internal sealed class Program
         do
         {
             Console.Write($"> {NumberFormatInfo.CurrentInfo.CurrencySymbol}");
-        } while (
-            !Decimal.TryParse(
-                Console.ReadLine(),
-                NumberStyles.Currency,
-                CultureInfo.CurrentCulture,
-                out amount
-            )
-            || amount <= Min
-            || amount > Max
-            || Math.Round(amount, 2) != amount
-        );
+        } while (!Decimal.TryParse(Console.ReadLine(), NumberStyles.Currency, CultureInfo.CurrentCulture, out amount)
+              || amount <= Min
+              || amount > Max
+              || Math.Round(amount, 2) != amount);
 
         Console.WriteLine();
         return amount;
@@ -94,12 +72,12 @@ internal sealed class Program
         return Console.ReadLine()?.Trim().ToLower() == "y";
     }
 
-    private static CurrencyISO GetCurrencyISOInput()
+    private static CurrencyIso GetCurrencyIsoInput()
     {
         Console.WriteLine();
         Console.WriteLine("Choose a currency to exchange to:");
 
-        for (int i = 0; i < CurrencyISOs.Length; i++)
+        for (var i = 0; i < CurrencyIsOs.Length; i++)
         {
             Currency currency = Currencies[i];
             Console.WriteLine($"{i} - {currency}");
@@ -109,14 +87,10 @@ internal sealed class Program
         do
         {
             Console.Write("> ");
-        } while (
-            !Int32.TryParse(Console.ReadLine(), out currencyIndex)
-            || currencyIndex < 0
-            || currencyIndex >= CurrencyISOs.Length
-        );
+        } while (!Int32.TryParse(Console.ReadLine(), out currencyIndex) || currencyIndex < 0 || currencyIndex >= CurrencyIsOs.Length);
 
         Console.WriteLine();
-        return CurrencyISOs[currencyIndex];
+        return CurrencyIsOs[currencyIndex];
     }
 
     private static void ProcessConversion()
@@ -124,26 +98,26 @@ internal sealed class Program
         const decimal StaffDiscountPercentage = 5M;
         const decimal StaffDiscountRate = StaffDiscountPercentage / 100;
 
-        Amount = GetGBPAmount();
+        Amount = GetGbpAmount();
 
-        TransactionFee =
-            Amount switch
-            {
-                > 2_000M => 0.015M,
-                > 1_000M => 0.02M,
-                > 750M => 0.025M,
-                > 300M => 0.03M,
-                _ => 0.035M,
-            } * Amount;
+        TransactionFee = Amount switch
+                         {
+                             > 2_000M => 0.015M,
+                             > 1_000M => 0.02M,
+                             > 750M => 0.025M,
+                             > 300M => 0.03M,
+                             _ => 0.035M
+                         }
+                       * Amount;
 
-        TotalCostGBP = Amount + TransactionFee;
+        TotalCostGbp = Amount + TransactionFee;
 
-        bool isStaffMember = IsStaffMember();
-        DiscountAmount = isStaffMember ? Math.Round(TotalCostGBP * StaffDiscountRate, 2) : 0M;
-        TotalCostGBP -= DiscountAmount;
+        var isStaffMember = IsStaffMember();
+        DiscountAmount = isStaffMember ? Math.Round(TotalCostGbp * StaffDiscountRate, 2) : 0M;
+        TotalCostGbp -= DiscountAmount;
 
-        CurrencyISO currencyISO = GetCurrencyISOInput();
-        ChosenCurrency = Currencies[(int)currencyISO];
+        CurrencyIso currencyIso = GetCurrencyIsoInput();
+        ChosenCurrency = Currencies[(int)currencyIso];
         AmountInChosenCurrency = Math.Round(Amount * ChosenCurrency.ExchangeRate, 2);
 
         DisplayTransactionDetails();
@@ -167,13 +141,24 @@ internal sealed class Program
             PrintRow("Staff Discount Applied", (-DiscountAmount).ToString("C"));
         }
 
-        PrintRow("Total Cost", TotalCostGBP.ToString("C"));
+        PrintRow("Total Cost", TotalCostGbp.ToString("C"));
 
         Console.WriteLine(new string('-', PadMaxWidth));
         Console.WriteLine("Thank you for using our Currency Conversion Service!");
         Console.WriteLine();
     }
 
-    private static void PrintRow(string description, string value) =>
-        Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
+    private static void PrintRow(string description, string value) => Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
+
+    static Program()
+    {
+        Console.OutputEncoding = Encoding.Unicode;
+        CultureInfo.CurrentCulture = new("en-GB");
+
+        Currencies[(int)CurrencyIso.Usd] = new(1.40M, "en-US");
+        Currencies[(int)CurrencyIso.Eur] = new(1.14M, "fr-FR");
+        Currencies[(int)CurrencyIso.Brl] = new(4.77M, "pt-BR");
+        Currencies[(int)CurrencyIso.Jpy] = new(151.05M, "ja-JP");
+        Currencies[(int)CurrencyIso.Try] = new(5.68M, "tr-TR");
+    }
 }

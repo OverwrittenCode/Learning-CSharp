@@ -6,7 +6,7 @@ internal enum Size
 {
     Small,
     Medium,
-    Large,
+    Large
 }
 
 internal readonly record struct Pizza(Size Size, int ExtraToppingsAmount = 0)
@@ -19,17 +19,18 @@ internal readonly record struct Pizza(Size Size, int ExtraToppingsAmount = 0)
     public static readonly decimal[] SizeCosts = new decimal[Sizes.Length];
     public static readonly decimal[] ExtraToppingsCosts = [0, 0.75M, 1.35M, 2.00M, 2.50M];
 
-    public decimal CostOfSize => SizeCosts[(int)Size];
-    public decimal CostOfExtraToppings =>
-        ExtraToppingsCosts[Int32.Min(ExtraToppingsAmount, ExtraToppingsCosts.Length - 1)];
-    public decimal Cost => CostOfSize + CostOfExtraToppings;
-
     static Pizza()
     {
         SizeCosts[(int)Size.Small] = 3.25M;
         SizeCosts[(int)Size.Medium] = 5.50M;
         SizeCosts[(int)Size.Large] = 7.15M;
     }
+
+    public decimal CostOfSize => SizeCosts[(int)Size];
+
+    public decimal CostOfExtraToppings => ExtraToppingsCosts[Int32.Min(ExtraToppingsAmount, ExtraToppingsCosts.Length - 1)];
+
+    public decimal Cost => CostOfSize + CostOfExtraToppings;
 }
 
 internal sealed class Table
@@ -39,7 +40,7 @@ internal sealed class Table
 
     private readonly int[] _paddings;
 
-    public List<object[]> Rows { get; private set; }
+    public List<object[]> Rows { get; }
 
     public Table(params string[] headers)
     {
@@ -51,17 +52,12 @@ internal sealed class Table
     {
         if (rows.Length != _paddings.Length)
         {
-            throw new ArgumentException(
-                "Row length does not match the number of columns.",
-                nameof(rows)
-            );
+            throw new ArgumentException("Row length does not match the number of columns.", nameof(rows));
         }
 
-        for (int i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Length; i++)
         {
-            int length =
-                rows[i].ToString()?.Length + 5
-                ?? throw new ArgumentException("ToString method returned null", nameof(rows));
+            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
 
             if (length > _paddings[i])
             {
@@ -79,13 +75,8 @@ internal sealed class Table
 
         foreach (object[] row in Rows)
         {
-            int padIndex = 0;
-            string value = row.Aggregate(
-                "",
-                (acc, current) =>
-                    acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]),
-                result => result + CellSeparator
-            );
+            var padIndex = 0;
+            var value = row.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
 
             Console.WriteLine(value);
             Console.WriteLine(divider);
@@ -100,12 +91,12 @@ internal sealed partial class Program
     private const decimal DiscountRate = 0.10M;
     private const decimal DiscountFrom = 20M;
     private const decimal DeliveryCost = 2.50M;
+    public static List<Pizza> Pizzas { get; } = [];
 
     public static string Name { get; private set; } = "";
     public static string Address { get; private set; } = "";
     public static string PhoneNumber { get; private set; } = "";
     public static bool IsDelivery { get; private set; }
-    public static List<Pizza> Pizzas { get; private set; } = [];
 
     [GeneratedRegex(@"^0?((7\d{9})|(1\d{8,9})|(2\d{8,9})|(3\d{8,9})|(8\d{8,9}))$")]
     private static partial Regex PhoneNumberRegex();
@@ -144,32 +135,21 @@ internal sealed partial class Program
         do
         {
             Console.Write("> ");
-        } while (
-            Console.ReadLine() is not string input
-            || (Name = input).Length is < 1 or > MaxNameLength
-        );
+        } while (Console.ReadLine() is not { } input || (Name = input).Length is < 1 or > MaxNameLength);
 
-        Console.WriteLine(
-            $"Please enter an address to receive the pizza (up to {MaxAddressLength} characters)"
-        );
+        Console.WriteLine($"Please enter an address to receive the pizza (up to {MaxAddressLength} characters)");
 
         do
         {
             Console.Write("> ");
-        } while (
-            Console.ReadLine() is not string input
-            || (Address = input).Length is < 1 or > MaxAddressLength
-        );
+        } while (Console.ReadLine() is not { } input || (Address = input).Length is < 1 or > MaxAddressLength);
 
         Console.WriteLine("Please enter a phone number for updates");
 
         do
         {
             Console.Write("> +44 ");
-        } while (
-            Console.ReadLine() is not string input
-            || !PhoneNumberRegex().IsMatch(PhoneNumber = input.Replace(" ", ""))
-        );
+        } while (Console.ReadLine() is not { } input || !PhoneNumberRegex().IsMatch(PhoneNumber = input.Replace(" ", "")));
 
         Console.WriteLine("Do you want this to be delivered? (y/n)");
 
@@ -186,7 +166,7 @@ internal sealed partial class Program
 
         foreach (Size option in Pizza.Sizes)
         {
-            int index = (int)option;
+            var index = (int)option;
 
             Console.WriteLine($"{index} - {option} ({Pizza.SizeCosts[index]:C})");
         }
@@ -200,43 +180,33 @@ internal sealed partial class Program
         do
         {
             Console.Write("> ");
-        } while (
-            !Enum.TryParse(Console.ReadLine(), true, out size)
-            || !Enum.IsDefined(typeof(Size), size)
-        );
+        } while (!Enum.TryParse(Console.ReadLine(), true, out size) || !Enum.IsDefined(typeof(Size), size));
 
         Console.WriteLine("Do you want to add an extra toppings? (y/n)");
         Console.Write("> ");
 
-        int extraToppingsAmount = 0;
+        var extraToppingsAmount = 0;
 
         if (Console.ReadLine()?.Trim().ToLower() == "y")
         {
-            for (int i = 0; i < Pizza.ExtraToppingsCosts.Length; i++)
+            for (var i = 0; i < Pizza.ExtraToppingsCosts.Length; i++)
             {
-                string prefix = i.ToString();
+                var prefix = i.ToString();
 
                 if (i == Pizza.ExtraToppingsCosts.Length - 1)
                 {
                     prefix += "+";
                 }
 
-                Console.WriteLine(
-                    $"{prefix} - {Pizza.ExtraToppingsCosts[Int32.Min(i, Pizza.ExtraToppingsCosts.Length - 1)]:C}"
-                );
+                Console.WriteLine($"{prefix} - {Pizza.ExtraToppingsCosts[Int32.Min(i, Pizza.ExtraToppingsCosts.Length - 1)]:C}");
             }
 
-            Console.WriteLine(
-                $"Pick the amount of extra toppings for your order (up to {Pizza.MaxToppings})"
-            );
+            Console.WriteLine($"Pick the amount of extra toppings for your order (up to {Pizza.MaxToppings})");
 
             do
             {
                 Console.Write("> ");
-            } while (
-                !Int32.TryParse(Console.ReadLine(), out extraToppingsAmount)
-                || extraToppingsAmount is < 0 or > Pizza.MaxToppings
-            );
+            } while (!Int32.TryParse(Console.ReadLine(), out extraToppingsAmount) || extraToppingsAmount is < 0 or > Pizza.MaxToppings);
         }
 
         Pizza pizza = new(size, extraToppingsAmount);
@@ -254,16 +224,11 @@ internal sealed partial class Program
 
         Table pizzaBills = new("Pizza Count", "Size", "Extra Toppings", "Total");
 
-        for (int i = 0; i < Pizzas.Count; i++)
+        for (var i = 0; i < Pizzas.Count; i++)
         {
             Pizza pizza = Pizzas[i];
 
-            pizzaBills.AddRow(
-                i + 1,
-                $"{pizza.CostOfSize:C} ({pizza.Size})",
-                $"{pizza.CostOfExtraToppings:C}",
-                $"{pizza.Cost:C}"
-            );
+            pizzaBills.AddRow(i + 1, $"{pizza.CostOfSize:C} ({pizza.Size})", $"{pizza.CostOfExtraToppings:C}", $"{pizza.Cost:C}");
 
             subTotal += pizza.Cost;
         }
@@ -272,18 +237,12 @@ internal sealed partial class Program
 
         Table finalisedBill = new("Sub Total", "Discount", "Delivery Charge", "Grand Total");
 
-        decimal discount =
-            subTotal >= DiscountFrom ? Decimal.Round(subTotal * -DiscountRate, 2) : 0;
-        decimal deliveryCharge = IsDelivery ? DeliveryCost : 0;
+        var discount = subTotal >= DiscountFrom ? Decimal.Round(subTotal * -DiscountRate, 2) : 0;
+        var deliveryCharge = IsDelivery ? DeliveryCost : 0;
 
-        decimal grandTotal = subTotal + discount + deliveryCharge;
+        var grandTotal = subTotal + discount + deliveryCharge;
 
-        finalisedBill.AddRow(
-            $"{subTotal:C}",
-            $"{discount:C}",
-            $"{DeliveryCost:C}",
-            $"{grandTotal:C}"
-        );
+        finalisedBill.AddRow($"{subTotal:C}", $"{discount:C}", $"{DeliveryCost:C}", $"{grandTotal:C}");
 
         finalisedBill.Print();
 

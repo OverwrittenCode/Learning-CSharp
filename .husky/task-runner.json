@@ -3,8 +3,13 @@
     {
       "name": "Run csharpier",
       "command": "dotnet",
-      "args": [ "csharpier", "${staged}" ],
-      "include": [ "**/*.cs" ]
+      "args": [
+        "csharpier",
+        "${staged}"
+      ],
+      "include": [
+        "**/*.cs"
+      ]
     }
   ]
 }

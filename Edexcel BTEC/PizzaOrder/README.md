@@ -7,9 +7,9 @@ The owner of a local pizza restaurant has commissioned you as a Junior Software 
 You need to create a program that will allow the staff to enter this information:
 
 - Customer details:
-  - Name
-  - Address
-  - Phone number
+    - Name
+    - Address
+    - Phone number
 - The quantity of pizzas being ordered.
 - The size of each pizza (an order can include different pizza sizes).
 - An option to add more toppings to the standard pizzas if required.

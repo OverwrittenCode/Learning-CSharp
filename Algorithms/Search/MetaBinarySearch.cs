@@ -9,7 +9,7 @@ internal sealed class MetaBinarySearch : BaseSearch
 
         var requiredBitsForMaxIndex = (int)Math.Floor(Math.Log2(maxIndex)) + 1;
 
-        for (int bitPosition = requiredBitsForMaxIndex - 1; bitPosition >= 0; bitPosition--)
+        for (var bitPosition = requiredBitsForMaxIndex - 1; bitPosition >= 0; bitPosition--)
         {
             if (Ints[index] == RandomSearchElement)
             {

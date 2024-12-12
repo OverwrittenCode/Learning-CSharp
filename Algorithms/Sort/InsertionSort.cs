@@ -4,9 +4,9 @@ internal sealed class InsertionSort : BaseSort
 {
     protected override int ExecuteAlgorithm()
     {
-        for (int i = 1; i < Ints.Count; i++)
+        for (var i = 1; i < Ints.Count; i++)
         {
-            int swapIndex = i;
+            var swapIndex = i;
 
             var isModified = false;
 

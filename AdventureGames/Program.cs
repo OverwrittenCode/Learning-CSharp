@@ -1,3 +1,0 @@
-using AdventureGames;
-
-Game.Start();

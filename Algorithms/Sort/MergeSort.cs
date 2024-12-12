@@ -38,6 +38,13 @@ internal sealed class MergeSort : BaseSort
         }
     }
 
+    protected override int ExecuteAlgorithm()
+    {
+        Apply(Ints);
+
+        return PassCounter;
+    }
+
     private void Apply(List<int> ints)
     {
         var length = ints.Count;
@@ -49,8 +56,8 @@ internal sealed class MergeSort : BaseSort
 
         var lengthHalf = length / 2;
 
-        var left = ints[..^lengthHalf];
-        var right = ints[lengthHalf..];
+        List<int>? left = ints[..^lengthHalf];
+        List<int>? right = ints[lengthHalf..];
 
         Apply(left);
         Apply(right);
@@ -58,12 +65,5 @@ internal sealed class MergeSort : BaseSort
         PassCounter++;
 
         Merge(left, right, ints);
-    }
-
-    protected override int ExecuteAlgorithm()
-    {
-        Apply(Ints);
-
-        return PassCounter;
     }
 }

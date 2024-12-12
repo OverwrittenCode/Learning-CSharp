@@ -4,7 +4,7 @@ public enum Group
 {
     Red,
     Green,
-    White,
+    White
 }
 
 public sealed class Program
@@ -18,8 +18,6 @@ public sealed class Program
 
     private static readonly int GroupLength = Enum.GetValues<Group>().Length;
 
-    private readonly int[] _groupedPupilCounters = new int[GroupLength];
-
     private static void Main()
     {
         Console.WriteLine("School Sports Day Service");
@@ -30,6 +28,32 @@ public sealed class Program
         schoolSportsDay.DisplayResults();
     }
 
+    private static int GetBirthMonthInput(int pupilNumber)
+    {
+        Console.WriteLine($"[Pupil {pupilNumber}]: Enter their birth month ({BirthMonthMinValue} - {BirthMonthMaxValue})");
+
+        int birthMonth;
+        do
+        {
+            Console.Write("> ");
+        } while (!Int32.TryParse(Console.ReadLine(), out birthMonth) || birthMonth < BirthMonthMinValue || birthMonth > BirthMonthMaxValue);
+
+        Console.WriteLine();
+        return birthMonth;
+    }
+
+    private static Group AssignGroup(int birthMonth)
+        => birthMonth switch
+        {
+            <= 4 => Group.Red,
+            <= 8 => Group.Green,
+            _ => Group.White
+        };
+
+    private static void PrintRow(string description, string value) => Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
+
+    private readonly int[] _groupedPupilCounters = new int[GroupLength];
+
     private void CollectPupilData()
     {
         for (var i = 0; i < PupilCount; i++)
@@ -39,34 +63,6 @@ public sealed class Program
             _groupedPupilCounters[(int)group]++;
         }
     }
-
-    private static int GetBirthMonthInput(int pupilNumber)
-    {
-        Console.WriteLine(
-            $"[Pupil {pupilNumber}]: Enter their birth month ({BirthMonthMinValue} - {BirthMonthMaxValue})"
-        );
-
-        int birthMonth;
-        do
-        {
-            Console.Write("> ");
-        } while (
-            !Int32.TryParse(Console.ReadLine(), out birthMonth)
-            || birthMonth < BirthMonthMinValue
-            || birthMonth > BirthMonthMaxValue
-        );
-
-        Console.WriteLine();
-        return birthMonth;
-    }
-
-    private static Group AssignGroup(int birthMonth) =>
-        birthMonth switch
-        {
-            <= 4 => Group.Red,
-            <= 8 => Group.Green,
-            _ => Group.White,
-        };
 
     private void DisplayResults()
     {
@@ -86,7 +82,4 @@ public sealed class Program
         Console.WriteLine("Thank you for using our School Sports Day Service!");
         Console.WriteLine();
     }
-
-    private static void PrintRow(string description, string value) =>
-        Console.WriteLine($"{description, -PadRightWidth} {value, PadLeftWidth}");
 }

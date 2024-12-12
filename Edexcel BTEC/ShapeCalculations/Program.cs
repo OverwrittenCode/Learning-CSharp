@@ -4,38 +4,38 @@ internal enum Panel
 {
     Quit,
     Help,
-    Calculate,
+    Calculate
 }
 
 internal enum PostCalculation
 {
     Restart,
-    QuitProgram,
+    QuitProgram
 }
 
 internal enum Shape
 {
     Circle,
     Square,
-    Cuboid,
+    Cuboid
 }
 
 internal enum Circle
 {
     Area,
-    Circumference,
+    Circumference
 }
 
 internal enum Square
 {
     Area,
-    Perimeter,
+    Perimeter
 }
 
 internal enum Cuboid
 {
     Volume,
-    SurfaceArea,
+    SurfaceArea
 }
 
 internal sealed class Program
@@ -44,13 +44,13 @@ internal sealed class Program
 
     private static void Main()
     {
-        int calculationCounter = 1;
+        var calculationCounter = 1;
 
         while (true)
         {
             Console.WriteLine($"----- Calculation {calculationCounter} -----");
 
-            Panel panel = GetEnumChoice<Panel>();
+            var panel = GetEnumChoice<Panel>();
 
             switch (panel)
             {
@@ -78,26 +78,24 @@ internal sealed class Program
     {
         Console.WriteLine("----- [Help Menu] -----");
         Console.WriteLine("You can perform calculations on a Circle, Square, or Cuboid.");
-        Console.WriteLine(
-            "Each shape allows for different types of calculations (e.g. Area, Perimeter)."
-        );
+        Console.WriteLine("Each shape allows for different types of calculations (e.g. Area, Perimeter).");
     }
 
     private static void PerformCalculations()
     {
-        Shape shape = GetEnumChoice<Shape>();
+        var shape = GetEnumChoice<Shape>();
 
-        string result = shape switch
+        var result = shape switch
         {
             Shape.Circle => GetCircleCalculation(),
             Shape.Square => GetSquareCalculation(),
-            Shape.Cuboid => GetCuboidCalculation(),
+            Shape.Cuboid => GetCuboidCalculation()
         };
 
         Console.WriteLine($"Result: {result}");
         Console.WriteLine();
 
-        PostCalculation postCalculation = GetEnumChoice<PostCalculation>();
+        var postCalculation = GetEnumChoice<PostCalculation>();
 
         if (postCalculation == PostCalculation.QuitProgram)
         {
@@ -107,40 +105,39 @@ internal sealed class Program
 
     private static string GetCircleCalculation()
     {
-        Circle circle = GetEnumChoice<Circle>();
-        double radius = GetMeasurementInput("radius");
+        var circle = GetEnumChoice<Circle>();
+        var radius = GetMeasurementInput("radius");
 
         return circle switch
         {
             Circle.Area => $"{Math.PI * radius * radius} squared units",
-            Circle.Circumference => $"{2 * Math.PI * radius} units",
+            Circle.Circumference => $"{2 * Math.PI * radius} units"
         };
     }
 
     private static string GetSquareCalculation()
     {
-        Square square = GetEnumChoice<Square>();
-        double length = GetMeasurementInput("length");
+        var square = GetEnumChoice<Square>();
+        var length = GetMeasurementInput("length");
 
         return square switch
         {
             Square.Area => $"{length * length} squared units",
-            Square.Perimeter => $"{4 * length} units",
+            Square.Perimeter => $"{4 * length} units"
         };
     }
 
     private static string GetCuboidCalculation()
     {
-        Cuboid cuboid = GetEnumChoice<Cuboid>();
-        double length = GetMeasurementInput("length");
-        double width = GetMeasurementInput("width");
-        double height = GetMeasurementInput("height");
+        var cuboid = GetEnumChoice<Cuboid>();
+        var length = GetMeasurementInput("length");
+        var width = GetMeasurementInput("width");
+        var height = GetMeasurementInput("height");
 
         return cuboid switch
         {
-            Cuboid.SurfaceArea =>
-                $"{2 * ((length * width) + (length * height) + (width * height))} squared units",
-            Cuboid.Volume => $"{length * width * height} cubic units",
+            Cuboid.SurfaceArea => $"{2 * ((length * width) + (length * height) + (width * height))} squared units",
+            Cuboid.Volume => $"{length * width * height} cubic units"
         };
     }
 
@@ -153,19 +150,14 @@ internal sealed class Program
         do
         {
             Console.Write("> ");
-        } while (
-            !Double.TryParse(Console.ReadLine(), out input)
-            || input <= 0
-            || input > MaxMeasurementInput
-        );
+        } while (!Double.TryParse(Console.ReadLine(), out input) || input <= 0 || input > MaxMeasurementInput);
 
         Console.WriteLine();
 
         return input;
     }
 
-    private static T GetEnumChoice<T>()
-        where T : struct, Enum
+    private static T GetEnumChoice<T>() where T : struct, Enum
     {
         Console.WriteLine("Choose an option below:");
 
@@ -179,10 +171,7 @@ internal sealed class Program
         do
         {
             Console.Write("> ");
-        } while (
-            !Enum.TryParse(Console.ReadLine(), true, out choice)
-            || !Enum.IsDefined(typeof(T), choice)
-        );
+        } while (!Enum.TryParse(Console.ReadLine(), true, out choice) || !Enum.IsDefined(typeof(T), choice));
 
         Console.WriteLine();
 

@@ -15,16 +15,6 @@ internal sealed partial class Program
     private const int PadRightWidth = 25;
     private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
 
-    private string _password = "";
-    private int _score;
-    private int _reductionScore;
-    private int _lowerCaseCounter;
-    private int _upperCaseCounter;
-    private int _numericCounter;
-    private int _specialCounter;
-
-    private int Length => _password.Length;
-
     private static void Main()
     {
         Console.WriteLine("Password Rating Service");
@@ -46,14 +36,21 @@ internal sealed partial class Program
     [GeneratedRegex("!|%|&|\\*|\\+|=")]
     private static partial Regex SpecialRegex();
 
-    private static void PrintRow(string description, string value) =>
-        Console.WriteLine($"{description, -PadRightWidth} {value, PadLeftWidth}");
+    private static void PrintRow(string description, string value) => Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
+
+    private string _password = "";
+    private int _score;
+    private int _reductionScore;
+    private int _lowerCaseCounter;
+    private int _upperCaseCounter;
+    private int _numericCounter;
+    private int _specialCounter;
+
+    private int Length => _password.Length;
 
     private void Process()
     {
-        Console.WriteLine(
-            $"Enter password (advised {MinPasswordLength} - {MaxPasswordLength}, maximum {MaxPasswordInput} characters)"
-        );
+        Console.WriteLine($"Enter password (advised {MinPasswordLength} - {MaxPasswordLength}, maximum {MaxPasswordInput} characters)");
 
         while (true)
         {
@@ -70,7 +67,7 @@ internal sealed partial class Program
 
         Console.WriteLine();
 
-        foreach (char character in _password.ToCharArray())
+        foreach (var character in _password.ToCharArray())
         {
             var regexInput = character.ToString();
             if (LowercaseRegex().IsMatch(regexInput))
@@ -128,7 +125,7 @@ internal sealed partial class Program
             <= 40 => "Low",
             <= 70 => "Medium",
             <= 90 => "High",
-            _ => "Very High",
+            _ => "Very High"
         };
 
         Console.WriteLine();

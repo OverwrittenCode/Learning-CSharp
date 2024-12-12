@@ -9,8 +9,7 @@ internal abstract class BaseSearch : BaseAlgorithm
 
     public readonly int RandomSearchElement;
 
-    public BaseSearch()
-        : base(Count)
+    public BaseSearch() : base(Count)
     {
         Ints = Enumerable.Range(0, Count).ToList();
 
@@ -18,8 +17,5 @@ internal abstract class BaseSearch : BaseAlgorithm
         RandomSearchElement = Ints.Count - 1;
     }
 
-    protected override void DisplayResult(int index)
-    {
-        Console.WriteLine($"Found at index {index}");
-    }
+    protected override void DisplayResult(int index) => Console.WriteLine($"Found at index {index}");
 }

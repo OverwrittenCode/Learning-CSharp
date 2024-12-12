@@ -1,22 +1,12 @@
 namespace Algorithms.Search;
 
-sealed class InterpolationSearch : BaseSearch
+internal sealed class InterpolationSearch : BaseSearch
 {
     protected override int ExecuteAlgorithm()
     {
-        while (
-            LowerBound <= UpperBound
-            && RandomSearchElement >= Ints[LowerBound]
-            && RandomSearchElement <= Ints[UpperBound]
-        )
+        while (LowerBound <= UpperBound && RandomSearchElement >= Ints[LowerBound] && RandomSearchElement <= Ints[UpperBound])
         {
-            var index =
-                LowerBound
-                + (
-                    (UpperBound - LowerBound)
-                    / (Ints[UpperBound] - Ints[LowerBound])
-                    * (RandomSearchElement - Ints[LowerBound])
-                );
+            var index = LowerBound + ((UpperBound - LowerBound) / (Ints[UpperBound] - Ints[LowerBound]) * (RandomSearchElement - Ints[LowerBound]));
 
             var element = Ints[index];
 
@@ -24,7 +14,8 @@ sealed class InterpolationSearch : BaseSearch
             {
                 return index;
             }
-            else if (element < RandomSearchElement)
+
+            if (element < RandomSearchElement)
             {
                 LowerBound = index + 1;
             }

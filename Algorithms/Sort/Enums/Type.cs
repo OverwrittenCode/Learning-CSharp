@@ -1,8 +1,8 @@
-namespace Algorithms.Sort;
+namespace Algorithms.Sort.Enums;
 
 internal enum SortType
 {
     Bubble,
     Insertion,
-    Merge,
+    Merge
 }

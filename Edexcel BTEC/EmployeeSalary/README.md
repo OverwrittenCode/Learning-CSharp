@@ -1,9 +1,8 @@
 # Request
 
-Emily needs to calculate the total cost of booking movie tickets for her family. 
-The ticket price varies based on the age of the audience member (child, adult, or senior), and there is a special discount for booking more than 5 tickets at once. 
+Emily needs to calculate the total cost of booking movie tickets for her family.
+The ticket price varies based on the age of the audience member (child, adult, or senior), and there is a special discount for booking more than 5 tickets at once.
 Additionally, there is an extra charge for choosing premium seats.
-
 
 # Objective
 
@@ -22,21 +21,22 @@ Ensure that the program:
 - Is efficient and easy to use.
 - Calculates costs correctly, displaying them to two decimal places.
 - Shows an itemised breakdown of the total cost, including:
-  - Number of tickets per category (child, adult, senior).
-  - Premium seat surcharges.
-  - Bulk booking discount.
-  - Total amount payable.
+    - Number of tickets per category (child, adult, senior).
+    - Premium seat surcharges.
+    - Bulk booking discount.
+    - Total amount payable.
 
 # Information
 
 ## Ticket Prices
+
 - Premium seat surcharge: £2.00 per ticket
 
-| Audience Category		| Price per Ticket | 
-| --------------------	| ---------------- | 
-| Children (under 12)   | £5.00            |
-| Adult					| £10.00           | 
-| Senior (65+ years)    | £7.00            | 
+| Audience Category		 | Price per Ticket | 
+|---------------------|------------------| 
+| Children (under 12) | £5.00            |
+| Adult					          | £10.00           | 
+| Senior (65+ years)  | £7.00            | 
 
 ## Discounts
 

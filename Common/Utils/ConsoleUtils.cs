@@ -4,9 +4,9 @@ public static class ConsoleUtils
 {
     public static void GenerateText(string message)
     {
-        for (int i = 0; i < message.Length; i++)
+        for (var i = 0; i < message.Length; i++)
         {
-            char letter = message[i];
+            var letter = message[i];
 
             if (i == message.Length - 1)
             {
@@ -21,7 +21,7 @@ public static class ConsoleUtils
         }
     }
 
-    public static void SendMessage(string message, Action<string>? provider = null)
+    private static void SendMessage(string message, Action<string>? provider = null)
     {
         if (provider is null)
         {
@@ -33,13 +33,9 @@ public static class ConsoleUtils
         }
     }
 
-    public static void HighlightConsoleLine(
-        string message,
-        ConsoleColor colour,
-        Action<string>? provider = null
-    )
+    public static void HighlightConsoleLine(string message, ConsoleColor colour, Action<string>? provider = null)
     {
-        var originalColour = Console.ForegroundColor;
+        ConsoleColor originalColour = Console.ForegroundColor;
 
         Console.ForegroundColor = colour;
 
@@ -57,8 +53,7 @@ public static class ConsoleUtils
         return Console.ReadLine()?.Trim().ToLower() == "y";
     }
 
-    public static T GetEnumChoice<T>(T[] values, string messageCategory = "")
-        where T : struct, Enum
+    public static T GetEnumChoice<T>(T[] values, string messageCategory = "") where T : struct, Enum
     {
         if (!String.IsNullOrEmpty(messageCategory))
         {
@@ -71,7 +66,7 @@ public static class ConsoleUtils
 
         Console.WriteLine();
 
-        var originalColour = Console.ForegroundColor;
+        ConsoleColor originalColour = Console.ForegroundColor;
 
         Console.ForegroundColor = ConsoleColor.DarkYellow;
 
@@ -88,23 +83,17 @@ public static class ConsoleUtils
 
         int choice;
 
-        while (
-            !Int32.TryParse(Console.ReadLine(), out choice) || !Enum.IsDefined(typeof(T), choice)
-        )
+        while (!Int32.TryParse(Console.ReadLine(), out choice) || !Enum.IsDefined(typeof(T), choice))
         {
-            HighlightConsoleLine(
-                "[ERROR]: Invalid choice. Please enter a number corresponding to an option.",
-                ConsoleColor.Red
-            );
+            HighlightConsoleLine("[ERROR]: Invalid choice. Please enter a number corresponding to an option.", ConsoleColor.Red);
         }
 
         return (T)(object)choice;
     }
 
-    public static T GetEnumChoice<T>(string messageCategory = "")
-        where T : struct, Enum
+    public static T GetEnumChoice<T>(string messageCategory = "") where T : struct, Enum
     {
-        var values = Enum.GetValues<T>();
+        T[] values = Enum.GetValues<T>();
 
         return GetEnumChoice(values, messageCategory);
     }

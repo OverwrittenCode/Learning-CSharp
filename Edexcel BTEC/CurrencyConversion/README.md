@@ -1,6 +1,7 @@
 # Request
 
-A local travel agent has commissioned you as a Junior Software Developer to write a program. The program will be used by staff to calculate the costs of converting pounds sterling (GBP) into another currency.
+A local travel agent has commissioned you as a Junior Software Developer to write a program. The program will be used by staff to calculate the costs of converting pounds
+sterling (GBP) into another currency.
 
 The travel agent only converts GBP into:
 
@@ -33,17 +34,17 @@ When you are designing and developing the solution ensure that:
 - it provides accurate currency conversions
 - all currency values are displayed to two decimal places
 - there is output to show:
-  - how much chosen currency the customer receives
-  - the transaction fee
-  - the discount amount
-  - the total cost
+    - how much chosen currency the customer receives
+    - the transaction fee
+    - the discount amount
+    - the total cost
 
 # Information
 
 ## Exchange Rates
 
 | Currency         | Exchange rate (1 GBP =) |
-| ---------------- | ----------------------- |
+|------------------|-------------------------|
 | American Dollars | 1.40 USD                |
 | Euros            | 1.14 EUR                |
 | Brazilian Real   | 4.77 BRL                |
@@ -57,7 +58,7 @@ Maximum of 2500 GBP can be converted in one transaction.
 ## Transaction Fees
 
 | Amount        | Fee  |
-| ------------- | ---- |
+|---------------|------|
 | Up to 300 GBP | 3.5% |
 | Over 300 GBP  | 3%   |
 | Over 750 GBP  | 2.5% |

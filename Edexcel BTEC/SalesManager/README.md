@@ -1,6 +1,7 @@
 # Request
 
-A local property agency has employed you to write a program that will help its Sales Manager. The Sales Manager needs to calculate the amount of commission paid to employees and determine which employee will receive a bonus. The commission is based on the number of properties they sell.
+A local property agency has employed you to write a program that will help its Sales Manager. The Sales Manager needs to calculate the amount of commission paid to employees and
+determine which employee will receive a bonus. The commission is based on the number of properties they sell.
 
 # Objective
 
@@ -25,12 +26,12 @@ When you are designing and developing the solution, ensure that:
 - A suitable data structure is used.
 - The number of properties sold is recorded as whole numbers.
 - There is output to show:
-  - An employee list in order of the number of properties sold.
-  - The sales commission for each employee (as currency to two decimal places).
-  - The total sales commission for the week (as currency to two decimal places).
-  - The total number of properties sold in the week.
-  - The name and number of properties sold by the employee with the most sales.
-  - The bonus amount to be applied.
+    - An employee list in order of the number of properties sold.
+    - The sales commission for each employee (as currency to two decimal places).
+    - The total sales commission for the week (as currency to two decimal places).
+    - The total number of properties sold in the week.
+    - The name and number of properties sold by the employee with the most sales.
+    - The bonus amount to be applied.
 
 # Information
 

@@ -1,20 +1,12 @@
 using System.Globalization;
 
 decimal loan;
-Console.WriteLine($"Enter the amount (GBP) you would like to withdraw for your loan");
+Console.WriteLine("Enter the amount (GBP) you would like to withdraw for your loan");
 
 do
 {
     Console.Write($"> {CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol}");
-} while (
-    !Decimal.TryParse(
-        Console.ReadLine(),
-        NumberStyles.Currency,
-        CultureInfo.CurrentCulture,
-        out loan
-    )
-    || loan < 0
-);
+} while (!Decimal.TryParse(Console.ReadLine(), NumberStyles.Currency, CultureInfo.CurrentCulture, out loan) || loan < 0);
 
 int months;
 Console.WriteLine("Enter number of months to repay loan over (includes interest)");

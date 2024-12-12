@@ -1,8 +1,10 @@
+namespace MovieTickets;
+
 internal enum GroupType
 {
     Child,
     Adult,
-    Senior,
+    Senior
 }
 
 internal sealed class Program
@@ -10,17 +12,10 @@ internal sealed class Program
     private static readonly GroupType[] Groups = Enum.GetValues<GroupType>();
     private static readonly int[] TicketPrices = new int[Groups.Length];
 
-    static Program()
-    {
-        TicketPrices[(int)GroupType.Child] = 5;
-        TicketPrices[(int)GroupType.Adult] = 10;
-        TicketPrices[(int)GroupType.Senior] = 7;
-    }
-
     private static void Main()
     {
         Console.WriteLine($"Do you want premium seats ({2:C}/ticket)? (y/n)");
-        bool isPremiumSeats = Console.ReadLine()?.ToLower().Trim() == "y";
+        var isPremiumSeats = Console.ReadLine()?.ToLower().Trim() == "y";
 
         decimal price = 0;
         decimal totalTickets = 0;
@@ -34,9 +29,7 @@ internal sealed class Program
             do
             {
                 Console.Write("> ");
-            } while (
-                !Int32.TryParse(Console.ReadLine(), out ticketCount) || ticketCount is < 0 or > 30
-            );
+            } while (!Int32.TryParse(Console.ReadLine(), out ticketCount) || ticketCount is < 0 or > 30);
 
             totalTickets += ticketCount;
             price += TicketPrices[(int)group] * ticketCount;
@@ -53,5 +46,12 @@ internal sealed class Program
         }
 
         Console.WriteLine($"Total cost: {price:C}");
+    }
+
+    static Program()
+    {
+        TicketPrices[(int)GroupType.Child] = 5;
+        TicketPrices[(int)GroupType.Adult] = 10;
+        TicketPrices[(int)GroupType.Senior] = 7;
     }
 }

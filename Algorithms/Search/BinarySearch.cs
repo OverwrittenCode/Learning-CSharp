@@ -14,7 +14,8 @@ internal sealed class BinarySearch : BaseSearch
             {
                 return midpointIndex;
             }
-            else if (midpointValue < searchElement)
+
+            if (midpointValue < searchElement)
             {
                 lowerBound = midpointIndex + 1;
             }
@@ -27,8 +28,5 @@ internal sealed class BinarySearch : BaseSearch
         return -1;
     }
 
-    protected override int ExecuteAlgorithm()
-    {
-        return Apply(Ints, LowerBound, UpperBound, RandomSearchElement);
-    }
+    protected override int ExecuteAlgorithm() => Apply(Ints, LowerBound, UpperBound, RandomSearchElement);
 }

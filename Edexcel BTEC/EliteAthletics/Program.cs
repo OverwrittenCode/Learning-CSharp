@@ -3,14 +3,14 @@ namespace EliteAthletics;
 internal enum Gender
 {
     Male,
-    Female,
+    Female
 }
 
 internal enum RecordBreaker
 {
     World,
     European,
-    British,
+    British
 }
 
 internal sealed class Table
@@ -20,7 +20,7 @@ internal sealed class Table
 
     private readonly int[] _paddings;
 
-    public List<object[]> Rows { get; private set; }
+    public List<object[]> Rows { get; }
 
     public Table(params string[] headers)
     {
@@ -30,11 +30,9 @@ internal sealed class Table
 
     public void AddRow(params object[] rows)
     {
-        for (int i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Length; i++)
         {
-            int length =
-                rows[i].ToString()?.Length + 5
-                ?? throw new ArgumentException("ToString method returned null", nameof(rows));
+            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
 
             if (length > _paddings[i])
             {
@@ -53,14 +51,9 @@ internal sealed class Table
 
         foreach (object[] rows in Rows)
         {
-            int padIndex = 0;
+            var padIndex = 0;
 
-            string value = rows.Aggregate(
-                "",
-                (acc, current) =>
-                    acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]),
-                result => result + CellSeparator
-            );
+            var value = rows.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
 
             Console.WriteLine(value);
             Console.WriteLine(divider);
@@ -82,17 +75,6 @@ internal sealed class Program
 
     private static Gender GenderGroup;
 
-    static Program()
-    {
-        Records[(int)Gender.Male, (int)RecordBreaker.World] = 9.58;
-        Records[(int)Gender.Male, (int)RecordBreaker.European] = 9.86;
-        Records[(int)Gender.Male, (int)RecordBreaker.British] = 9.87;
-
-        Records[(int)Gender.Female, (int)RecordBreaker.World] = 10.49;
-        Records[(int)Gender.Female, (int)RecordBreaker.European] = 10.73;
-        Records[(int)Gender.Female, (int)RecordBreaker.British] = 10.99;
-    }
-
     private static void Main()
     {
         foreach (Gender option in Genders)
@@ -105,10 +87,7 @@ internal sealed class Program
         do
         {
             Console.Write("> ");
-        } while (
-            !Enum.TryParse(Console.ReadLine(), true, out GenderGroup)
-            || !Enum.IsDefined(typeof(Gender), GenderGroup)
-        );
+        } while (!Enum.TryParse(Console.ReadLine(), true, out GenderGroup) || !Enum.IsDefined(typeof(Gender), GenderGroup));
 
         while (Times.Count < MaxAthletes)
         {
@@ -136,9 +115,7 @@ internal sealed class Program
 
         Console.WriteLine();
         Console.WriteLine($"Lane {Times.Count + 1}/{MaxAthletes}");
-        Console.WriteLine(
-            $"Enter time taken for the athlete to finish their 100m race (from {MinTime} to {MaxTime} seconds)"
-        );
+        Console.WriteLine($"Enter time taken for the athlete to finish their 100m race (from {MinTime} to {MaxTime} seconds)");
 
         double time;
 
@@ -160,9 +137,9 @@ internal sealed class Program
 
         Table timeTable = new("Lane", "Time (s)");
 
-        for (int i = 0; i < Times.Count; i++)
+        for (var i = 0; i < Times.Count; i++)
         {
-            if (GetRecordBreaker(Times[i]) is RecordBreaker recordBreaker)
+            if (GetRecordBreaker(Times[i]) is { } recordBreaker)
             {
                 recordBreakers.Add((Times[i], i + 1, recordBreaker));
             }
@@ -175,9 +152,7 @@ internal sealed class Program
         foreach (var (time, lane, type) in recordBreakers)
         {
             Console.WriteLine();
-            Console.WriteLine(
-                $"{type.ToString().ToUpper()} RECORD BROKEN BY ALTHELETE LANE {lane}"
-            );
+            Console.WriteLine($"{type.ToString().ToUpper()} RECORD BROKEN BY ALTHELETE LANE {lane}");
 
             Table recordTable = new("Old Record", "New Record");
             recordTable.AddRow(Records[(int)GenderGroup, (int)type], time);
@@ -189,7 +164,7 @@ internal sealed class Program
 
     private static RecordBreaker? GetRecordBreaker(double time)
     {
-        for (int i = 0; i < Records.GetLength(1); i++)
+        for (var i = 0; i < Records.GetLength(1); i++)
         {
             if (Records[(int)GenderGroup, i] > time)
             {
@@ -198,5 +173,16 @@ internal sealed class Program
         }
 
         return null;
+    }
+
+    static Program()
+    {
+        Records[(int)Gender.Male, (int)RecordBreaker.World] = 9.58;
+        Records[(int)Gender.Male, (int)RecordBreaker.European] = 9.86;
+        Records[(int)Gender.Male, (int)RecordBreaker.British] = 9.87;
+
+        Records[(int)Gender.Female, (int)RecordBreaker.World] = 10.49;
+        Records[(int)Gender.Female, (int)RecordBreaker.European] = 10.73;
+        Records[(int)Gender.Female, (int)RecordBreaker.British] = 10.99;
     }
 }

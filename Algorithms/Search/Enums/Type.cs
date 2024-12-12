@@ -1,4 +1,4 @@
-namespace Algorithms.Search;
+namespace Algorithms.Search.Enums;
 
 internal enum SearchType
 {
@@ -7,5 +7,5 @@ internal enum SearchType
     MetaBinary,
     Exponential,
     Interpolation,
-    Ternary,
+    Ternary
 }

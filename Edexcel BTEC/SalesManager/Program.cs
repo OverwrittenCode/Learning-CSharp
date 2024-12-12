@@ -14,7 +14,7 @@ internal sealed class Table
 
     private readonly int[] _paddings;
 
-    public List<object[]> Rows { get; private set; }
+    public List<object[]> Rows { get; }
 
     public Table(params string[] headers)
     {
@@ -26,9 +26,7 @@ internal sealed class Table
     {
         for (var i = 0; i < rows.Length; i++)
         {
-            var length =
-                rows[i].ToString()?.Length + 5
-                ?? throw new ArgumentException("ToString method returned null", nameof(rows));
+            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
 
             if (length > _paddings[i])
             {
@@ -49,12 +47,7 @@ internal sealed class Table
         {
             var padIndex = 0;
 
-            var value = rows.Aggregate(
-                "",
-                (acc, current) =>
-                    acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]),
-                result => result + CellSeparator
-            );
+            var value = rows.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
 
             Console.WriteLine(value);
             Console.WriteLine(divider);
@@ -66,7 +59,7 @@ internal sealed class Program
 {
     private const decimal BonusRate = 0.15M;
     private const int MaxNameLength = 20;
-    private const int MaxIDLength = 20;
+    private const int MaxIdLength = 20;
     private const int MaxPropertiesSold = 100;
     private const int MinEmployees = 2;
     private const int MaxEmployees = 5;
@@ -104,21 +97,16 @@ internal sealed class Program
         Console.WriteLine(new string('-', 15));
 
         var name = GetEmployeeStringInput("name", MaxNameLength);
-        var id = GetEmployeeStringInput("id", MaxIDLength);
+        var id = GetEmployeeStringInput("id", MaxIdLength);
 
         int propertiesSold;
 
-        Console.WriteLine(
-            $"Enter employee's number of properties sold (up to {MaxPropertiesSold})"
-        );
+        Console.WriteLine($"Enter employee's number of properties sold (up to {MaxPropertiesSold})");
 
         do
         {
             Console.Write("> ");
-        } while (
-            !Int32.TryParse(Console.ReadLine(), out propertiesSold)
-            || propertiesSold is <= 0 or > MaxPropertiesSold
-        );
+        } while (!Int32.TryParse(Console.ReadLine(), out propertiesSold) || propertiesSold is <= 0 or > MaxPropertiesSold);
 
         Console.WriteLine();
 
@@ -138,11 +126,7 @@ internal sealed class Program
         do
         {
             Console.Write("> ");
-        } while (
-            Console.ReadLine() is not string input
-            || (value = input).Length <= 0
-            || value.Length > max
-        );
+        } while (Console.ReadLine() is not { } input || (value = input).Length <= 0 || value.Length > max);
 
         return value;
     }
@@ -164,14 +148,7 @@ internal sealed class Program
             var total = subTotal + bonus;
             GrandTotal += total;
 
-            employeeTable.AddRow(
-                employee.Id,
-                employee.Name,
-                employee.PropertiesSold,
-                $"{subTotal:C}",
-                $"{bonus:C}",
-                $"{total:C}"
-            );
+            employeeTable.AddRow(employee.Id, employee.Name, employee.PropertiesSold, $"{subTotal:C}", $"{bonus:C}", $"{total:C}");
         }
 
         employeeTable.Print();

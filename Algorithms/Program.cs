@@ -1,9 +1,11 @@
-using Algorithms;
+using Algorithms.Enums;
 using Algorithms.Search;
+using Algorithms.Search.Enums;
 using Algorithms.Sort;
+using Algorithms.Sort.Enums;
 using Common.Utils;
 
-AlgorithmType algorithmTypeChoice = ConsoleUtils.GetEnumChoice<AlgorithmType>();
+var algorithmTypeChoice = ConsoleUtils.GetEnumChoice<AlgorithmType>();
 
 ConsoleUtils.HighlightConsoleLine($"------- [{algorithmTypeChoice}] -------", ConsoleColor.Cyan);
 
@@ -11,12 +13,9 @@ switch (algorithmTypeChoice)
 {
     case AlgorithmType.Search:
         {
-            SearchType searchAlgorithmChoice = ConsoleUtils.GetEnumChoice<SearchType>();
+            var searchAlgorithmChoice = ConsoleUtils.GetEnumChoice<SearchType>();
 
-            ConsoleUtils.HighlightConsoleLine(
-                $"----- [{searchAlgorithmChoice}] -----",
-                ConsoleColor.Cyan
-            );
+            ConsoleUtils.HighlightConsoleLine($"----- [{searchAlgorithmChoice}] -----", ConsoleColor.Cyan);
 
             switch (searchAlgorithmChoice)
             {
@@ -48,14 +47,12 @@ switch (algorithmTypeChoice)
         }
 
         break;
+
     case AlgorithmType.Sort:
         {
-            SortType sortAlgorithmChoice = ConsoleUtils.GetEnumChoice<SortType>();
+            var sortAlgorithmChoice = ConsoleUtils.GetEnumChoice<SortType>();
 
-            ConsoleUtils.HighlightConsoleLine(
-                $"----- [{sortAlgorithmChoice}] -----",
-                ConsoleColor.Cyan
-            );
+            ConsoleUtils.HighlightConsoleLine($"----- [{sortAlgorithmChoice}] -----", ConsoleColor.Cyan);
 
             switch (sortAlgorithmChoice)
             {

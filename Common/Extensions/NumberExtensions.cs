@@ -6,25 +6,16 @@ public static class NumberExtensions
 {
     private const string Format = "N0";
 
-    private static readonly NumberFormatInfo Provider = new() { NumberGroupSeparator = " " };
-
-    public static string ToSeparatedDigits(this int value)
+    private static readonly NumberFormatInfo Provider = new()
     {
-        return value.ToString(Format, Provider);
-    }
+        NumberGroupSeparator = " "
+    };
 
-    public static string ToSeparatedDigits(this double value)
-    {
-        return value.ToString(Format, Provider);
-    }
+    public static string ToSeparatedDigits(this int value) => value.ToString(Format, Provider);
 
-    public static string ToSeparatedDigits(this decimal value)
-    {
-        return value.ToString(Format, Provider);
-    }
+    public static string ToSeparatedDigits(this double value) => value.ToString(Format, Provider);
 
-    public static string ToSeparatedDigits(this long value)
-    {
-        return value.ToString(Format, Provider);
-    }
+    public static string ToSeparatedDigits(this decimal value) => value.ToString(Format, Provider);
+
+    public static string ToSeparatedDigits(this long value) => value.ToString(Format, Provider);
 }

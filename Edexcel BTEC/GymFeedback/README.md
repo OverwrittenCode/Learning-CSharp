@@ -23,9 +23,9 @@ When designing and developing the solution ensure:
 - the BMI calculation is given to 1 decimal place
 - the kilocalorie requirement output is shown rounded to a whole number
 - there is a text output to show the member’s:
-  - current BMR
-  - current BMI
-  - target BMI
+    - current BMR
+    - current BMI
+    - target BMI
 
 # Information
 
@@ -48,7 +48,7 @@ You are provided with information to use when designing and developing your prog
 ## Calculating the recommended daily kilocalorie intake to maintain current weight:
 
 | Individual’s level of exercise                            | Calculation of daily intake required (kilocalories) |
-| --------------------------------------------------------- | --------------------------------------------------- |
+|-----------------------------------------------------------|-----------------------------------------------------|
 | Little to no exercise                                     | BMR × 1.2                                           |
 | Light exercise (1–3 days per week)                        | BMR × 1.375                                         |
 | Moderate exercise (3–5 days per week)                     | BMR × 1.55                                          |

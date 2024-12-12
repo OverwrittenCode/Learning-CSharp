@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace PupilTestResults;
 
 internal enum Grade
@@ -5,7 +7,7 @@ internal enum Grade
     Fail,
     Pass,
     Merit,
-    Distinction,
+    Distinction
 }
 
 internal readonly record struct Student(string Name, int Score)
@@ -15,13 +17,13 @@ internal readonly record struct Student(string Name, int Score)
     public const int MaxNameLength = 30;
     public const int MaxScore = 100;
 
-    public Grade Grade =>
-        Score switch
+    public Grade Grade
+        => Score switch
         {
             < 40 => Grade.Fail,
             <= 50 => Grade.Pass,
             < 70 => Grade.Merit,
-            _ => Grade.Distinction,
+            _ => Grade.Distinction
         };
 }
 
@@ -32,7 +34,7 @@ internal sealed class Table
 
     private readonly int[] _paddings;
 
-    public List<object[]> Rows { get; private set; }
+    public List<object[]> Rows { get; }
 
     public Table(params string[] headers)
     {
@@ -42,20 +44,15 @@ internal sealed class Table
 
     public override string ToString()
     {
-        var result = new System.Text.StringBuilder();
+        var result = new StringBuilder();
 
         var divider = new string(RowSeparator, _paddings.Sum() + _paddings.Length + 1);
         result.AppendLine(divider);
 
         foreach (object[] row in Rows)
         {
-            int padIndex = 0;
-            string value = row.Aggregate(
-                "",
-                (acc, current) =>
-                    acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]),
-                result => result + CellSeparator
-            );
+            var padIndex = 0;
+            var value = row.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
 
             result.AppendLine(value);
             result.AppendLine(divider);
@@ -68,17 +65,12 @@ internal sealed class Table
     {
         if (rows.Length != _paddings.Length)
         {
-            throw new ArgumentException(
-                "Row length does not match the number of columns.",
-                nameof(rows)
-            );
+            throw new ArgumentException("Row length does not match the number of columns.", nameof(rows));
         }
 
-        for (int i = 0; i < rows.Length; i++)
+        for (var i = 0; i < rows.Length; i++)
         {
-            int length =
-                rows[i].ToString()?.Length + 5
-                ?? throw new ArgumentException("ToString method returned null", nameof(rows));
+            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
 
             if (length > _paddings[i])
             {
@@ -95,23 +87,6 @@ internal sealed class Program
     private static readonly int StudentCount;
     private static readonly Student[] Students;
 
-    static Program()
-    {
-        Console.WriteLine(
-            $"Enter the number of students (from {Student.MinQuantity} to {Student.MaxQuantity})"
-        );
-
-        do
-        {
-            Console.Write("> ");
-        } while (
-            !Int32.TryParse(Console.ReadLine(), out StudentCount)
-            || StudentCount is < Student.MinQuantity or > Student.MaxQuantity
-        );
-
-        Students = new Student[StudentCount];
-    }
-
     private static void Main()
     {
         CollectData();
@@ -120,7 +95,7 @@ internal sealed class Program
 
     private static void CollectData()
     {
-        for (int i = 0; i < StudentCount; i++)
+        for (var i = 0; i < StudentCount; i++)
         {
             Console.WriteLine($"[STUDENT {i + 1}/{StudentCount}]");
 
@@ -132,19 +107,14 @@ internal sealed class Program
             do
             {
                 Console.Write("> ");
-            } while (
-                Console.ReadLine() is not string input
-                || (name = input).Length is <= 0 or > Student.MaxNameLength
-            );
+            } while (Console.ReadLine() is not { } input || (name = input).Length is <= 0 or > Student.MaxNameLength);
 
             Console.WriteLine($"Enter score for student (up to {Student.MaxScore})");
 
             do
             {
                 Console.Write("> ");
-            } while (
-                !Int32.TryParse(Console.ReadLine(), out score) || score is < 0 or > Student.MaxScore
-            );
+            } while (!Int32.TryParse(Console.ReadLine(), out score) || score is < 0 or > Student.MaxScore);
 
             Students[i] = new(name, score);
         }
@@ -175,5 +145,17 @@ internal sealed class Program
         File.WriteAllText(relativePath, result);
 
         Console.WriteLine($"Results saved to {Path.GetFullPath(relativePath)}");
+    }
+
+    static Program()
+    {
+        Console.WriteLine($"Enter the number of students (from {Student.MinQuantity} to {Student.MaxQuantity})");
+
+        do
+        {
+            Console.Write("> ");
+        } while (!Int32.TryParse(Console.ReadLine(), out StudentCount) || StudentCount is < Student.MinQuantity or > Student.MaxQuantity);
+
+        Students = new Student[StudentCount];
     }
 }

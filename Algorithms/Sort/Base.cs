@@ -10,12 +10,11 @@ internal abstract class BaseSort : BaseAlgorithm
 
     public int PassCounter { get; protected set; }
 
-    public BaseSort()
-        : base(Count)
+    public BaseSort() : base(Count)
     {
         Random random = new();
 
-        for (int i = 0; i < Count; i++)
+        for (var i = 0; i < Count; i++)
         {
             _ints.Add(random.Next(Count));
         }
@@ -23,13 +22,7 @@ internal abstract class BaseSort : BaseAlgorithm
         PrepareNextIteration();
     }
 
-    protected override void PrepareNextIteration()
-    {
-        Ints = new(_ints);
-    }
+    protected override void PrepareNextIteration() => Ints = new(_ints);
 
-    protected override void DisplayResult(int passes)
-    {
-        Console.WriteLine($"Sorted after {passes.ToSeparatedDigits()} passes");
-    }
+    protected override void DisplayResult(int passes) => Console.WriteLine($"Sorted after {passes.ToSeparatedDigits()} passes");
 }

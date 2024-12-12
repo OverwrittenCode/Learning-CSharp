@@ -15,18 +15,18 @@ internal abstract class BaseAlgorithm
     {
         UpperBound = maxLength - 1;
 
-        Ints = new List<int>(UpperBound);
+        Ints = new(UpperBound);
     }
 
     public void Init()
     {
         long totalElapsedTicks = 0;
 
-        int result = -1;
+        var result = -1;
 
-        for (int i = 0; i < Iterations; i++)
+        for (var i = 0; i < Iterations; i++)
         {
-            Stopwatch stopwatch = Stopwatch.StartNew();
+            var stopwatch = Stopwatch.StartNew();
 
             result = ExecuteAlgorithm();
 

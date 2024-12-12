@@ -11,7 +11,7 @@ internal sealed class BubbleSort : BaseSort
             isModified = false;
             PassCounter++;
 
-            for (int i = 0; i < Ints.Count - 1; i++)
+            for (var i = 0; i < Ints.Count - 1; i++)
             {
                 if (Ints[i] > Ints[i + 1])
                 {
