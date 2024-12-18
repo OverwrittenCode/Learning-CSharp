@@ -10,7 +10,7 @@ internal sealed class Game : BaseBoardGame
     private const int GridSizeIndex = GridSize - 1;
     private const int MaxMoveIndex = MaxMoves - 1;
 
-    private static readonly int[] WinningCombinations =
+    private static readonly HashSet<int> WinningCombinations =
     [
         0x_7,
         0x_38,
