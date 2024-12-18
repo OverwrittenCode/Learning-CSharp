@@ -12,14 +12,14 @@ internal sealed class Game : BaseBoardGame
 
     private static readonly int[] WinningCombinations =
     [
-        0b_0_00000111,
-        0b_0_00111000,
-        0b_1_11000000,
-        0b_0_01001001,
-        0b_0_10010010,
-        0b_1_00100100,
-        0b_1_00010001,
-        0b_0_01010100
+        0x_7,
+        0x_38,
+        0x_1C0,
+        0x_49,
+        0x_92,
+        0x_124,
+        0x_111,
+        0x_54
     ];
 
     private int _playerBoard;
@@ -122,8 +122,8 @@ internal sealed class Game : BaseBoardGame
     protected override void PrepareNextRound()
     {
         _moveCounter = 0;
-        _playerBoard = 0b_0;
-        _computerBoard = 0b_0;
+        _playerBoard = 0x_0;
+        _computerBoard = 0x_0;
     }
 
     private void ShowBoard()
