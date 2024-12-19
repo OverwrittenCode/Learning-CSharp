@@ -2,6 +2,18 @@ namespace Common.Utils;
 
 public static class ConsoleUtils
 {
+    private static void SendMessage(string message, Action<string>? provider = null)
+    {
+        if (provider is null)
+        {
+            Console.WriteLine(message);
+        }
+        else
+        {
+            provider(message);
+        }
+    }
+
     public static void GenerateText(string message)
     {
         for (var i = 0; i < message.Length; i++)
@@ -18,18 +30,6 @@ public static class ConsoleUtils
             }
 
             Thread.Sleep(20);
-        }
-    }
-
-    private static void SendMessage(string message, Action<string>? provider = null)
-    {
-        if (provider is null)
-        {
-            Console.WriteLine(message);
-        }
-        else
-        {
-            provider(message);
         }
     }
 

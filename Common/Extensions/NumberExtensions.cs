@@ -11,5 +11,5 @@ public static class NumberExtensions
         NumberGroupSeparator = " "
     };
 
-    public static string ToSeparatedDigits(this IFormattable value)  => value.ToString(Format, Provider);
+    public static string ToSeparatedDigits(this IFormattable value) => value.ToString(Format, Provider);
 }
