@@ -1,6 +1,6 @@
-namespace Algorithms.Sort;
+﻿namespace Algorithms.Sort;
 
-internal sealed class InsertionSort : BaseSort
+internal sealed class InsertionSort : BaseSortAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {

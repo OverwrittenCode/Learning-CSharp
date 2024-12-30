@@ -1,6 +1,6 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class TernarySearch : BaseSearch
+internal sealed class TernarySearch : BaseSearchAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {

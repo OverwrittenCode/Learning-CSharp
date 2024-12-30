@@ -1,6 +1,6 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class LinearSearch : BaseSearch
+internal sealed class LinearSearch : BaseSearchAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {

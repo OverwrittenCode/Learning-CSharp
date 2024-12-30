@@ -1,6 +1,6 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class MetaBinarySearch : BaseSearch
+internal sealed class MetaBinarySearch : BaseSearchAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {

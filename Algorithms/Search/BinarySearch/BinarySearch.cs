@@ -1,6 +1,6 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class BinarySearch : BaseSearch
+public sealed class BinarySearch : BaseSearchAlgorithm
 {
     public static int Apply(List<int> ints, int lowerBound, int upperBound, int searchElement)
     {
@@ -27,6 +27,6 @@ internal sealed class BinarySearch : BaseSearch
 
         return -1;
     }
-
+    
     protected override int ExecuteAlgorithm() => Apply(Ints, LowerBound, UpperBound, RandomSearchElement);
 }

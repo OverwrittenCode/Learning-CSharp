@@ -1,17 +1,10 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class ExponentialSearch : BaseSearch
+internal sealed class ExponentialSearch : BaseSearchAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {
-        var i = 0;
-
-        if (Ints[i] == RandomSearchElement)
-        {
-            return i;
-        }
-
-        i++;
+        var i = 1;
 
         while (i < Ints.Count && Ints[i] < RandomSearchElement)
         {

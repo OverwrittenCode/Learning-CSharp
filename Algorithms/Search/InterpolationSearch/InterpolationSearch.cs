@@ -1,6 +1,6 @@
-namespace Algorithms.Search;
+﻿namespace Algorithms.Search;
 
-internal sealed class InterpolationSearch : BaseSearch
+internal sealed class InterpolationSearch : BaseSearchAlgorithm
 {
     protected override int ExecuteAlgorithm()
     {

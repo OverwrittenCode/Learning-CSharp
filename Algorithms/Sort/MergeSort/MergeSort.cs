@@ -1,6 +1,6 @@
-namespace Algorithms.Sort;
+﻿namespace Algorithms.Sort;
 
-internal sealed class MergeSort : BaseSort
+internal sealed class MergeSort : BaseSortAlgorithm
 {
     private static void Merge(List<int> left, List<int> right, List<int> ints)
     {
@@ -56,8 +56,8 @@ internal sealed class MergeSort : BaseSort
 
         var lengthHalf = length / 2;
 
-        List<int>? left = ints[..^lengthHalf];
-        List<int>? right = ints[lengthHalf..];
+        List<int> left = ints[..^lengthHalf];
+        List<int> right = ints[lengthHalf..];
 
         Apply(left);
         Apply(right);
