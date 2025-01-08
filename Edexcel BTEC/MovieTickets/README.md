@@ -32,10 +32,10 @@ Ensure that the program:
 
 - Premium seat surcharge: £2.00 per ticket
 
-| Audience Category		 | Price per Ticket | 
+| Audience Category   | Price per Ticket | 
 |---------------------|------------------| 
 | Children (under 12) | £5.00            |
-| Adult					          | £10.00           | 
+| Adult               | £10.00           |
 | Senior (65+ years)  | £7.00            | 
 
 ## Discounts
