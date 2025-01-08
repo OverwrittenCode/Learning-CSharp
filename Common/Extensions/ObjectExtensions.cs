@@ -2,6 +2,8 @@ namespace Common.Extensions;
 
 public static class ObjectExtensions
 {
-    public static T GetRandomElement<T>(this IList<T> array) => array[new Random().Next(0, array.Count)];
-    public static T GetRandomElement<T>(this IList<T> array, Range range) => array[new Random().Next(range.Start.GetOffset(array.Count), range.End.GetOffset(array.Count))];
+    private static readonly Random Random = new();
+
+    public static T GetRandomElement<T>(this IList<T> array) => array[Random.Next(array.Count)];
+    public static T GetRandomElement<T>(this IList<T> array, Range range) => array[Random.Next(range.Start.GetOffset(array.Count), range.End.GetOffset(array.Count))];
 }
