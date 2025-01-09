@@ -9,20 +9,16 @@ public abstract class BaseAlgorithm
 
     protected List<int> Ints = [];
 
-    protected abstract void PrepareNextIteration();
-    protected abstract void DisplayResult(int result);
-    protected abstract int ExecuteAlgorithm();
-    
     public void Init()
     {
         long totalElapsedTicks = 0;
 
         var result = -1;
-        
+
         for (var i = 0; i < Iterations; i++)
         {
             PrepareNextIteration();
-            
+
             var stopwatch = Stopwatch.StartNew();
             result = ExecuteAlgorithm();
             stopwatch.Stop();
@@ -34,5 +30,8 @@ public abstract class BaseAlgorithm
 
         DisplayResult(result);
     }
-    
+
+    protected abstract void PrepareNextIteration();
+    protected abstract void DisplayResult(int result);
+    protected abstract int ExecuteAlgorithm();
 }

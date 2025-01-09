@@ -9,8 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\Algorithms\Algorithms.csproj" />
-      <ProjectReference Include="..\BinarySearch\BinarySearch.csproj" />
+        <ProjectReference Include="..\..\Algorithms\Algorithms.csproj"/>
+        <ProjectReference Include="..\BinarySearch\BinarySearch.csproj"/>
     </ItemGroup>
 
 </Project>

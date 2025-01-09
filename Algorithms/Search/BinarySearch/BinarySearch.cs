@@ -27,6 +27,6 @@ public sealed class BinarySearch : BaseSearchAlgorithm
 
         return -1;
     }
-    
+
     protected override int ExecuteAlgorithm() => Apply(Ints, LowerBound, UpperBound, RandomSearchElement);
 }
