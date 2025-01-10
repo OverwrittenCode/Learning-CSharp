@@ -13,176 +13,122 @@ internal enum RecordBreaker
     British
 }
 
-internal sealed class Table
+internal static class Program
 {
-    private const char CellSeparator = '|';
-    private const char RowSeparator = '-';
-
-    private readonly int[] _paddings;
-
-    public List<object[]> Rows { get; }
-
-    public Table(params string[] headers)
+    private static readonly Dictionary<Gender, Dictionary<RecordBreaker, double>> Records = new()
     {
-        Rows = [headers];
-        _paddings = headers.Select(header => header.Length + 5).ToArray();
-    }
-
-    public void AddRow(params object[] rows)
-    {
-        for (var i = 0; i < rows.Length; i++)
         {
-            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
-
-            if (length > _paddings[i])
+            Gender.Male, new()
             {
-                _paddings[i] = length;
+                {
+                    RecordBreaker.World, 9.58
+                },
+                {
+                    RecordBreaker.European, 9.86
+                },
+                {
+                    RecordBreaker.British, 9.87
+                }
+            }
+        },
+        {
+            Gender.Female, new()
+            {
+                {
+                    RecordBreaker.World, 10.49
+                },
+                {
+                    RecordBreaker.European, 10.73
+                },
+                {
+                    RecordBreaker.British, 10.99
+                }
             }
         }
+    };
 
-        Rows.Add(rows);
-    }
-
-    public void Print()
-    {
-        var divider = new string(RowSeparator, _paddings.Sum() + _paddings.Length + 1);
-
-        Console.WriteLine(divider);
-
-        foreach (object[] rows in Rows)
-        {
-            var padIndex = 0;
-
-            var value = rows.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
-
-            Console.WriteLine(value);
-            Console.WriteLine(divider);
-        }
-    }
-}
-
-internal sealed class Program
-{
-    private const int MinAthletes = 4;
-    private const int MaxAthletes = 8;
-
-    private static readonly Gender[] Genders = Enum.GetValues<Gender>();
-    private static readonly RecordBreaker[] RecordBreakers = Enum.GetValues<RecordBreaker>();
-
-    private static readonly double[,] Records = new double[Genders.Length, RecordBreakers.Length];
-
-    private static readonly List<double> Times = [];
-
-    private static Gender GenderGroup;
+    private static readonly string GenderOptions = String.Join(", ", Enum.GetValues<Gender>());
 
     private static void Main()
     {
-        foreach (Gender option in Genders)
+        Dictionary<RecordBreaker, double> focusedRecords;
+        while (true)
         {
-            Console.WriteLine($"{(int)option} - {option}");
+            Console.WriteLine(GenderOptions);
+            Console.Write("Enter gender group: ");
+
+            var input = Console.ReadLine()?.Trim();
+            Console.WriteLine();
+
+            if (Enum.TryParse(input, true, out Gender genderGroup) && Enum.IsDefined(genderGroup))
+            {
+                focusedRecords = Records[genderGroup];
+                break;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
         }
 
-        Console.WriteLine("Pick the gender for the group of athletes");
-
-        do
+        int numberOfAthletes;
+        while (true)
         {
-            Console.Write("> ");
-        } while (!Enum.TryParse(Console.ReadLine(), true, out GenderGroup) || !Enum.IsDefined(typeof(Gender), GenderGroup));
+            const int MinAthletes = 4;
+            const int MaxAthletes = 8;
 
-        while (Times.Count < MaxAthletes)
-        {
-            if (Times.Count >= MinAthletes)
+            Console.Write($"Enter number of athletes (from {MinAthletes} to {MaxAthletes}): ");
+            var input = Console.ReadLine();
+            Console.WriteLine();
+
+            if (Int32.TryParse(input, out numberOfAthletes) && numberOfAthletes is >= MinAthletes and <= MaxAthletes)
             {
-                Console.WriteLine("Continue? (y/n)");
-                Console.Write("> ");
+                break;
+            }
 
-                if (Console.ReadLine()?.ToLower().Trim() != "y")
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
+        }
+
+        for (var i = 0; i < numberOfAthletes; i++)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[Athlete {i + 1}/{numberOfAthletes}]");
+            Console.ResetColor();
+
+            double timeTaken;
+            while (true)
+            {
+                Console.Write("Enter time taken for 100m race in seconds: ");
+                var input = Console.ReadLine();
+                Console.WriteLine();
+
+                if (Double.TryParse(input, out timeTaken) && timeTaken > 0)
                 {
                     break;
                 }
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please try again.");
+                Console.ResetColor();
             }
 
-            ProcessAthlete();
-        }
-
-        DisplaySummary();
-    }
-
-    private static void ProcessAthlete()
-    {
-        const double MinTime = 6;
-        const double MaxTime = 30;
-
-        Console.WriteLine();
-        Console.WriteLine($"Lane {Times.Count + 1}/{MaxAthletes}");
-        Console.WriteLine($"Enter time taken for the athlete to finish their 100m race (from {MinTime} to {MaxTime} seconds)");
-
-        double time;
-
-        do
-        {
-            Console.Write("> ");
-        } while (!Double.TryParse(Console.ReadLine(), out time) || time is < MinTime or > MaxTime);
-
-        Times.Add(Double.Round(time, 2));
-    }
-
-    private static void DisplaySummary()
-    {
-        Times.Sort();
-
-        List<(double Time, int Lane, RecordBreaker type)> recordBreakers = [];
-
-        Console.WriteLine("Summary");
-
-        Table timeTable = new("Lane", "Time (s)");
-
-        for (var i = 0; i < Times.Count; i++)
-        {
-            if (GetRecordBreaker(Times[i]) is { } recordBreaker)
+            foreach (KeyValuePair<RecordBreaker, double> pair in focusedRecords.Where(pair => timeTaken < pair.Value))
             {
-                recordBreakers.Add((Times[i], i + 1, recordBreaker));
-            }
+                Console.ForegroundColor = ConsoleColor.Green;
+                Console.WriteLine(
+                    $"""
+                     [{pair.Key.ToString().ToUpper()} RECORD BEATEN]
+                     {"Old Record:",-15} {pair.Value:N2}s
+                     {"New Record:",-15} {timeTaken:N2}s
 
-            timeTable.AddRow(i + 1, Times[i]);
-        }
+                     """
+                );
+                Console.ResetColor();
 
-        timeTable.Print();
-
-        foreach (var (time, lane, type) in recordBreakers)
-        {
-            Console.WriteLine();
-            Console.WriteLine($"{type.ToString().ToUpper()} RECORD BROKEN BY ALTHELETE LANE {lane}");
-
-            Table recordTable = new("Old Record", "New Record");
-            recordTable.AddRow(Records[(int)GenderGroup, (int)type], time);
-            recordTable.Print();
-        }
-
-        Console.WriteLine();
-    }
-
-    private static RecordBreaker? GetRecordBreaker(double time)
-    {
-        for (var i = 0; i < Records.GetLength(1); i++)
-        {
-            if (Records[(int)GenderGroup, i] > time)
-            {
-                return (RecordBreaker)i;
+                break;
             }
         }
-
-        return null;
-    }
-
-    static Program()
-    {
-        Records[(int)Gender.Male, (int)RecordBreaker.World] = 9.58;
-        Records[(int)Gender.Male, (int)RecordBreaker.European] = 9.86;
-        Records[(int)Gender.Male, (int)RecordBreaker.British] = 9.87;
-
-        Records[(int)Gender.Female, (int)RecordBreaker.World] = 10.49;
-        Records[(int)Gender.Female, (int)RecordBreaker.European] = 10.73;
-        Records[(int)Gender.Female, (int)RecordBreaker.British] = 10.99;
     }
 }

@@ -1,0 +1,54 @@
+﻿BEGIN
+    ENUM Gender
+        Male,
+        Female
+    END ENUM
+    
+    ENUM RecordBreaker
+        World,
+        European,
+        British
+    END ENUM
+    
+    DICTIONARY MaleRecords
+        { RecordBreaker.World,      9.58 },
+        { RecordBreaker.European,   9.86 },
+        { RecordBreaker.British,    9.87 }
+    END DICTIONARY
+    
+    DICTIONARY FemaleRecords
+        { RecordBreaker.World,      10.49 },
+        { RecordBreaker.European,   10.73 },
+        { RecordBreaker.British,    10.99 }
+    END DICTIONARY
+    
+    INPUT GenderGroup
+    WHILE NOT GenderGroup MEMBER OF Gender
+        OUTPUT error message
+        INPUT GenderGroup
+    END WHILE
+    
+    IF GenderGroup == Gender.Male THEN
+        KeyValueRecords = MaleRecords
+    ELSE
+        KeyValueRecords = FemaleRecords
+    END IF
+    
+    INPUT NumberOfEntries
+    WHILE NOT 8 >= NumberOfEntries >= 4
+        OUTPUT error message
+        INPUT NumberOfEntries
+    END WHILE
+    
+    FOR i = 1 TO NumberOfEntries
+        INPUT TimeTaken
+        WHILE NOT 30 >= TimeTaken >= 6
+            OUTPUT error message
+            INPUT TimeTaken
+        END WHILE
+        
+        IF KeyValueRecords CONTAINS ANY MATCH WHERE ((Value) => TimeTaken < Value)) THEN
+            OUTPUT record broken message
+        END IF
+    END FOR
+END
