@@ -1,24 +1,28 @@
 BEGIN
-	salary = 0
+	Salary = £0
 
-	FOR weekIndex = 0 TO 4
-        week = weekIndex + 1
+	FOR Week = 0 TO 4
+        INPUT Hours
+        WHILE NOT 100 > Hours > 0
+            OUTPUT error message
+            INPUT Hours
+        END WHILE
 
-		REPEAT
-			hours = INPUT "[Week " + week + "/4]: How many hours a week has the employee worked? (0 - 100): "
-		UNTIL hours is numerical AND hours > 0 AND hours < 100
-
-		IF hours > 40 THEN
-			rate = 22.50
+		IF Hours > 40 THEN
+			Rate = £22.50
 		ELSE
-			rate = 15.00
+			Rate = £15.00
+        END IF
 
-		salary += hours * rate
+		Salary += Hours * Rate
 
-		IF hours > 45
-			salary += 100.00
+		IF Hours > 45
+			Salary += £100
+        END IF
+    END FOR
 
-	salary *= 0.9
+    Tax = Salary * 10%
+    Salary -= Tax
 
-	OUTPUT "Salary for the month: £" + salary
+	OUTPUT Salary
 END
