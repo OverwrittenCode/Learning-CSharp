@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace GymFeedback;
 
 internal enum Gender
@@ -6,134 +8,158 @@ internal enum Gender
     Female
 }
 
-internal sealed class Program
+internal static class Program
 {
-    private const int IdealBmi = 22;
+    private static readonly string GenderOptions = String.Join(", ", Enum.GetValues<Gender>());
 
-    private const int PadMaxWidth = 65;
-    private const int PadRightWidth = 45;
-    private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
+    private static void Main()
+    {
+        CultureInfo.CurrentCulture = new("en-GB");
 
-    public static double Bmi => Math.Round(Weight / HeightInSquaredMeters, 1);
+        Gender genderGroup;
+        while (true)
+        {
+            Console.WriteLine(GenderOptions);
+            Console.Write("Enter gender: ");
+            var input = Console.ReadLine()?.Trim();
+            Console.WriteLine();
 
-    public static string BmiCategory
-        => Bmi switch
+            if (Enum.TryParse(input, true, out genderGroup) && Enum.IsDefined(genderGroup))
+            {
+                break;
+            }
+
+            DisplayErrorMessage();
+        }
+
+        double weightKg;
+        while (true)
+        {
+            const int Min = 30;
+            const int Max = 250;
+
+            Console.Write($"Enter weight in kg ({Min} - {Max}): ");
+            var input = Console.ReadLine()?.Replace("kg", "");
+            Console.WriteLine();
+
+            if (Double.TryParse(input, out weightKg) && weightKg is >= Min and <= Max)
+            {
+                break;
+            }
+
+            DisplayErrorMessage();
+        }
+
+        double heightCm;
+        while (true)
+        {
+            const int Min = 120;
+            const int Max = 210;
+
+            Console.Write($"Enter height in cm ({Min} - {Max}): ");
+            var input = Console.ReadLine()?.Replace("cm", "");
+            Console.WriteLine();
+
+            if (Double.TryParse(input, out heightCm) && heightCm is >= Min and <= Max)
+            {
+                break;
+            }
+
+            DisplayErrorMessage();
+        }
+
+        int age;
+        while (true)
+        {
+            const int Min = 14;
+            const int Max = 100;
+
+            Console.Write($"Enter age in years ({Min} - {Max}): ");
+            var input = Console.ReadLine();
+            Console.WriteLine();
+
+            if (Int32.TryParse(input, out age) && age is >= Min and <= Max)
+            {
+                break;
+            }
+
+            DisplayErrorMessage();
+        }
+
+        var bmr = genderGroup switch
+        {
+            Gender.Male => 88.362 + (13.397 * weightKg) + (4.799 * heightCm) - (5.677 * age),
+            Gender.Female => 447.593 + (9.247 * weightKg) + (3.098 * heightCm) - (4.330 * age)
+        };
+
+        var heightMetres = heightCm / 100;
+        var heightSquaredMetres = heightMetres * heightMetres;
+        var bmi = weightKg / heightSquaredMetres;
+
+        const int IdealBmi = 22;
+        var idealWeight = IdealBmi * heightSquaredMetres;
+        var weightFromIdeal = idealWeight - weightKg;
+
+        var bmiCategory = bmi switch
         {
             < 18.5 => "Underweight",
             < 25 => "Normal",
             < 30 => "Overweight",
-            _ => "Obese"
+            _ => "Obesity"
         };
 
-    public static double WeightDifference => Math.Abs(Math.Round(Weight - (IdealBmi * HeightInSquaredMeters), 2));
-
-    public static double Bmr
-        => Math.Round(Gender == Gender.Male ? 88.362 + (13.397 * Weight) + (4.799 * Height) - (5.677 * Age) : 447.593 + (9.247 * Weight) + (3.098 * Height) - (4.330 * Age), 2);
-
-    public static double ActivityFactor
-        => DailyExerciseSessions switch
+        uint dailyExerciseSessions;
+        while (true)
         {
-            <= 1 => 1.2,
-            <= 3 => 1.375,
-            <= 5 => 1.55,
-            <= 7 => 1.725,
-            _ => 1.9
-        };
+            Console.Write("Enter the number of daily exercise sessions: ");
+            var input = Console.ReadLine();
+            Console.WriteLine();
 
-    public static int DailyKcal => (int)Math.Round(Bmr * ActivityFactor);
+            if (UInt32.TryParse(input, out dailyExerciseSessions))
+            {
+                break;
+            }
 
-    public static double HeightInSquaredMeters => Height * Height;
-
-    public static double Weight { get; private set; }
-    public static double Height { get; private set; }
-    public static int Age { get; private set; }
-    public static int DailyExerciseSessions { get; private set; }
-    public static Gender Gender { get; private set; }
-
-    private static void Main()
-    {
-        Console.WriteLine("Gym Feedback Service");
-        Console.WriteLine(new string('=', PadMaxWidth));
-
-        ProcessUser();
-    }
-
-    private static double GetRangeInput(string messageBody, double minValue, double maxValue)
-    {
-        Console.WriteLine($"{messageBody} ({minValue} - {maxValue})");
-
-        double value;
-        do
-        {
-            Console.Write("> ");
-        } while (!Double.TryParse(Console.ReadLine(), out value) || value < minValue || value > maxValue);
-
-        Console.WriteLine();
-        return value;
-    }
-
-    private static Gender GetGenderInput()
-    {
-        Console.WriteLine("Choose your gender below:");
-        foreach (Gender gender in Enum.GetValues<Gender>())
-        {
-            Console.WriteLine($"{(int)gender} - {gender}");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
         }
 
-        Gender choice;
-        do
+        var requiredDailyKcal = bmr
+                              * dailyExerciseSessions switch
+                                {
+                                    < 1 => 1.2,
+                                    < 3 => 1.375,
+                                    < 5 => 1.55,
+                                    < 7 => 1.725,
+                                    _ => 1.9
+                                };
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("[SUMMARY]");
+        Console.ResetColor();
+        Console.WriteLine($"Required daily kilocalories to maintain current weight: {requiredDailyKcal:N0}kcal");
+
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine("[BREAKDOWN]");
+        Console.ResetColor();
+        Console.WriteLine(
+            $"""
+             {"Body Mass Index (BMI)",-15}: {bmi:N1} ({bmiCategory})
+             {"Basal Metabolic Rate (BMR)",-15} {bmr:N2}
+
+             {"Weight",-15}: {weightKg:N2}kg
+             {"Ideal Weight",-15}: {idealWeight:N2}kg
+             {"Difference",-15} {weightFromIdeal:N2}kg
+             """
+        );
+        return;
+
+        void DisplayErrorMessage()
         {
-            Console.Write("> ");
-        } while (!Enum.TryParse(Console.ReadLine(), true, out choice) || !Enum.IsDefined(typeof(Gender), choice));
-
-        Console.WriteLine();
-        return choice;
-    }
-
-    private static void ProcessUser()
-    {
-        const double MinWeight = 30;
-        const double MaxWeight = 250;
-        const double MinHeight = 120;
-        const double MaxHeight = 210;
-        const int MinAge = 14;
-        const int MaxAge = 100;
-        const int MaxExerciseSessions = 10;
-
-        Weight = GetRangeInput("Enter your weight in kilograms", MinWeight, MaxWeight);
-        Height = GetRangeInput("Enter your height in centimetres", MinHeight, MaxHeight) / 100;
-        Age = (int)GetRangeInput("Enter your age in years", MinAge, MaxAge);
-        DailyExerciseSessions = (int)GetRangeInput("Enter the number of exercise sessions per day", 0, MaxExerciseSessions);
-        Gender = GetGenderInput();
-
-        DisplayResults();
-    }
-
-    private static void DisplayResults()
-    {
-        if (WeightDifference == 0)
-        {
-            Console.WriteLine("You are at your ideal weight!");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
         }
-        else
-        {
-            var action = WeightDifference > 0 ? "lose" : "gain";
-            Console.WriteLine($"You need to {action} {WeightDifference} kg to reach your target BMI ({IdealBmi})");
-        }
-
-        Console.WriteLine(new string('-', PadMaxWidth));
-        Console.WriteLine("Summary");
-        Console.WriteLine(new string('-', PadMaxWidth));
-
-        PrintRow("Description", "Value");
-        PrintRow("Body Mass Index (BMI)", $"{Bmi} ({BmiCategory})");
-        PrintRow("Basal Metabolic Rate (BMR)", $"{Bmr} kcal/day");
-        PrintRow("Daily caloric requirement to maintain weight", $"{DailyKcal} kcal/day");
-
-        Console.WriteLine(new string('-', PadMaxWidth));
-        Console.WriteLine("Thank you for using our Gym Feedback Service!");
-        Console.WriteLine();
     }
-
-    private static void PrintRow(string description, string value) => Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
 }
