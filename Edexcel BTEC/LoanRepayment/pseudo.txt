@@ -1,18 +1,21 @@
 BEGIN
-	REPEAT
-		loan = INPUT "Enter the amount (GBP) you would like to withdraw for your loan: £"
-	UNTIL loan is numerical AND loan > 0
+    INPUT Loan
+    WHILE NOT Loan > 0
+        OUTPUT error message
+        INPUT Loan
+    END WHILE
+    
+	INPUT Duration
+	WHILE NOT 12 >= Duration >= 1
+	    OUTPUT error message
+	    INPUT Duration
+    END WHILE
 
-	REPEAT
-		duration = INPUT "Enter number of months to repay loan over (includes interest): "
-	UNTIL duration >= 1 AND duration <= 12
+	INPUT IsEarlyPayment
+	IF IsEarlyPayment == True THEN
+		Loan *= 0.9
+    END IF
 
-	isEarlyPayment = INPUT "Will you make an early payment? (y/n)" == "y"
-
-	IF isEarlyPayment THEN
-		loan *= 0.9
-
-	charge = loan * 1.05
-
-	OUTPUT "Total cost to pay back: £" + charge
+	Charge = Loan * 1.05
+	OUTPUT Charge
 END

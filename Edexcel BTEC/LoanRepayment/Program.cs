@@ -1,27 +1,49 @@
 using System.Globalization;
 
-decimal loan;
-Console.WriteLine("Enter the amount (GBP) you would like to withdraw for your loan");
+CultureInfo.CurrentCulture = new("en-GB");
 
-do
+decimal loan;
+while (true)
 {
-    Console.Write($"> {CultureInfo.CurrentCulture.NumberFormat.CurrencySymbol}");
-} while (!Decimal.TryParse(Console.ReadLine(), NumberStyles.Currency, CultureInfo.CurrentCulture, out loan) || loan < 0);
+    Console.Write("Enter the amount (GBP) you would like to withdraw for your loan: £");
+    var input = Console.ReadLine();
+    Console.WriteLine();
+    if (Decimal.TryParse(input, NumberStyles.Currency, CultureInfo.CurrentCulture, out loan) && loan > 0)
+    {
+        break;
+    }
+
+    DisplayErrorMessage();
+}
 
 int months;
-Console.WriteLine("Enter number of months to repay loan over (includes interest)");
-
-do
+while (true)
 {
-    Console.Write("> ");
-} while (!Int32.TryParse(Console.ReadLine(), out months) || months is < 1 or > 12);
+    Console.Write("Enter number of months to repay loan over (includes interest): ");
+    var input = Console.ReadLine();
+    Console.WriteLine();
 
-Console.WriteLine("Will you make an early payment? (y/n");
+    if (Int32.TryParse(input, out months) && months is >= 1 and <= 12)
+    {
+        break;
+    }
+
+    DisplayErrorMessage();
+}
+
+Console.Write("Will you make an early payment? (y/n): ");
 if (Console.ReadLine()?.ToLower().Trim() == "y")
 {
     loan *= 0.9M;
 }
 
 var monthlyCharge = loan * 1.05M / months;
-
 Console.WriteLine($"Total cost to pay back over months ({months}): {monthlyCharge:C}");
+return;
+
+void DisplayErrorMessage()
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine("Invalid input. Please try again.");
+    Console.ResetColor();
+}
