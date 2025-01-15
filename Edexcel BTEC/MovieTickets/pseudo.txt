@@ -1,31 +1,45 @@
 BEGIN
-	ticketCounter = 0
-	price = 0
+    ENUM GroupType
+        Child,
+        Adult,
+        Senior
+    END ENUM
 
-	isPremiumSeat = INPUT "Would you like premium seats? (+£2.00/ticket) (y/n)" == "y"
-
-	isOrderNextTicket = true
-
-	WHILE isOrderNextTicket
-		ticketCounter += 1
-		REPEAT
-			age = INPUT "Ticket: How old are you?"
-		UNTIL age is numerical AND age > 0
-
-		IF age < 18 THEN
-			price += 5.00
-		ELIF age < 65 THEN
-			price += 10.00
-		ELSE
-			price += 7.00
-
-		IF isPremiumSeat THEN
-			price += 2.00
-
-		isOrderNextTicket = INPUT "Would you like to purchase another ticket? (y/n)" == "y"
-
-	IF ticketCounter > 5 THEN
-		price *= 0.9
-
-	OUTPUT "Total cost: £" + price
+    DICTIONARY TicketPrices
+        { GroupType.Child, £5 }
+        { GroupType.Adult, £10 }
+        { GroupType.Senior, £7 }
+    END DICTIONARY
+    
+    Price = 0
+    TotalTickets = 0
+    
+    FOREACH Group, TicketPrice IN TicketPrices
+        Max = 30
+        
+        INPUT StandardTickets
+        WHILE NOT Max >= StandardTickets > 0
+            OUTPUT error message
+            INPUT StandardTickets
+        END WHILE
+        
+        INPUT PremiumTickets
+        WHILE NOT Max >= PremiumTickets >= 0
+            OUTPUT error message
+            INPUT PremiumTickets
+        END WHILE
+        
+        Quantity = StandardTickets + PremiumTickets
+        StandardCost = TicketPrice * Quantity
+        AdditionalCost = PremiumTickets * £2
+        
+        Price += StandardCost + AdditionalCost
+        TotalTickets += Quantity
+    END FOREACH
+    
+    IF TotalTickets > 5 THEN
+        Price *= 0.9
+    END IF
+    
+    OUTPUT Price
 END

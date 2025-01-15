@@ -9,49 +9,75 @@ internal enum GroupType
 
 internal sealed class Program
 {
-    private static readonly GroupType[] Groups = Enum.GetValues<GroupType>();
-    private static readonly int[] TicketPrices = new int[Groups.Length];
+    private static readonly Dictionary<GroupType, decimal> TicketPrices2 = new()
+    {
+        {
+            GroupType.Child, 5
+        },
+        {
+            GroupType.Adult, 10
+        },
+        {
+            GroupType.Senior, 7
+        }
+    };
 
     private static void Main()
     {
-        Console.WriteLine($"Do you want premium seats ({2:C}/ticket)? (y/n)");
-        var isPremiumSeats = Console.ReadLine()?.ToLower().Trim() == "y";
-
         decimal price = 0;
-        decimal totalTickets = 0;
+        uint totalTickets = 0;
 
-        foreach (GroupType group in Groups)
+        foreach ((GroupType group, var ticketPrice) in TicketPrices2)
         {
-            int ticketCount;
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"[{group} TICKETS: {ticketPrice}/ticket]");
+            Console.ResetColor();
 
-            Console.WriteLine($"How many {group} tickets do you want to buy? (0 - 30)");
+            const int Max = 30;
 
-            do
+            uint standardTickets;
+            while (true)
             {
-                Console.Write("> ");
-            } while (!Int32.TryParse(Console.ReadLine(), out ticketCount) || ticketCount is < 0 or > 30);
+                Console.Write($"Enter quantity for standard tickets (up to {Max}): ");
+                if (UInt32.TryParse(Console.ReadLine(), out standardTickets) && standardTickets <= Max)
+                {
+                    break;
+                }
 
-            totalTickets += ticketCount;
-            price += TicketPrices[(int)group] * ticketCount;
-
-            if (isPremiumSeats)
-            {
-                price += 2;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please try again.");
+                Console.ResetColor();
             }
+
+            uint premiumTickets;
+            while (true)
+            {
+                Console.Write($"Enter quantity for premium tickets (up to {Max}): ");
+                if (UInt32.TryParse(Console.ReadLine(), out premiumTickets) && premiumTickets <= Max)
+                {
+                    break;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please try again.");
+                Console.ResetColor();
+            }
+
+            const decimal PremiumTicketCharge = 2;
+
+            var quantity = standardTickets + premiumTickets;
+            var standardCost = ticketPrice * quantity;
+            var additionalCost = premiumTickets * PremiumTicketCharge;
+
+            price += standardCost + additionalCost;
+            totalTickets += quantity;
         }
 
         if (totalTickets > 5)
         {
-            price *= 0.9M;
+            price *= 0.9m;
         }
 
         Console.WriteLine($"Total cost: {price:C}");
-    }
-
-    static Program()
-    {
-        TicketPrices[(int)GroupType.Child] = 5;
-        TicketPrices[(int)GroupType.Adult] = 10;
-        TicketPrices[(int)GroupType.Senior] = 7;
     }
 }
