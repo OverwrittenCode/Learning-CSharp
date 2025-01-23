@@ -1,141 +1,107 @@
-Declare Panel Type Enum = (Quit, Help, Calculate)
-Declare PostCalculation Type Enum = (Restart, QuitProgram)
-Declare Shape Type Enum = (Circle, Square, Cuboid)
-Declare Circle Type Enum = (Area, Circumference)
-Declare Square Type Enum = (Area, Perimeter)
-Declare Cuboid Type Enum = (Volume, SurfaceArea)
-
-Declare Const MaxMeasurementInput Type integer = 100
-
-Begin
-    Declare calculationCounter Type integer = 1
-
-    While True
-        Display "----- Calculation " + String(calculationCounter) + " -----"
-
-        Declare panel Type Panel = GetEnumChoice(Panel)
-
-        Switch panel
-            Case Panel.Quit
-                QuitProgram()
-            End Case
-            Case Panel.Help
-                OpenHelpMenu()
-            End Case
-            Case Panel.Calculate
-                calculationCounter++
-                PerformCalculations()
-            End Case
-        End Switch
-    End While
-End
-
-Procedure QuitProgram()
-    Display "Thank you for using this program! Goodbye!"
-    Process.Close()
-End Procedure
-
-Procedure OpenHelpMenu()
-    Display "----- [Help Menu] -----"
-    Display "You can perform calculations on a Circle, Square, or Cuboid."
-    Display "Each shape allows for different types of calculations (e.g. Area, Perimeter)."
-End Procedure
-
-Procedure PerformCalculations()
-    Declare shape Type Shape = GetEnumChoice(Shape)
-
-    Declare result Type string
-    Switch shape
-        Case Shape.Circle
-            result = GetCircleCalculation()
-        End Case
-        Case Shape.Square
-            result = GetSquareCalculation()
-        End Case
-        Case Shape.Cuboid
-            result = GetCuboidCalculation()
-        End Case
-    End Switch
-
-    Display "Result: " + result
-    Display ""
-
-    Declare postCalculation Type PostCalculation = GetEnumChoice(PostCalculation)
-
-    If postCalculation = PostCalculation.QuitProgram Then
-        QuitProgram()
-    End If
-End Procedure
-
-Function GetCircleCalculation() Return Type string
-    Declare circle Type Circle = GetEnumChoice(Circle)
-
-    Declare radius Type real = GetMeasurementInput("radius")
-
-    Switch circle
-        Case Circle.Area
-            Return String(PI * radius * radius) + " squared units"
-        End Case
-        Case Circle.Circumference
-            Return String(2 * PI * radius) + " units"
-        End Case
-    End Switch
-End Function
-
-Function GetSquareCalculation() Return Type string
-    Declare square Type Square = GetEnumChoice(Square)
-
-    Declare length Type real = GetMeasurementInput("length")
-
-    Switch square
-        Case Square.Area
-            Return String(length * length) + " squared units"
-        End Case
-        Case Square.Perimeter
-            Return String(4 * length) + " units"
-        End Case
-    End Switch
-End Function
-
-Function GetCuboidCalculation() Return Type string
-    Declare cuboid Type Cuboid = GetEnumChoice(Cuboid)
-
-    Declare length Type real = GetMeasurementInput("length")
-    Declare width Type real = GetMeasurementInput("width")
-    Declare height Type real = GetMeasurementInput("height")
-
-    Switch cuboid
-         Case Cuboid.SurfaceArea
-            Return String(2 * ((length * width) + (length * height) + (width * height))) + " squared units"
-        End Case
-        Case Cuboid.Volume
-            Return String(length * width * height) + " cubic units"
-        End Case
-    End Switch
-End Function
-
-Function GetMeasurementInput(name Type string) Return Type real
-    Declare value Type real
-    Display "Enter a positive number for the " + name + " (up to" + String(MaxMeasurementInput) + ")"
-
-    Repeat Display "> "
-    Until Input value Succeeds And value > 0 And value <= MaxMeasurementInput
-
-    Display ""
-
-    Return value
-End Function
-
-Function GetEnumChoice(enum Type Enum) Return Type Enum
-    Display "Choose an option below:"
-    Display String(enum)
-
-    Declare choice Type Enum
-
-    Repeat Display "> "
-    Until Input choice Succeeds
-
-    Display ""
-
-    Return choice
-End Function
+BEGIN
+    ENUM PanelChoice
+        Quit,
+        Help,
+        Calculate
+    END ENUM
+    
+    ENUM ShapeType
+        Circle,
+        Square,
+        Cuboid
+    END ENUM
+    
+    ENUM Circle
+        Area,
+        Circumference,
+    END ENUM
+    
+    ENUM Square
+        Area,
+        Perimeter,
+    END ENUM
+    
+    ENUM Cuboid
+        Volume,
+        SurfaceArea,
+    END ENUM
+    
+    WHILE True
+        Panel = CALL FUNCTION GetEnumInput<PanelChoice>()
+        
+        SWITCH Panel
+            PanelChoice.Quit        --> CALL FUNCTION Quit()
+            PanelChoice.Help        --> OUTPUT help message
+            PanelChoice.Calculate   --> CALL FUNCTION Calculate()
+        END SWITCH
+    END WHILE
+    
+    FUNCTION Quit()
+        # waits for key press before closing
+        INPUT Key
+        TERMINATE PROCESS
+    END FUNCTION
+    
+    FUNCTION Calculate()
+        Shape = CALL FUNCTION GetEnumInput<ShapeType>()
+        
+        SWITCH Shape
+            CASE ShapeType.Circle
+                Attribute = CALL FUNCTION GetEnumInput<Circle>()
+                R = CALL FUNCTION GetMeasurementInput()
+                
+                SWITCH Attribute
+                    Circle.Area              --> Result = PI * R * R " squared units"
+                    Circle.Circumference     --> Result = 2 * PI * R " units"
+                END SWITCH
+            END CASE
+            
+            CASE ShapeType.Square
+                Attribute = CALL FUNCTION GetEnumInput<Square>()
+                X = CALL FUNCTION GetMeasurementInput()
+                
+                SWITCH Attribute
+                    Square.Area              --> Result = X * X " squared units"
+                    Square.Perimeter         --> Result = X * 4 " units"
+                END SWITCH
+            END CASE
+            
+            CASE ShapeType.Cuboid
+                Attribute = CALL FUNCTION GetEnumInput<Cuboid>()
+                L = CALL FUNCTION GetMeasurementInput()
+                W = CALL FUNCTION GetMeasurementInput()
+                H = CALL FUNCTION GetMeasurementInput()
+                
+                SWITCH Attribute
+                    Cuboid.Volume            --> Result = L * W * H " cubic units"
+                    Cuboid.SurfaceArea       --> Result = 2 * ((L * W) + (L * H) + (W * H)) " squared units"
+                END SWITCH
+            END CASE
+        END SWITCH
+        
+        OUTPUT Result
+    END FUNCTION
+    
+    # generic function that:
+    # - takes in the generic form of data type T
+    # - returns a value of data type T
+    FUNCTION <T> GetEnumInput<T>()
+        INPUT Value
+        WHILE NOT Value MEMBER OF T
+            OUTPUT error message
+            INPUT Value
+        END WHILE
+        
+        RETURN Value
+    END FUNCTION
+    
+    FUNCTION FLOAT GetMeasurementInput()
+        INPUT Measurement
+        WHILE NOT 100,000 > Measurement > 0
+            OUTPUT error message
+            INPUT Measurement
+        END WHILE
+        
+        RETURN Measurement
+    END FUNCTION
+END

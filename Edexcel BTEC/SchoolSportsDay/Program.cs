@@ -1,85 +1,58 @@
 namespace SchoolSportsDay;
 
-public enum Group
+internal static class Program
 {
-    Red,
-    Green,
-    White
-}
-
-public sealed class Program
-{
-    private const int PupilCount = 10;
-    private const int BirthMonthMinValue = 1;
-    private const int BirthMonthMaxValue = 12;
-    private const int PadMaxWidth = 25;
-    private const int PadRightWidth = 10;
-    private const int PadLeftWidth = PadMaxWidth - PadRightWidth - 1;
-
-    private static readonly int GroupLength = Enum.GetValues<Group>().Length;
-
     private static void Main()
     {
-        Console.WriteLine("School Sports Day Service");
-        Console.WriteLine(new string('=', PadMaxWidth));
+        var redCounter = 0;
+        var greenCounter = 0;
+        var whiteCounter = 0;
 
-        Program schoolSportsDay = new();
-        schoolSportsDay.CollectPupilData();
-        schoolSportsDay.DisplayResults();
-    }
-
-    private static int GetBirthMonthInput(int pupilNumber)
-    {
-        Console.WriteLine($"[Pupil {pupilNumber}]: Enter their birth month ({BirthMonthMinValue} - {BirthMonthMaxValue})");
-
-        int birthMonth;
-        do
+        const int StudentCount = 10;
+        for (var i = 0; i < StudentCount; i++)
         {
-            Console.Write("> ");
-        } while (!Int32.TryParse(Console.ReadLine(), out birthMonth) || birthMonth < BirthMonthMinValue || birthMonth > BirthMonthMaxValue);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"[STUDENT {i + 1}/{StudentCount}]");
 
-        Console.WriteLine();
-        return birthMonth;
-    }
+            int birthMonth;
+            while (true)
+            {
+                Console.Write("Enter student's birth month: ");
+                if (Int32.TryParse(Console.ReadLine(), out birthMonth) && birthMonth is >= 1 and <= 12)
+                {
+                    break;
+                }
 
-    private static Group AssignGroup(int birthMonth)
-        => birthMonth switch
-        {
-            <= 4 => Group.Red,
-            <= 8 => Group.Green,
-            _ => Group.White
-        };
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Please try again.");
+                Console.ResetColor();
+            }
 
-    private static void PrintRow(string description, string value) => Console.WriteLine($"{description,-PadRightWidth} {value,PadLeftWidth}");
+            switch (birthMonth)
+            {
+                case <= 4:
+                    redCounter++;
+                    break;
+                case <= 8:
+                    greenCounter++;
+                    break;
+                default:
+                    whiteCounter++;
+                    break;
+            }
 
-    private readonly int[] _groupedPupilCounters = new int[GroupLength];
+            const int Alignment = 10;
+            var divider = new string('-', Alignment);
 
-    private void CollectPupilData()
-    {
-        for (var i = 0; i < PupilCount; i++)
-        {
-            var birthMonth = GetBirthMonthInput(i + 1);
-            Group group = AssignGroup(birthMonth);
-            _groupedPupilCounters[(int)group]++;
+            Console.WriteLine(
+                $"""
+                 {"Group",Alignment}{"Amount",Alignment}
+                 {divider}
+                 {"Red",Alignment}{redCounter,Alignment}
+                 {"Green",Alignment}{greenCounter,Alignment}
+                 {"White",Alignment}{whiteCounter,Alignment}
+                 """
+            );
         }
-    }
-
-    private void DisplayResults()
-    {
-        Console.WriteLine(new string('-', PadMaxWidth));
-        Console.WriteLine("Summary");
-        Console.WriteLine(new string('-', PadMaxWidth));
-
-        PrintRow("Group", "Pupil Count");
-
-        foreach (Group group in Enum.GetValues<Group>())
-        {
-            var pupilCount = _groupedPupilCounters[(int)group];
-            PrintRow(group.ToString(), pupilCount.ToString());
-        }
-
-        Console.WriteLine(new string('-', PadMaxWidth));
-        Console.WriteLine("Thank you for using our School Sports Day Service!");
-        Console.WriteLine();
     }
 }

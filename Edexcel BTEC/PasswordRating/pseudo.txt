@@ -1,119 +1,61 @@
-Declare Const MaxPasswordInput Type integer = 100
-Declare Const MinPasswordLength Type integer = 8
-Declare Const MaxPasswordLength Type integer = 15
-Declare Const LowerCaseFactor Type integer = 5
-Declare Const UpperCaseFactor Type integer = 5
-Declare Const NumericalFactor Type integer = 10
-Declare Const SpecialFactor Type integer = 10
-Declare Const PadMaxWidth Type integer = 40
-Declare Const PadRightWidth Type integer = 25
-Declare Const PadLeftWidth Type integer = PadMaxWidth - PadRightWidth - 1
-
-Declare password Type string
-Declare length Type integer
-Declare score Type integer = 0
-Declare reductionScore Type integer = 0
-Declare lowerCaseCounter Type integer = 0
-Declare upperCaseCounter Type integer = 0
-Declare numericCounter Type integer = 0
-Declare specialCounter Type integer = 0
-
-Begin
-    Display "Password Rating Service"
-    Display RepeatString("=", PadMaxWidth)
-
-    Display "Enter password (advised " + MinPasswordLength " - " + MaxPasswordLength + " characters, maximum " + MaxPasswordInput + " characters)"
-
-    Repeat Display "> "
-    Until Input password Succeeds And Length(password) < MaxPasswordInput
-
-    length = Length(password)
-
-    For char Type string In password
-        If RegexMatch(char, /[a-z]/) Then
-            score += LowerCaseFactor
-            lowerCaseCounter++
-        Elif RegexMatch(char, /[A-Z]/) Then
-            score += UpperCaseFactor
-            upperCaseCounter++
-        Elif RegexMatch(char, /d/) Then
-            score += NumericalFactor
-            numericCounter++
-        Elif RegexMatch(char, /!|%|&|\*|\+|=/) Then
-            score += SpecialFactor
-            specialCounter++
-        End If
-    End For
-
-    If lowerCaseCounter = length Then
-        reductionScore = lowerCaseCounter * 3
-    Elif upperCaseCounter = length Then
-        reductionScore = upperCaseCounter * 3
-    Elif numericCounter = length Then
-        reductionScore = numericCounter * 5
-    End If
-
-    DisplaySummary()
-End
-
-Procedure DisplaySummary()
-    If Length > MaxPasswordLength Then
-        Display "Your password is too long (>" + MaxPasswordLength + " characters)"
-    Elif Length < MinPasswordLength Then
-        Display "Your password is too short (<" + MinPasswordLength + " characters)"
-    End If
-
-    Display ""
-    Display "Security Rating: " + GetSecurityRating()
-
-    Declare lowerCaseScore Type integer = lowerCaseCounter * LowerCaseFactor
-    Declare upperCaseScore Type integer = upperCaseCounter * UpperCaseFactor
-    Declare numericalScore Type integer = numericCounter * NumericalFactor
-    Declare specialScore Type integer = specialCounter * SpecialFactor
-
-    Display RepeatString("-", PadMaxWidth)
-    PrintRow("Description", "Score")
-    Display RepeatString("-", PadMaxWidth)
-
-    PrintRow("Lower Case", String(lowerCaseScore))
-    PrintRow("Upper Case", String(upperCaseScore))
-    PrintRow("Digits", String(numericalScore))
-    PrintRow("Special", String(specialScore))
-
-    If Length >= 10 Then
-        score += 20
-        PrintRow("Bonus (10+ characters)", "20")
-    End If
-
-    If reductionScore != 0 Then
-        score -= reductionScore
-        PrintRow("Limited Character Types", String(-reductionScore))
-    End If
-
-    Display RepeatString("-", PadMaxWidth)
-    PrintRow("Total", String(score))
-    Display RepeatString("-", PadMaxWidth)
-
-    Display RepeatString("-", PadMaxWidth)
-    Display "Thank you for using our Password Rating Service!"
-    Display ""
-End Procedure
-
-Procedure PrintRow(description Type string, value Type string)
-    Display PadLeft(description, -PadRightWidth) + PadRight(value, PadLeftWidth)
-End Procedure
-
-Function GetSecurityRating() Return Type string
-    If score <= 20 Then
-        Return "Very Low"
-    Elif score <= 40 Then
-        Return "Low"
-    Elif score <= 70 Then
-        Return "Medium"
-    Elif score <= 90
-        Return "High"
-    Else
-        Return "Very High"
-    End If
-End Function
-
+BEGIN
+    INPUT Password
+    WHILE NOT 15 >= LENGTH PASSWORD >= 8
+        OUTPUT error message
+        INPUT Password
+    END WHILE
+    
+Lower       = 0   
+Upper       = 0  
+Numeric     = 0 
+Special     = 0 
+Length      = 0
+Penalty     = 0
+    
+    PasswordLength = LENGTH Password
+    
+    IF PasswordLength >= 10 THEN
+        Length = 10
+    END IF
+    
+    IF Password IS ALL LOWER OR ALL UPPER THEN
+        Penalty = PasswordLength * 3
+    ELSE IF Password IS ALL NUMERIC THEN
+        Penalty = PasswordLength * 5
+    END IF
+    
+    FOREACH Character IN Password
+        SWITCH Character
+            'a' TO 'z'                                  --> Lower += 5
+            'A' TO 'Z'                                  --> Upper += 5
+            '0' TO '9'                                  --> Numeric += 10
+             '!' OR '%' OR '&' OR '*' OR '+' OR '='     --> Special += 10
+        END SWITCH
+    END FOREACH
+    
+    Score = Lower + Upper + Numeric + Special + Length - Penalty
+    
+    SWITCH Score
+        <= 20 --> Rating = "Very Low",
+        <= 40 --> Rating = "Low",
+        <= 70 --> Rating = "Medium",
+        <= 80 --> Rating = "High",
+        >= 81 --> Rating = "Very high"
+    END SWITCH
+    
+    OUTPUT Lower 
+    OUTPUT Upper 
+    OUTPUT Numeric   
+    OUTPUT Special   
+    
+    IF Length > 0 THEN
+        OUTPUT Length
+    END IF
+    
+    IF Penalty > 0 THEN
+        OUTPUT -Penalty
+    END IF
+    
+    OUTPUT Score
+    OUTPUT Rating
+END

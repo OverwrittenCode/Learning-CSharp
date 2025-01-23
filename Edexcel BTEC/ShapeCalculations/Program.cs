@@ -7,12 +7,6 @@ internal enum Panel
     Calculate
 }
 
-internal enum PostCalculation
-{
-    Restart,
-    QuitProgram
-}
-
 internal enum Shape
 {
     Circle,
@@ -35,20 +29,20 @@ internal enum Square
 internal enum Cuboid
 {
     Volume,
-    SurfaceArea
+    SA
 }
 
-internal sealed class Program
+internal static class Program
 {
-    private const int MaxMeasurementInput = 100;
-
     private static void Main()
     {
         var calculationCounter = 1;
 
         while (true)
         {
-            Console.WriteLine($"----- Calculation {calculationCounter} -----");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"[CALCULATION {calculationCounter}]");
+            Console.ResetColor();
 
             var panel = GetEnumChoice<Panel>();
 
@@ -56,125 +50,130 @@ internal sealed class Program
             {
                 case Panel.Quit:
                     QuitProgram();
-                    break;
+                    return;
                 case Panel.Help:
-                    DisplayHelpMenu();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("[HELP MENU]");
+                    Console.ResetColor();
+                    Console.WriteLine(
+                        """
+                        You can perform calculations on a Circle, Square, or Cuboid.
+                        Each shape allows for different types of calculations (e.g. Area, Perimeter).
+                        """
+                    );
                     break;
                 case Panel.Calculate:
                     calculationCounter++;
-                    PerformCalculations();
+                    Calculate();
                     break;
             }
+
+            Console.WriteLine();
         }
     }
 
     private static void QuitProgram()
     {
-        Console.WriteLine("Thank you for using this program! Goodbye!");
+        Console.WriteLine("Press any key to exit...");
+        Console.ReadKey();
         Environment.Exit(0);
     }
 
-    private static void DisplayHelpMenu()
+    private static void Calculate()
     {
-        Console.WriteLine("----- [Help Menu] -----");
-        Console.WriteLine("You can perform calculations on a Circle, Square, or Cuboid.");
-        Console.WriteLine("Each shape allows for different types of calculations (e.g. Area, Perimeter).");
-    }
-
-    private static void PerformCalculations()
-    {
-        var shape = GetEnumChoice<Shape>();
-
-        var result = shape switch
+        string result;
+        switch (GetEnumChoice<Shape>())
         {
-            Shape.Circle => GetCircleCalculation(),
-            Shape.Square => GetSquareCalculation(),
-            Shape.Cuboid => GetCuboidCalculation()
-        };
+            case Shape.Circle:
+                {
+                    var attribute = GetEnumChoice<Circle>();
+                    var radius = GetMeasurementInput("radius");
+
+                    result = attribute switch
+                    {
+                        Circle.Area => $"{Math.PI * radius * radius} squared units",
+                        Circle.Circumference => $"{2 * Math.PI * radius} units"
+                    };
+                }
+                break;
+
+            case Shape.Square:
+                {
+                    var attribute = GetEnumChoice<Square>();
+                    var x = GetMeasurementInput("length");
+
+                    result = attribute switch
+                    {
+                        Square.Area => $"{x * x} squared units",
+                        Square.Perimeter => $"{4 * x} units"
+                    };
+                }
+                break;
+
+            case Shape.Cuboid:
+                {
+                    var attribute = GetEnumChoice<Cuboid>();
+
+                    var l = GetMeasurementInput("length");
+                    var w = GetMeasurementInput("width");
+                    var h = GetMeasurementInput("height");
+
+                    result = attribute switch
+                    {
+                        Cuboid.Volume => $"{l * w * h} cubic units",
+                        Cuboid.SA => $"{2 * ((l * w) + (l * h) + (w * h))} squared units"
+                    };
+                }
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
         Console.WriteLine($"Result: {result}");
-        Console.WriteLine();
-
-        var postCalculation = GetEnumChoice<PostCalculation>();
-
-        if (postCalculation == PostCalculation.QuitProgram)
-        {
-            QuitProgram();
-        }
-    }
-
-    private static string GetCircleCalculation()
-    {
-        var circle = GetEnumChoice<Circle>();
-        var radius = GetMeasurementInput("radius");
-
-        return circle switch
-        {
-            Circle.Area => $"{Math.PI * radius * radius} squared units",
-            Circle.Circumference => $"{2 * Math.PI * radius} units"
-        };
-    }
-
-    private static string GetSquareCalculation()
-    {
-        var square = GetEnumChoice<Square>();
-        var length = GetMeasurementInput("length");
-
-        return square switch
-        {
-            Square.Area => $"{length * length} squared units",
-            Square.Perimeter => $"{4 * length} units"
-        };
-    }
-
-    private static string GetCuboidCalculation()
-    {
-        var cuboid = GetEnumChoice<Cuboid>();
-        var length = GetMeasurementInput("length");
-        var width = GetMeasurementInput("width");
-        var height = GetMeasurementInput("height");
-
-        return cuboid switch
-        {
-            Cuboid.SurfaceArea => $"{2 * ((length * width) + (length * height) + (width * height))} squared units",
-            Cuboid.Volume => $"{length * width * height} cubic units"
-        };
     }
 
     private static double GetMeasurementInput(string name)
     {
-        Console.WriteLine($"Enter a positive number for the {name} (up to {MaxMeasurementInput})");
-
-        double input;
-
-        do
+        while (true)
         {
-            Console.Write("> ");
-        } while (!Double.TryParse(Console.ReadLine(), out input) || input <= 0 || input > MaxMeasurementInput);
+            const int Max = 100;
 
-        Console.WriteLine();
+            if (Double.TryParse(Input($"Enter a measurement number for {name} (0 - {Max})"), out var input) && input is > 0 and < Max)
+            {
+                return input;
+            }
 
-        return input;
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
+        }
     }
 
     private static T GetEnumChoice<T>() where T : struct, Enum
     {
-        Console.WriteLine("Choose an option below:");
+        Console.ForegroundColor = ConsoleColor.Magenta;
+        Console.WriteLine(String.Join(", ", Enum.GetNames<T>()));
+        Console.ResetColor();
 
-        foreach (T option in Enum.GetValues<T>())
+        while (true)
         {
-            Console.WriteLine($"{Convert.ToInt32(option)} - {option}");
+            if (Enum.TryParse(Input("Enter an option from above"), true, out T choice) && Enum.IsDefined(choice))
+            {
+                Console.WriteLine();
+                return choice;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Please try again.");
+            Console.ResetColor();
         }
+    }
 
-        T choice;
-
-        do
-        {
-            Console.Write("> ");
-        } while (!Enum.TryParse(Console.ReadLine(), true, out choice) || !Enum.IsDefined(typeof(T), choice));
-
-        Console.WriteLine();
-
-        return choice;
+    private static string? Input(string prompt)
+    {
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.Write($"{prompt}: ");
+        Console.ResetColor();
+        return Console.ReadLine();
     }
 }

@@ -1,162 +1,138 @@
+using System.Globalization;
+
 namespace SalesManager;
 
-internal readonly record struct Employee(string Id, string Name, int PropertiesSold)
+internal readonly record struct Employee(string Id, string Name, uint PropertiesSold);
+
+internal static class Program
 {
-    private const int CommissionRate = 500;
-
-    public decimal Commission => Decimal.Round(PropertiesSold * CommissionRate, 2);
-}
-
-internal sealed class Table
-{
-    private const char CellSeparator = '|';
-    private const char RowSeparator = '-';
-
-    private readonly int[] _paddings;
-
-    public List<object[]> Rows { get; }
-
-    public Table(params string[] headers)
-    {
-        Rows = [headers];
-        _paddings = headers.Select(header => header.Length + 5).ToArray();
-    }
-
-    public void AddRow(params object[] rows)
-    {
-        for (var i = 0; i < rows.Length; i++)
-        {
-            var length = rows[i].ToString()?.Length + 5 ?? throw new ArgumentException("ToString method returned null", nameof(rows));
-
-            if (length > _paddings[i])
-            {
-                _paddings[i] = length;
-            }
-        }
-
-        Rows.Add(rows);
-    }
-
-    public void Print()
-    {
-        var divider = new string(RowSeparator, _paddings.Sum() + _paddings.Length + 1);
-
-        Console.WriteLine(divider);
-
-        foreach (var rows in Rows)
-        {
-            var padIndex = 0;
-
-            var value = rows.Aggregate("", (acc, current) => acc + CellSeparator + current.ToString()?.PadRight(_paddings[padIndex++]), result => result + CellSeparator);
-
-            Console.WriteLine(value);
-            Console.WriteLine(divider);
-        }
-    }
-}
-
-internal sealed class Program
-{
-    private const decimal BonusRate = 0.15M;
-    private const int MaxNameLength = 20;
-    private const int MaxIdLength = 20;
-    private const int MaxPropertiesSold = 100;
-    private const int MinEmployees = 2;
-    private const int MaxEmployees = 5;
-
-    private static List<Employee> Employees = [];
-    private static int TotalPropertiesSold;
-    private static decimal GrandTotal;
-
     private static void Main()
     {
-        while (Employees.Count < MaxEmployees)
-        {
-            if (Employees.Count >= MinEmployees)
-            {
-                Console.WriteLine("Continue? (y/n)");
-                Console.Write("> ");
+        CultureInfo.CurrentCulture = new("en-GB");
 
-                if (Console.ReadLine()?.ToLower().Trim() != "y")
+        List<Employee> employees = [];
+
+        uint totalPropertiesSold = 0;
+        int employeeCount;
+
+        while (true)
+        {
+            const int Max = 1_000;
+
+            Console.Write($"Enter number of employees (0 - {Max}): ");
+            var input = Console.ReadLine();
+            Console.WriteLine();
+
+            if (Int32.TryParse(input, out employeeCount) && employeeCount is > 0 and <= Max)
+            {
+                break;
+            }
+
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine("Invalid input. Try again.");
+            Console.ResetColor();
+        }
+
+        for (var i = 0; i < employeeCount; i++)
+        {
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine($"[EMPLOYEE {i + 1}/{employeeCount}]");
+            Console.ResetColor();
+
+            string name;
+            while (true)
+            {
+                Console.Write("Enter name: ");
+                var input = Console.ReadLine();
+                Console.WriteLine();
+
+                if (!String.IsNullOrWhiteSpace(input))
+                {
+                    name = input;
+                    break;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Try again.");
+                Console.ResetColor();
+            }
+
+            string id;
+            while (true)
+            {
+                Console.Write("Enter id: ");
+                var input = Console.ReadLine();
+                Console.WriteLine();
+
+                if (!String.IsNullOrWhiteSpace(input))
+                {
+                    id = input;
+                    break;
+                }
+
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Try again.");
+                Console.ResetColor();
+            }
+
+            uint propertiesSold;
+            while (true)
+            {
+                Console.Write("Enter properties sold: ");
+                var input = Console.ReadLine();
+                Console.WriteLine();
+
+                const uint Max = 100;
+                if (UInt32.TryParse(input, out propertiesSold) && propertiesSold <= Max)
                 {
                     break;
                 }
 
-                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("Invalid input. Try again.");
+                Console.ResetColor();
             }
 
-            ProcessEmployee();
+            totalPropertiesSold += propertiesSold;
+            employees.Add(new(id, name, propertiesSold));
         }
 
-        DisplaySummary();
-    }
+        employees = employees.OrderByDescending(employee => employee.PropertiesSold).ToList();
 
-    private static void ProcessEmployee()
-    {
-        Console.WriteLine($"Employee {Employees.Count + 1}/{MaxEmployees}");
-        Console.WriteLine(new string('-', 15));
+        const int PropertySoldAlignment = 25;
+        const int Alignment = 15;
 
-        var name = GetEmployeeStringInput("name", MaxNameLength);
-        var id = GetEmployeeStringInput("id", MaxIdLength);
+        var divider = new string('-', 100);
+        Console.WriteLine(divider);
+        Console.WriteLine($"{"Id",Alignment}{"Name",Alignment}{"Properties Sold",PropertySoldAlignment}{"Sub Total",Alignment}{"Bonus",Alignment}{"Total",Alignment}");
+        Console.WriteLine(divider);
 
-        int propertiesSold;
-
-        Console.WriteLine($"Enter employee's number of properties sold (up to {MaxPropertiesSold})");
-
-        do
+        decimal totalSubTotal = 0;
+        decimal totalBonus = 0;
+        decimal grandTotal = 0;
+        for (var i = 0; i < employees.Count; i++)
         {
-            Console.Write("> ");
-        } while (!Int32.TryParse(Console.ReadLine(), out propertiesSold) || propertiesSold is <= 0 or > MaxPropertiesSold);
+            Employee employee = employees[i];
 
-        Console.WriteLine();
+            const decimal CommissionRate = 500;
+            var subTotal = employee.PropertiesSold * CommissionRate;
+            totalSubTotal += subTotal;
 
-        Employee employee = new(id, name, propertiesSold);
-
-        Employees.Add(employee);
-
-        TotalPropertiesSold += propertiesSold;
-    }
-
-    private static string GetEmployeeStringInput(string field, int max)
-    {
-        Console.WriteLine($"Enter employee's {field} (up to {max} characters)");
-
-        string value;
-
-        do
-        {
-            Console.Write("> ");
-        } while (Console.ReadLine() is not { } input || (value = input).Length <= 0 || value.Length > max);
-
-        return value;
-    }
-
-    private static void DisplaySummary()
-    {
-        Employees = [.. Employees.OrderByDescending(employee => employee.PropertiesSold)];
-
-        Console.WriteLine();
-        Console.WriteLine("Summary");
-
-        Table employeeTable = new("Id", "Name", "Properties Sold", "Sub Total", "Bonus", "Total");
-
-        foreach (Employee employee in Employees)
-        {
-            var subTotal = employee.Commission;
-            var bonus = Decimal.Round(subTotal * (employee == Employees[0] ? BonusRate : 0), 2);
+            const decimal BonusRate = 0.15m;
+            var bonus = i == 0 ? subTotal * BonusRate : 0;
+            totalBonus += bonus;
 
             var total = subTotal + bonus;
-            GrandTotal += total;
+            grandTotal += total;
 
-            employeeTable.AddRow(employee.Id, employee.Name, employee.PropertiesSold, $"{subTotal:C}", $"{bonus:C}", $"{total:C}");
+            Console.WriteLine(
+                $"{employee.Id,Alignment}{employee.Name,Alignment}{employee.PropertiesSold,PropertySoldAlignment}{subTotal,Alignment:C}{bonus,Alignment:C}{total,Alignment:C}"
+            );
         }
 
-        employeeTable.Print();
-
-        Table totalTable = new("Total Properties Sold", "Total Sales Commission");
-        totalTable.AddRow($"{TotalPropertiesSold:C}", $"{GrandTotal:C}");
-
-        totalTable.Print();
-        Console.WriteLine();
+        Console.WriteLine(divider);
+        Console.WriteLine(
+            $"{"TOTAL",Alignment}{"",Alignment}{totalPropertiesSold,PropertySoldAlignment}{totalSubTotal,Alignment:C}{totalBonus,Alignment:C}{grandTotal,Alignment:C}"
+        );
     }
 }
