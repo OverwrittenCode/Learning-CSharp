@@ -5,12 +5,12 @@ BEGIN
         INPUT Password
     END WHILE
     
-Lower       = 0   
-Upper       = 0  
-Numeric     = 0 
-Special     = 0 
-Length      = 0
-Penalty     = 0
+    Lower       = 0   
+    Upper       = 0  
+    Numeric     = 0 
+    Special     = 0 
+    Length      = 0
+    Penalty     = 0
     
     PasswordLength = LENGTH Password
     
